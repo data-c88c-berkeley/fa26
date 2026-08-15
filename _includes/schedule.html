@@ -439,7 +439,7 @@
                 <div class="syllabus-item" style="margin-bottom: 8px;">
                 <strong class="label label-project">Project {{project.label-number}}</strong>
                 {%- if project.link -%}
-                    <a href="{{ project.link }}">{{ project.title }}</a>
+                    <a href="{{ project.link | relative_url }}">{{ project.title }}</a>
                 {%- else -%}
                     {{ project.title }}
                 {%- endif -%}

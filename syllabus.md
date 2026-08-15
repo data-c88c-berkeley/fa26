@@ -149,7 +149,7 @@ TODO
 
 Office hours are drop-in tutoring sessions in which you can ask questions about
 the material, receive guidance on assignments, and work with peers and course
-staff in a small group setting. See the [office hour schedule](/office-hours)
+staff in a small group setting. See the [office hour schedule]({% link calendar.md %})
 and come by.
 
 ## Assignments
@@ -174,7 +174,7 @@ understanding of TODO.
 Projects are larger assignments intended to combine ideas from the course in
 interesting ways.
 
-You are allowed and encouraged to [pair program](/articles/pair-programming)
+You are allowed and encouraged to [pair program]({% link articles/pair-programming.md %})
 with a partner. Make sure to alternate roles so that both of you understand the
 complete results. You may also work alone on all projects, although partners
 are recommended.
@@ -261,7 +261,7 @@ to the instructors and selected staff.
 For any DSP and accommodations-related communications, please reach out to
 [c88c@berkeley.edu](mailto:c88c@berkeley.edu), which will put you in touch
 with our student support team. This inbox is only visible to staff members
-marked with "c88c@" on the [staff page](/staff). This inbox will be visible to
+marked with "c88c@" on the [staff page]({% link staff.md %}). This inbox will be visible to
 future members of course staff, so if you ever have a communication that you
 wish to remain private, let us know and we can delete the email exchange once
 the conversation is resolved.
@@ -285,7 +285,7 @@ for this course and CS 61A, based on the classic textbook
 Readings for each lecture appear in the course schedule. We recommend that you
 complete the readings before attending lecture.
 
-Past exams appear on the [Resources](/resources) page.
+Past exams appear on the [Resources]({% link resources.md %}) page.
 
 ## Grading
 
@@ -322,7 +322,7 @@ Students who receive an incomplete are not eligible for exam recovery.
 ### Late Policy
 
 If you cannot turn in an assignment on time, [you can request an
-extension](/articles/about#assignment-extensions). For late work beyond the
+extension](#assignment-extensions). For late work beyond the
 extended deadline:
 
 -  **Labs** receive no credit.
