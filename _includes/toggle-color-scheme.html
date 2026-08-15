@@ -1,0 +1,96 @@
+{% capture btn_aria_label %}
+  {%- if site.color_scheme == 'dark' -%}
+  Switch to Light Mode
+  {%- else -%}
+  Switch to Dark Mode
+  {%- endif -%}
+{% endcapture %}
+
+<span class="fs-3">
+  <button type="button"
+    class="btn js-toggle-dark-mode btn-outline"
+    style="margin-right: -3px; border-top-right-radius: 0; border-bottom-right-radius: 0;"
+    aria-label="{{ btn_aria_label }}">
+    {%- if site.color_scheme == 'dark' -%}
+    🔆 Light Mode
+    {%- else -%}
+    🌙 Dark Mode
+    {%- endif -%}
+  </button>
+  <button type="button"
+    class="btn js-unset-color-scheme btn-outline px-2"
+    style="margin-left: -3px; border-top-left-radius: 0; border-bottom-left-radius: 0;"
+    aria-label="Use system appearance"
+    ><i class="fa-solid fa-rotate" title="Use system appearance"></i></button>
+</span>
+
+<script>
+(function() {
+  // Prevent double-loading
+  if (window.themeScriptRan) return;
+  window.themeScriptRan = true;
+
+  document.addEventListener("DOMContentLoaded", function() {
+    // Check if JTD is actually loaded
+    if (typeof jtd === 'undefined') {
+      console.error("JTD is not defined. Check if jtd.js is loading.");
+      return; 
+    }
+
+    const toggleSchemeBtn = document.querySelector('.js-toggle-dark-mode');
+    const unsetColorScheme = document.querySelector('.js-unset-color-scheme');
+
+    function updateButtonUI(theme) {
+      if (!toggleSchemeBtn) return;
+      if (theme === 'dark') {
+        toggleSchemeBtn.textContent = '🔆 Light Mode';
+        toggleSchemeBtn.ariaLabel = 'Switch to Light Mode';
+      } else {
+        toggleSchemeBtn.textContent = '🌙 Dark Mode';
+        toggleSchemeBtn.ariaLabel = 'Switch to Dark Mode';
+      }
+    }
+
+    // Apply theme before button listeners
+    const savedTheme = localStorage.getItem('jtd-theme');
+    const systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const initialTheme = savedTheme || (systemDark ? 'dark' : 'light');
+
+    jtd.setTheme(initialTheme);
+    document.documentElement.setAttribute('data-theme', initialTheme);
+    updateButtonUI(initialTheme);
+
+    // Toggle Logic
+    jtd.addEvent(toggleSchemeBtn, 'click', function() {
+      const current = document.documentElement.getAttribute('data-theme') || jtd.getTheme();
+      const nextTheme = (current === 'dark') ? 'light' : 'dark';
+
+      console.log("Toggling from", current, "to", nextTheme);
+
+      jtd.setTheme(nextTheme);
+      localStorage.setItem('jtd-theme', nextTheme);
+      document.documentElement.setAttribute('data-theme', nextTheme);
+      updateButtonUI(nextTheme);
+    });
+
+    // Reset Logic (Sync with system preference)
+    if (unsetColorScheme) {
+      jtd.addEvent(unsetColorScheme, 'click', function() {
+        // Clear the manual override
+        localStorage.removeItem('jtd-theme');
+
+        // Determine what the system wants
+        const systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const newTheme = systemDark ? 'dark' : 'light';
+
+        // Apply it immediately without reloading
+        jtd.setTheme(newTheme);
+        document.documentElement.setAttribute('data-theme', newTheme);
+        updateButtonUI(newTheme);
+        
+        console.log("Reset to system preference:", newTheme);
+      });
+    }
+  });
+})();
+</script>
