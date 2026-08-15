@@ -1,0 +1,14 @@
+---
+layout: default
+---
+{%- comment -%}
+  Layout for assignment pages emitted by 61a-build (publish-61a release).
+  Installed into the site checkout by the builder along with
+  assets/css/assignment.css and assets/js/assignment.js; edit them in the
+  assignments repo (src/publish/site_support/), not here.
+{%- endcomment -%}
+<link rel="stylesheet" href="{{ '/assets/css/assignment.css' | relative_url }}">
+<div class="assignment">
+{{ content }}
+</div>
+<script src="{{ '/assets/js/assignment.js' | relative_url }}"></script>

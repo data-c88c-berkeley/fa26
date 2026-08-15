@@ -5,14 +5,26 @@
   color: white !important;
 }
 
-// This affects the size of the course logo/name on the top left. We recommend commenting out/removing
-// this styling if you are using just your course name rather than a course logo image
-div.site-header {
-  height: 100%;
-  max-height: 150px;
+// Course name in the top left, styled after the cs61a.org navbar brand:
+// Roboto, bold, white on cs61a.org blue. Roboto is loaded in _includes/head_custom.html.
+$cs61a-blue: #026ebb;
+
+.site-header {
+  background-color: $cs61a-blue;
+  border-bottom: none;
 }
 
-// This affects the positioning of the course logo image (if it exists) on the top left
-.site-logo {
-  background-position: center;
+.site-title,
+.site-title:hover,
+.site-title:focus {
+  font-family: 'Roboto', $body-font-family;
+  font-weight: 700;
+  font-size: 1.125rem;
+  color: #fff;
+  background-image: none;
+  white-space: nowrap;
+}
+
+.site-header .site-button {
+  color: #fff;
 }

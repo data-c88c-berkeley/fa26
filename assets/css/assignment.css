@@ -1,0 +1,131 @@
+/* Styles for assignment pages emitted by 61a-build (publish-61a release).
+   Installed into the site checkout by the builder; edit the copy in the
+   assignments repo (src/publish/site_support/), not this one. Colors are
+   scheme-neutral (translucent greys) so they work in light and dark mode. */
+
+.assignment-header {
+  margin-bottom: 2rem;
+}
+
+.assignment-header .assignment-facts {
+  list-style: none;
+  padding: 0.5rem 1rem;
+  margin: 0.5rem 0 0;
+  background: rgba(127, 127, 127, 0.12);
+  border-radius: 4px;
+}
+
+.assignment-header .assignment-facts li {
+  display: inline-block;
+  margin-right: 1.5rem;
+}
+
+/* Suppress the theme's "•" list marker so items aren't dot-separated. */
+.assignment-header .assignment-facts li::before {
+  content: none;
+}
+
+.assignment-header .solution-badge {
+  font-size: 0.6em;
+  vertical-align: middle;
+  padding: 0.15em 0.6em;
+  border-radius: 1em;
+  background: #b3261e;
+  color: #fff;
+}
+
+.assignment-intro {
+  margin: 0 0 1.5rem;
+  padding: 0.75rem 1rem;
+  border-left: 4px solid #003262; /* Berkeley Blue */
+  background: rgba(0, 50, 98, 0.08);
+}
+
+.pytest-command {
+  position: relative;
+  margin: 1rem 0;
+}
+
+.pytest-command pre {
+  margin: 0;
+  padding: 0.75rem 5rem 0.75rem 1rem;
+  background: #263238;
+  border-radius: 4px;
+}
+
+.pytest-command pre code {
+  color: #e8eaf6;
+  background: none;
+  padding: 0;
+}
+
+.pytest-command .pytest-copy {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 3px;
+  background: transparent;
+  color: #e8eaf6;
+  cursor: pointer;
+}
+
+.pytest-command .pytest-copy:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+details.hint {
+  margin: 1rem 0;
+  padding: 0.5rem 1rem;
+  border: 1px solid rgba(127, 127, 127, 0.4);
+  border-radius: 4px;
+}
+
+details.hint summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.solution {
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  border-left: 4px solid #b3261e;
+  background: rgba(179, 38, 30, 0.06);
+}
+
+.solution .solution-label {
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  color: #b3261e;
+  margin-bottom: 0.5rem;
+}
+
+/* Ordinary assignment blockquotes get a full tinted box, making callouts
+   visually distinct from body text. The theme's left accent rule is kept. */
+.assignment blockquote {
+  background-color: rgba(127, 127, 127, 0.1);
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+}
+
+/* Quote/attribution blockquotes (those containing a <cite>) drop the box and
+   center instead. */
+.assignment blockquote:has(cite) {
+  background: none;
+  border-left: none;
+  padding: 0;
+  text-align: center;
+}
+
+pre.wwpd .wwpd-blank {
+  color: #9e9e9e;
+  letter-spacing: 0.1em;
+}
+
+pre.wwpd .wwpd-answer {
+  color: #2e7d32;
+  font-weight: 600;
+}

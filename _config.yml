@@ -34,7 +34,7 @@ ed_course_id: # Again, same as above.
 sememster: fa26 # set for the current seemester
 # TODO(setup): Set this to the file path of your course logo image, or leave it blank to display your course name.
 # To edit the size and positioning of the logo/course name, see _sass/custom/course_overrides.scss
-logo: /assets/images/berkeley_walking_bear.png
+logo: # blank: display the course name as text (styled in _sass/custom/course_overrides.scss)
 # This should be one of eecs, dsus, stat
 # (Future) This will control some footer text, and later custom styling.
 course_department: dsus
