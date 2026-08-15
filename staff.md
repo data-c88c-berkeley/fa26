@@ -7,8 +7,6 @@ nav_order: 4
 
 # Staff
 
-To learn how this page works, see the [documentation]({% link docs/collections/staff.md %}).
-
 ## Instructors
 
 {% assign instructors = site.staffers | where: 'role', 'Instructor' %}

@@ -14,28 +14,24 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-# TODO(setup): Typically the course number, "DEPT XXX". it appears on nearly every page. Keep it short. :)
-title: A Berkeley Course
-# TODO:(setup): This should be the extended title of your course. e.g. "Introduction to Data Science"
-tagline: A Jekyll template for course websites
-description: A modern, highly customizable, responsive Jekyll template for course websites
-# TODO(template): this should be built from the staff list...
-author: Various Bears
+title: Data C88C
+tagline: Computational Structures in Data Science
+description: >-
+  Data C88C: Computational Structures in Data Science,
+  UC Berkeley, Fall 2026.
+author: Data C88C Staff
 
-# TODO(setup): Set this to the semester, e.g. /sp24, (faXX / spXX / suXX / wiXX )
-baseurl: '/berkeley-class-site' # the subpath of your site, which should just be the semester.
-# TODO(setup): Set this to your course's domain
-url: 'https://berkeley-eecs.github.io' # the hostname & protocol for your site, e.g. http://example.com
+baseurl: '/fa26' # the subpath of your site, which should just be the semester.
+url: 'https://c88c.org' # the hostname & protocol for your site, e.g. http://example.com
 
 # Course variables
 # Course variables can appear in various places around the website, if something isn't used leave it blank.
-# TODO(setup): Set all of these course variables
-course: SAMPLE 101
-course_email: COURSE_EMAIL@berkeley.edu
-gradescope_course_id: 123456 # you can find this in the Gradescope URL after /courses
-bcourses_course_id: 123456 # Same as above, but for bCourses. Leave blank if not in use...
-ed_course_id: 123456 # Again, same as above.
-sememster: spYY | suYY | faYY # set for the current seemester
+course: Data C88C
+course_email: c88c@berkeley.edu
+gradescope_course_id: # you can find this in the Gradescope URL after /courses
+bcourses_course_id: # Same as above, but for bCourses. Leave blank if not in use...
+ed_course_id: # Again, same as above.
+sememster: fa26 # set for the current seemester
 # TODO(setup): Set this to the file path of your course logo image, or leave it blank to display your course name.
 # To edit the size and positioning of the logo/course name, see _sass/custom/course_overrides.scss
 logo: /assets/images/berkeley_walking_bear.png
@@ -52,68 +48,21 @@ class_archive_path: /
 # favicons can be course specific or you can use the default Berkeley one that comes with the template.
 favicon_ico: "/favicon.png"
 
-# TODO(setup): Set these auxiliary links as you wish - they show up on the top right
+# Auxiliary links - they show up on the top right.
+# '#' is a placeholder that links nowhere; fill in destinations as they
+# become available.
 aux_links:
-  # TODO(template): Move this to be built-in.
   Ed:
-    - 'https://edstem.org'
+    - '#'
   OH Queue:
-    - 'https://oh.c88c.org'
-  View Template on GitHub:
-    - 'https://github.com/berkeley-eecs/berkeley-class-site'
+    - '#'
+  Contact:
+    - 'mailto:c88c@berkeley.edu'
 
 # TODO(template): These need to be documented
 # TODO(semester): You may want to review these...
 berkeley_theme_options:
   show_logo_in_sidebar: true
-
-# TODO(template): Copy class information to the template.
-google_calendar:
-  # This can be found in the settings for the calendar.
-  # The calendar must be publicly readable.
-  google_calendar_id: c_134c9c007d75a399b5e7b39377d2f4e45c9db648f2df4417f8c9a490cb0726d1@group.calendar.google.com
-  # You need to make this, once per course, ideally via a SPA
-  # TODO: Recommend adding link to Google cloud project here
-  google_api_key: AIzaSyBombNhLEEZRjCfG4Fp5PpmICYBZO3PvY8
-  # These are processed in order, top-to-bottom, first match applies
-  # The prefix/suffix matches the Google Calendar event *title*
-  # You may use only prefix OR suffix, see fullcalendar.js
-  event_types:
-    - suffix: Lecture
-      background_color: '9FD1FF' # Blue light
-      text_color: '000'
-      class: cal-lecture
-      icon: fa-school
-    - suffix: Tea Hours
-      background_color: 'FFE88D' # gold light
-      text_color: '000'
-      class: cal-tea-oh
-      icon: fa-mug-hot
-    - suffix: Faculty Office Hours
-      background_color: 'FFC31B' # gold medium
-      text_color: '000'
-      class: cal-tea-oh
-      icon: fa-person-circle-question
-    - suffix: Office Hours
-      background_color: 'D9CEFF' # purple light
-      text_color: '000000'
-      class: cal-oh
-      icon: fa-person-circle-question
-    - suffix: Tutoring Section
-      background_color: 'FFCFE5' # rose light
-      text_color: '000000'
-      class: cal-tutoring
-      icon: fa-people-group
-    - suffix: Section
-      background_color: '004AAE' # blue medium
-      text_color: 'FFFFFF'
-      class: cal-disc-section
-      icon: fa-person-chalkboard
-    - suffix: Exam
-      background_color: 'FA8072' # salmon red
-      text_color: '000000'
-      class: cal-tutoring
-      icon: fa-school
 
 # Collections for website data
 collections:

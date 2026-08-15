@@ -1,49 +1,57 @@
 ### LECTURE ORDERING ###
-# each entry requires either a 'slug' or a 'title' field
-
-# use the slug if you utilize the _lectures collection. this will take info
-# from the front matter of the corresponding file in _lectures/
-# if your filename has a leading zero, quotes are required around the slug
-# if you use the _lectures collection, the title field will be useful for
-# one-off overrides like holidays or for placeholders; use the title field sparingly
-
-# nonumber supresses the label and numbering for the lecture entry
-# skip: true will omit the lecture from the schedule entirely
-
-# link overrides the default link to the lecture page from the collection if 
-# you provided a slug or provides an external link
-
-# readings appear in the third column of the schedule page. If you have a single reading
-# provide title and link. If you have multiple readings, provide a list of links with 
-# text and url fields (no title field necessary in this case). You can skip readings by not
-# providing the readings field.
+# One entry per Monday/Wednesday class day, in order, starting Wednesday
+# 2026-08-26 (see _data/syllabus.yml). Campus holidays that fall on class days
+# get an unnumbered "Holiday" entry so numbering stays aligned.
+#
+# Lecture TITLES ARE PLACEHOLDERS ("TBD") pending the Fall 2026 topic plan —
+# fill them in before publishing. Once lecture pages exist in _lectures/,
+# switch entries to `slug:` form to link them (see the template docs).
 
 lectures:
-  - slug: intro
-    readings:
-      - title: Introduction
-        link: https://inferentialthinking.com/chapters/01/what-is-data-science/index.html
-  - slug: 2
-    readings: 
-      - title: Causality and Experiments
-        link: https://inferentialthinking.com/chapters/02/causality-and-experiments/index.html
-  - slug: "03"
-    readings:
-      - links: 
-          - text: "Programming in Python"
-            url: "https://inferentialthinking.com/chapters/03/programming-in-python/"
-          - text: "Data Types"
-            url: "https://inferentialthinking.com/chapters/04/data-types/"
-  - slug: "04"
-  - slug: "05"
-  - slug: "06"
-  - slug: "07"
-  # - skip: true
-  - slug: "08"
-  - title: "No Lecture"
+  # Week 1
+  - title: "TBD"     # Wed 08/26
+  # Week 2
+  - title: "TBD"     # Mon 08/31
+  - title: "TBD"     # Wed 09/02
+  # Week 3
+  - title: "Holiday" # Mon 09/07 (Labor Day)
     nonumber: true
-    # link: "https://registrar.berkeley.edu/wp-content/uploads/UCB_AcademicCalendar_2025-26.pdf"
-  - slug: "09"
-  - slug: "10"
-  - slug: "11"
-
+  - title: "TBD"     # Wed 09/09
+  # Week 4
+  - title: "TBD"     # Mon 09/14
+  - title: "TBD"     # Wed 09/16
+  # Week 5
+  - title: "TBD"     # Mon 09/21
+  - title: "TBD"     # Wed 09/23
+  # Week 6
+  - title: "TBD"     # Mon 09/28
+  - title: "TBD"     # Wed 09/30
+  # Week 7
+  - title: "TBD"     # Mon 10/05
+  - title: "TBD"     # Wed 10/07
+  # Week 8
+  - title: "TBD"     # Mon 10/12
+  - title: "TBD"     # Wed 10/14
+  # Week 9
+  - title: "TBD"     # Mon 10/19
+  - title: "TBD"     # Wed 10/21
+  # Week 10
+  - title: "TBD"     # Mon 10/26
+  - title: "TBD"     # Wed 10/28
+  # Week 11
+  - title: "TBD"     # Mon 11/02
+  - title: "TBD"     # Wed 11/04
+  # Week 12
+  - title: "TBD"     # Mon 11/09
+  - title: "Holiday" # Wed 11/11 (Veterans Day)
+    nonumber: true
+  # Week 13
+  - title: "TBD"     # Mon 11/16
+  - title: "TBD"     # Wed 11/18
+  # Week 14
+  - title: "TBD"     # Mon 11/23
+  - title: "Holiday" # Wed 11/25 (Non-instructional day)
+    nonumber: true
+  # Week 15
+  - title: "TBD"     # Mon 11/30
+  - title: "TBD"     # Wed 12/02

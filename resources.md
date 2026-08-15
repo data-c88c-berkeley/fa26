@@ -2,10 +2,10 @@
 layout: page
 title: Resources
 description: >-
-    Course resources
+    Course resources.
 nav_order: 5
 ---
 
 # Resources
 
-Add links to course resources here
+_Course resources coming soon._
