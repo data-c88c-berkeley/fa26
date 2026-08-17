@@ -44,7 +44,9 @@ jobs:
         uses: actions/configure-pages@v5
       - name: Build with Jekyll
         # Outputs to the './_site' directory by default
-        run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
+        # No --baseurl: _config.yml sets it (e.g. /fa26), since the site is served
+        # at cs61a.org/<baseurl> through a proxy, not at github.io/<repo>.
+        run: bundle exec jekyll build
         env:
           JEKYLL_ENV: production
       - name: Upload artifact
