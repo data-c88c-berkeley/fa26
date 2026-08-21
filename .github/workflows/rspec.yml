@@ -10,7 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
       - uses: ruby/setup-ruby@v1
         with:
           # The Ruby version is determined by either a `.ruby-version` or a `.tool-versions` file in root of the repo.
@@ -22,7 +22,7 @@ jobs:
         if: failure()
         run: ruby spec/support/spec_summary.rb
       - name: Keep screenshots from failed tests
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: screenshots
