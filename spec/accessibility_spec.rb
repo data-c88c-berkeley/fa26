@@ -29,7 +29,9 @@ EXCLUDED_ELEMENTS = [
 # It should be rare to add to this array. One acceptable
 # use is to add redirect pages because they can introduce
 # race conditions and make the a11y tests fail inconsistently.
-SKIPPED_PAGES = [].freeze
+SKIPPED_PAGES = [
+  '/fa26/textbook/' # Redirects to composingprograms.com via meta refresh
+].freeze
 
 # We must call this to ensure the build it up-to-date.
 build_jekyll_site!
