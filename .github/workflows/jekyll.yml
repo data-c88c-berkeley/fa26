@@ -44,8 +44,9 @@ jobs:
         uses: actions/configure-pages@v5
       - name: Build with Jekyll
         # Outputs to the './_site' directory by default
-        # No --baseurl: _config.yml sets it (e.g. /fa26), since the site is served
-        # at cs61a.org/<baseurl> through a proxy, not at github.io/<repo>.
+        # No --baseurl: _config.yml sets it (/fa26, matching the repo name),
+        # and GitHub Pages serves the site at c88c.org/fa26 (the org site
+        # binds the domain; project repos appear under /<repo>).
         run: bundle exec jekyll build
         env:
           JEKYLL_ENV: production
