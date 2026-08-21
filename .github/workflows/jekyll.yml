@@ -42,6 +42,9 @@ jobs:
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
+        with:
+          # Enable Pages (build type: workflow) if the repo doesn't have it yet.
+          enablement: true
       - name: Build with Jekyll
         # Outputs to the './_site' directory by default
         # No --baseurl: _config.yml sets it (/fa26, matching the repo name),
