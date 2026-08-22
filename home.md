@@ -8,9 +8,13 @@ seo:
   name: Data C88C
 ---
 
-# DRAFT Data C88C: Computational Structures in Data Science
+# Data C88C: Computational Structures in Data Science
 
 **Fall 2026, UC Berkeley**
+
+{% include announcement-navigation.html %}
+
+*This lecture schedule is still being revised!*
 
 <div>
 {%- include schedule.html -%}

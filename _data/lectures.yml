@@ -3,55 +3,54 @@
 # 2026-08-26 (see _data/syllabus.yml). Campus holidays that fall on class days
 # get an unnumbered "Holiday" entry so numbering stays aligned.
 #
-# Lecture TITLES ARE PLACEHOLDERS ("TBD") pending the Fall 2026 topic plan —
-# fill them in before publishing. Once lecture pages exist in _lectures/,
-# switch entries to `slug:` form to link them (see the template docs).
+# Once lecture pages exist in _lectures/, switch entries to `slug:` form to
+# link them (see the template docs).
 
 lectures:
   # Week 1
-  - title: "TBD"     # Wed 08/26
+  - title: "Welcome"            # Wed 08/26
   # Week 2
-  - title: "TBD"     # Mon 08/31
-  - title: "TBD"     # Wed 09/02
+  - title: "Functions"          # Mon 08/31
+  - title: "Control"            # Wed 09/02
   # Week 3
-  - title: "Holiday" # Mon 09/07 (Labor Day)
+  - title: "Holiday"            # Mon 09/07 (Labor Day)
     nonumber: true
-  - title: "TBD"     # Wed 09/09
+  - title: "Higher-Order Functions" # Wed 09/09
   # Week 4
-  - title: "TBD"     # Mon 09/14
-  - title: "TBD"     # Wed 09/16
+  - title: "Environments"       # Mon 09/14
+  - title: "Abstraction"        # Wed 09/16
   # Week 5
-  - title: "TBD"     # Mon 09/21
-  - title: "TBD"     # Wed 09/23
+  - title: "Recursion"          # Mon 09/21
+  - title: "Tree Recursion"     # Wed 09/23
   # Week 6
-  - title: "TBD"     # Mon 09/28
-  - title: "TBD"     # Wed 09/30
+  - title: "Sequences"          # Mon 09/28
+  - title: "Containers"         # Wed 09/30
   # Week 7
-  - title: "TBD"     # Mon 10/05
-  - title: "TBD"     # Wed 10/07
+  - title: "Objects"      # Mon 10/05
+  - title: "Linked Lists" # Wed 10/07
   # Week 8
-  - title: "TBD"     # Mon 10/12
-  - title: "TBD"     # Wed 10/14
+  - title: "Trees"              # Mon 10/12
+  - title: "Problem Solving"    # Wed 10/14
   # Week 9
-  - title: "TBD"     # Mon 10/19
-  - title: "TBD"     # Wed 10/21
+  - title: "Midterm 1 Review"   # Mon 10/19
+  - title: "Debugging"          # Wed 10/21
   # Week 10
-  - title: "TBD"     # Mon 10/26
-  - title: "TBD"     # Wed 10/28
+  - title: "Mutation"           # Mon 10/26
+  - title: "Attributes"         # Wed 10/28
   # Week 11
-  - title: "TBD"     # Mon 11/02
-  - title: "TBD"     # Wed 11/04
+  - title: "Inheritance"        # Mon 11/02
+  - title: "Lazy Evaluation"    # Wed 11/04
   # Week 12
-  - title: "TBD"     # Mon 11/09
-  - title: "Holiday" # Wed 11/11 (Veterans Day)
+  - title: "Midterm 2 Review"   # Mon 11/09
+  - title: "Holiday"            # Wed 11/11 (Veterans Day)
     nonumber: true
   # Week 13
-  - title: "TBD"     # Mon 11/16
-  - title: "TBD"     # Wed 11/18
+  - title: "Tables"             # Mon 11/16
+  - title: "SQL"                # Wed 11/18
   # Week 14
-  - title: "TBD"     # Mon 11/23
-  - title: "Holiday" # Wed 11/25 (Non-instructional day)
+  - title: "Aggregation"        # Mon 11/23
+  - title: "Holiday"            # Wed 11/25 (Non-instructional day)
     nonumber: true
   # Week 15
-  - title: "TBD"     # Mon 11/30
-  - title: "TBD"     # Wed 12/02
+  - title: "Ethics"             # Mon 11/30
+  - title: "Conclusion"         # Wed 12/02

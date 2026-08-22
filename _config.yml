@@ -53,14 +53,12 @@ favicon_ico: "/favicon.png"
 # become available.
 aux_links:
   Ed:
-    - '#'
+    - 'https://edstem.org/us/courses/102273/discussion'
   OH Queue:
-    - '#'
+    - 'https://oh.c88c.org'
   Contact:
-    - 'mailto:c88c@berkeley.edu'
+    - 'mailto:cs88@berkeley.edu'
 
-# TODO(template): These need to be documented
-# TODO(semester): You may want to review these...
 berkeley_theme_options:
   show_logo_in_sidebar: true
 

@@ -22,16 +22,16 @@ schedule:
   - name: Monday
     events:
       - name: Lecture
-        start: 12:00 PM
-        end: 1:00 PM
-        location: TBD
+        start: 3:00 PM
+        end: 4:00 PM
+        location: Undergrad Academic Bldg 100
   - name: Tuesday
   - name: Wednesday
     events:
       - name: Lecture
-        start: 12:00 PM
-        end: 1:00 PM
-        location: TBD
+        start: 3:00 PM
+        end: 4:00 PM
+        location: Undergrad Academic Bldg 100
   - name: Thursday
   - name: Friday
 ---
