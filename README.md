@@ -1,5 +1,7 @@
 # Data C88C Fall 2026
 
+[![Deploy Jekyll site to Pages](https://github.com/data-c88c-berkeley/fa26/actions/workflows/jekyll.yml/badge.svg)](https://github.com/data-c88c-berkeley/fa26/actions/workflows/jekyll.yml) [![Run all page tests](https://github.com/data-c88c-berkeley/fa26/actions/workflows/rspec.yml/badge.svg)](https://github.com/data-c88c-berkeley/fa26/actions/workflows/rspec.yml)
+
 Course website for Data C88C: Computational Structures in Data Science,
 published at <https://c88c.org/fa26> via GitHub Pages.
 
