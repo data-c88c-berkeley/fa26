@@ -3,14 +3,19 @@
 #######################################################
 
 # Set start_date to the first day of instruction (Wednesday, August 26, 2026).
-# Set end_date to the last day of instruction. Exam dates will be added to
-# extra_days_col2 once they are scheduled.
+# Set end_date to the last day of instruction.
 start_date: 2026-08-26
 end_date: 2026-12-02
 
 # Any other days you want to appear on the calendar (e.g. for one-time events
 # like exams or bonus lectures) can be listed here. These appear in the second column.
-extra_days_col2: []
+extra_days_col2:
+  - date: 2026-10-19
+    label: exam
+    title: "Midterm 1 (in the CBTF)"
+  - date: 2026-11-11
+    label: exam
+    title: "Midterm 2"
 
 # The dates used in extra_links_col3 below must already be included on the calendar
 # Use this to provide extra links in the third (reading) column
@@ -20,19 +25,23 @@ extra_links_col3: []
 # Lectures are Monday/Wednesday. Campus holidays that fall on class days have
 # "Holiday" entries in _data/lectures.yml.
 class_days: ['1', '3']
-# Assignment components (discussion, lab, homework, quizzes) are published by
-# 61a-build from the assignments repo; no fixed weekly days yet.
-discussion_days: []
-lab_days: []
-hw_days: []
+# Labs, homework, and discussions are published by publish-61a from the
+# assignments repo, which places each on the row of the last lecture day on or
+# before its post date, so these must match class_days. Labs post Monday with
+# a same-topic discussion; homework posts Wednesday.
+discussion_days: ['1', '3']
+lab_days: ['1', '3']
+hw_days: ['1', '3']
 hw_due_days: []
-quiz_days: []
+# Lab quizzes are taken in Monday lab sections; _data/quizzes.yml has one
+# entry per Monday.
+quiz_days: ['1']
 
 # Where should we start automatically numbering each course component?
 starting_lecture_number: '1'
-starting_discussion_number: '1'
+starting_discussion_number: '0'
 starting_homework_number: '1'
-starting_lab_number: '1'
+starting_lab_number: '0'
 starting_project_number: '1'
 starting_quiz_number: '1'
 # Is the first week of class Week 0 or Week 1? We currently don't support

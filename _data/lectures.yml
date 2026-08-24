@@ -31,12 +31,12 @@ lectures:
   # Week 8
   - title: "Trees"              # Mon 10/12
   - title: "Problem Solving"    # Wed 10/14
-  # Week 9
+  # Week 9 (Midterm 1 in the CBTF)
   - title: "Midterm 1 Review"   # Mon 10/19
   - title: "Debugging"          # Wed 10/21
   # Week 10
   - title: "Mutation"           # Mon 10/26
-  - title: "Attributes"         # Wed 10/28
+  - title: "Classes"            # Wed 10/28
   # Week 11
   - title: "Inheritance"        # Mon 11/02
   - title: "Lazy Evaluation"    # Wed 11/04

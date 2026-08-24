@@ -1,2 +1,19 @@
 ### QUIZ ORDERING ###
-quizzes: []
+# Lab quizzes, taken in that day's lab section. One entry per Monday (see
+# quiz_days in _data/syllabus.yml), in order, starting Monday 2026-08-31;
+# `skip: true` consumes a Monday with no quiz.
+quizzes:
+  - skip: true                      # Mon 08/31 (no quiz in week 2)
+  - title: "Functions"              # Mon 09/07 (week 3)
+  - title: "Control"                # Mon 09/14 (week 4)
+  - title: "Higher-Order Functions" # Mon 09/21 (week 5)
+  - title: "Recursion"              # Mon 09/28 (week 6)
+  - skip: true                      # Mon 10/05 (no quiz in week 7)
+  - skip: true                      # Mon 10/12 (no quiz in week 8)
+  - skip: true                      # Mon 10/19 (week 9: Midterm 1)
+  - title: "Recursive Data"         # Mon 10/26 (week 10)
+  - title: "Mutation"               # Mon 11/02 (week 11)
+  - skip: true                      # Mon 11/09 (week 12: Midterm 2)
+  - title: "Classes"                # Mon 11/16 (week 13)
+  - skip: true                      # Mon 11/23 (no quiz in week 14)
+  - title: "SQL"                    # Mon 11/30 (week 15)

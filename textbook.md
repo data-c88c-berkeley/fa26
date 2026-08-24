@@ -2,7 +2,7 @@
 layout: page
 title: Textbook
 description: Link to the course textbook.
-nav_order: 10
+nav_order: 8
 ---
 
 <meta http-equiv="refresh" content="0; url=https://www.composingprograms.com">
