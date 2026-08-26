@@ -9,8 +9,10 @@
 lectures:
   # Week 1
   - title: "Welcome"            # Wed 08/26
+    slug: welcome
   # Week 2
   - title: "Functions"          # Mon 08/31
+    slug: functions
   - title: "Control"            # Wed 09/02
   # Week 3
   - title: "Holiday"            # Mon 09/07 (Labor Day)

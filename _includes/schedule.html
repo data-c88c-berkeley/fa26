@@ -166,10 +166,23 @@
                             {%- else -%}
                                 <span>{{ display_title }}</span>
                             {%- endif -%}
+
+                            {%- comment -%} 5. MATERIAL LINKS (Slides, Videos, ...) after the title {%- endcomment -%}
+                            {%- if lecture_obj.files -%}
+                                {%- assign slides_url = lecture_obj.files.pdf_slides | default: lecture_obj.files.slides -%}
+                                {%- if slides_url -%}
+                                    <a href="{{ slides_url }}" target="_blank" style="font-size: 0.85em;">(Slides)</a>
+                                {%- endif -%}
+                                {%- for item in lecture_obj.files.additional_files -%}
+                                    {%- if item.name and item.link -%}
+                                        <a href="{{ item.link }}" target="{{ item.target }}" style="font-size: 0.85em;">({{ item.name }})</a>
+                                    {%- endif -%}
+                                {%- endfor -%}
+                            {%- endif -%}
                         </div>
                     {%- endunless -%}
 
-                    {%- comment -%} 5. ALWAYS INCREMENT INDEX TO MOVE TO NEXT YAML ENTRY {%- endcomment -%}
+                    {%- comment -%} 6. ALWAYS INCREMENT INDEX TO MOVE TO NEXT YAML ENTRY {%- endcomment -%}
                     {%- assign lecture_index = lecture_index | plus: 1 -%}
                 {%- endif -%}
             {%- endif -%}
