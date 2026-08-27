@@ -49,6 +49,10 @@
 .python-toggle {
   display: flex;
   justify-content: flex-end;
+  /* Without this, the zero-height flex container would stretch the pill's
+     box to zero height too, leaving its border squashed flat across the
+     middle of the buttons. */
+  align-items: flex-start;
   height: 0;
   pointer-events: none;
 }
