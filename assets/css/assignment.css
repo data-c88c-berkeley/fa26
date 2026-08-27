@@ -41,18 +41,15 @@
   background: rgba(0, 50, 98, 0.08);
 }
 
-/* Sticky Python-command switch (python3/python/py rewritten in commands),
-   inserted by assignment.js when a page contains python3 commands. The bar
-   spans the content column but ignores clicks; only the pill is interactive.
-   Solid backgrounds (matched to the site's light/dark body colors) keep it
-   legible over content scrolling underneath. */
+/* Python-command switch (python3/python/py rewritten in commands), inserted
+   by assignment.js when a page contains python3 commands. The zero-height
+   bar overlays the pill on the right end of the page-title line, so it adds
+   no vertical space; the bar ignores clicks, only the pill is interactive.
+   It scrolls with the page. */
 .python-toggle {
-  position: sticky;
-  top: 0.5rem;
-  z-index: 50;
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 0.75rem;
+  height: 0;
   pointer-events: none;
 }
 
@@ -60,13 +57,26 @@
   pointer-events: auto;
   display: inline-flex;
   align-items: center;
+  margin-top: 0.4rem; /* optically center on the h1 title line */
   font-size: 0.75rem;
   line-height: 1;
   padding: 0.25rem;
   border: 1px solid rgba(127, 127, 127, 0.45);
   border-radius: 2em;
   background: #fff;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+/* A narrow screen may not fit the title and the pill on one line; give the
+   pill its own row above the title instead of overlapping it. */
+@media (max-width: 640px) {
+  .python-toggle {
+    height: auto;
+    margin-bottom: 0.5rem;
+  }
+
+  .python-toggle-pill {
+    margin-top: 0;
+  }
 }
 
 [data-theme="dark"] .python-toggle-pill {

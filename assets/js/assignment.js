@@ -1,7 +1,7 @@
 // Support script for assignment pages emitted by the assignment builder:
-// copy buttons on pytest command boxes, and a sticky python3/python/py
-// switch so Windows students see (and copy) commands that use their
-// interpreter.
+// copy buttons on pytest command boxes, and a python3/python/py switch on
+// the title line so Windows students see (and copy) commands that use
+// their interpreter.
 
 // Adds a copy button to each pytest command box emitted by the assignment
 // builder. dataset.command is read at click time so it reflects the
