@@ -213,7 +213,8 @@ There will be 4 exams:
   [CBTF policies and procedures](https://rtl.berkeley.edu/services-programs/computer-based-testing-facility-cbtf/students/cbtf-policies-and-procedures), including instantiating a PrairieTest
   account. Students will sign up for a one-hour time slot one week prior
   to the exam.
-- Midterm 2 will be a paper exam, held 7pm-9pm Thursday 11/12.
+- Midterm 2 will be a paper exam, held 7pm-9pm in mid-November (date will be
+  posted soon).
 - The final exam will be held 11:30am-2:30pm Wednesday 12/16.
 
 Paper exams will be taken in-person in various rooms across campus.
