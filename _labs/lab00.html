@@ -1,0 +1,213 @@
+---
+title: "Lab 0: Getting Started"
+layout: assignment
+nav_exclude: true
+excerpt_separator: ""
+due: "Friday 09/04"
+---
+
+{% raw %}
+<header class="assignment-header"><h1>Lab 0: Getting Started</h1><ul class="assignment-facts"><li><strong>Due:</strong> Friday 09/04</li><li><strong>Points:</strong> 1</li><li><strong>Download:</strong> <a href="lab00.zip">lab00.zip</a></li></ul></header>
+<p><strong>This lab is required for all students.</strong></p>
+<h1 id="introduction">Introduction</h1>
+<p><strong>Complete this lab at home as soon as possible!</strong> If you want help,
+ask on Ed or come into <a href="../../calendar/">office hours</a>.</p>
+<p>This lab explains how to set up your computer to complete assignments.</p>
+<p>Here's an outline:</p>
+<ul>
+<li><strong>Setup</strong>: Install the essential software for the course: Python and Visual
+Studio Code (typically called VS Code).</li>
+<li><strong>Task A: What Would Python Do?</strong>: Predict how Python behaves.</li>
+<li><strong>Task B: Implement a Function</strong>: Edit a file and run its tests.</li>
+<li><strong>Task C: Submit the Assignment</strong>: Use Provenance to create your
+submission zip and upload it to Gradescope.</li>
+<li><strong>Appendix: Useful Python Command Line Options</strong>: Commands that are
+useful in debugging your work, but not required to complete the lab. We
+include them because they are likely to be helpful to you throughout
+the course.</li>
+</ul>
+<h1 id="setup">Setup</h1>
+<h2 id="install-python">Install Python</h2>
+<p>Install Python using the official installer for your operating system. When choosing a version of Python, always choose one labeled <strong>stable</strong> that begins with a 3, such as 3.14.7. The larger the version number, the better. Version 3.11 or later will work for this course. (On Windows, the install manager described below chooses the latest version for you.)</p>
+<p><strong>Windows:</strong> Download the <em>Python install manager</em> from the <a href="https://www.python.org/downloads/windows/">Windows downloads page</a>, open the downloaded file, and click <em>Install</em>. If it asks whether to add Python to your <code>PATH</code>, accept.</p>
+<p><strong>Mac:</strong> Download the <em>macOS installer</em> from the <a href="https://www.python.org/downloads/macos/">macOS downloads page</a>, open the downloaded <code>.pkg</code> file, and follow the instructions of the installer.</p>
+<p><strong>Linux:</strong> Python is typically installed already.</p>
+<h2 id="install-visual-studio-code">Install Visual Studio Code</h2>
+<p>Install VS Code using the official installer for your operating system, which is available from the <a href="https://code.visualstudio.com/download">Visual Studio Code download page</a>.</p>
+<p><strong>Windows:</strong> Download the <em>Windows x64 User Installer</em> and run it.</p>
+<p><strong>Mac:</strong> Download the <em>Mac</em> archive, open the downloaded file, and drag the <em>Visual Studio Code</em> application into your <em>Applications</em> folder.</p>
+<p><strong>Linux:</strong> Download the <code>.deb</code> or <code>.rpm</code> package for your distribution and install it using your package manager.</p>
+<p><strong>Important:</strong> When you first open VS Code, you will be asked to log in to use GitHub Copilot AI features. You can just close the login window. There's no need to log in to VS Code for this course.</p>
+<h2 id="download-and-open-lab00">Download and Open Lab00</h2>
+<p>Click the <code>lab00.zip</code> link at the top of this page. It will be placed in your Downloads folder. You can move the <code>lab00.zip</code> somewhere else on your computer for safe keeping.</p>
+<p>We recommend creating a folder called <code>data88c</code> contains nested folders called <code>lab</code>, <code>hw</code>, and <code>proj</code>.
+You can create this folder structure using your computer's file manager:</p>
+<ul>
+<li><strong>Mac:</strong> Open Finder and select <em>Desktop</em> in the sidebar. Choose <em>File &gt; New
+Folder</em> and name it <code>data88c</code>. Open the new folder,
+choose <em>File &gt; New Folder</em> three times, and name the folders <code>proj</code>, <code>lab</code>,
+and <code>hw</code>.</li>
+<li><strong>Windows:</strong> Open File Explorer and select <em>Desktop</em>. Select <em>New &gt; Folder</em>,
+name it <code>data88c</code>, and press Enter. Open the new folder, select <em>New &gt;
+Folder</em> three times, and name the folders <code>proj</code>, <code>lab</code>, and <code>hw</code>.</li>
+<li><strong>Linux:</strong> Open your file manager and select <em>Desktop</em>. Create a new folder
+using the file manager's <em>New Folder</em> option, name it <code>data88c</code>, and open it.
+Create three more folders inside it named <code>projects</code>, <code>lab</code>, and <code>hw</code>.</li>
+</ul>
+<p>Then, unzip it: on Mac or Linux,
+double-click the downloaded file; on Windows, right-click it and choose <em>Extract
+All...</em>. Unzipping creates a <code>lab00</code> folder containing <code>lab00.py</code> and other
+files.</p>
+<p><strong>Important:</strong> Use VS Code to open the whole <code>lab00</code> folder. Use <em>Open Folder...</em> in the <em>File</em> menu of VS Code, or press the <code>Open...</code> button that appears when you first start VS Code. You can also drag the <code>lab00</code> folder onto an open VS Code window to open it (or onto the VS Code icon on the Mac dock or Windows desktop shortcut).</p>
+<p>When you open an assignment folder, VS Code will offer to install the
+extensions recommended for the course.
+Accept the recommendations. These include:</p>
+<ul>
+<li>Python language support from Microsoft</li>
+<li><a href="https://github.com/ProvenanceTools/provenance">Provenance</a>, which keeps a record of what you do in VS Code while working on a course assignment and stores it on your computer (so that you can submit it).</li>
+<li>Preceptor, an AI tool that helps you complete assignments and asks you questions to verify your understanding of the solutions you write.</li>
+</ul>
+<p>Both Provenance and Preceptor were created at Berkeley and are being used for the first time this semester. If you have questions or encounter problems regarding either one, please post on the pinned Ed post for the course.</p>
+<p>Provenance is required, but doesn't transmit your data. It is up to you to submit the record it creates.</p>
+<p>Preceptor is highly recommended but not required. Using Preceptor <em>does</em> send your solutions and conversations to a language model, and by using it you consent to share this information. Try it out, and if you don't like it, you can stop using it and have conversations with the course TAs and tutors instead.</p>
+<h2 id="verify-your-setup">Verify Your Setup</h2>
+<p>Once the <code>lab00</code> folder is open in VS Code, you should see <code>lab00</code> at the top of the window and a list of files on the left that includes <code>lab00.py</code>.</p>
+<p>From the <code>Terminal</code> menu within VS Code, select <code>New Terminal</code>, which should open a terminal pane at the bottom of your <code>lab00</code> VS Code window. A terminal is a text-based interface to your computer. It starts on the command line, where you can issue commands. Try typing two commands:</p>
+<ul>
+<li>Type <code>ls</code> and you should see a list of the file and folder names within <code>lab00</code>, including <code>lab00.py</code>.</li>
+<li>Then, type <code>python3</code> on Mac/Linux or <code>python</code> on Windows.</li>
+</ul>
+<p>Once you type <code>python3</code> (or <code>python</code> on Windows) you should see some information about Python and then <code>&gt;&gt;&gt;</code>, which is the Python prompt. Commands like <code>ls</code> and <code>python3</code> won't work after <code>&gt;&gt;&gt;</code>. Instead, you can type any Python expression and see its value. Type <code>2 + 2</code> after the <code>&gt;&gt;&gt;</code> and you'll see <code>4</code>.</p>
+<p><strong>Important</strong>: Once you're done evaluating Python expressions, type <code>exit()</code> to return to the terminal's command line, which is where you write commands. Type <code>ls</code> again to check that you're back on the command line where your terminal started.</p>
+<p>What can go wrong?</p>
+<ul>
+<li>
+<p>Opening a folder that contains <code>lab00</code> instead of opening the <code>lab00</code> folder directly won't work: all of the course-specific configuration requires that you open the assignment folder itself in VS Code.</p>
+</li>
+<li>
+<p>If you never see <code>&gt;&gt;&gt;</code> after typing <code>python3</code> or <code>python</code>, try <code>py</code>. If none of those work, repeat the <a href="#install-python">Install Python</a> step, then open a new terminal within VS Code and try again. On Windows, the first time you run <code>python</code> it may pause to download Python before showing <code>&gt;&gt;&gt;</code>; that's normal.</p>
+</li>
+</ul>
+<h1 id="complete-this-assignment">Complete This Assignment</h1>
+<h2 id="task-a-what-would-python-do">Task A: What Would Python Do?</h2>
+<h3 id="q1-what-would-python-do">Q1: What Would Python Do?</h3>
+<p>One component of lab assignments is to predict how the Python interpreter will
+behave. We call these questions &quot;What Would Python Do?&quot; (WWPD). The answers to
+these questions are <em>locked</em>: you unlock them by correctly predicting the
+output of each expression.</p>
+<p>Enter the following in the VS Code terminal to begin this section:</p>
+<div class="pytest-command" data-command="python3 -m pytest -k python_basics --unlock"><pre><code>python3 -m pytest -k python_basics --unlock</code></pre></div>
+<p>You will be prompted to enter the output of various statements/expressions.
+You must enter them correctly to move on, but there is no penalty for
+incorrect answers.</p>
+<h2 id="task-b-implement-a-function">Task B: Implement a Function</h2>
+<p>Click the <code>lab00.py</code> file in the file explorer on the left panel of your VS Code
+window. You'll see its contents, starting with the word <code>def</code>.</p>
+<p><strong>Important</strong>: Turn on <code>Auto Save</code> in the <code>File</code> menu of VS Code. Then, whenever you change a file, the contents will be saved. Students who don't turn this on run into trouble because Python doesn't test unsaved answers.</p>
+<h3 id="q2-twenty-twenty-six">Q2: Twenty Twenty-Six</h3>
+<p>In <code>lab00.py</code>, you should see a function called <code>twenty_twenty_six</code> that has a
+blank <code>return</code> statement. That blank is the only part you should change.
+Replace it with an expression that evaluates to 2026. What's the most creative
+expression you can come up with?</p>
+<pre class="highlight language-python"><code><span class="k">def</span><span class="w"> </span><span class="nf">twenty_twenty_six</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Come up with the most creative expression that evaluates to 2026</span>
+<span class="sd">    using only numbers and the +, *, and - operators (or ** and % if you&#39;d like).</span>
+
+<span class="sd">    &gt;&gt;&gt; twenty_twenty_six()</span>
+<span class="sd">    2026</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">______</span>
+</code></pre>
+<p><strong>Important</strong>: The best way to try things out is to run <code>python3</code> (or <code>python</code> on Windows) in the terminal, then type expressions after the <code>&gt;&gt;&gt;</code> to see their values.</p>
+<p>While you work, the Provenance extension keeps a record of your editing
+activity in the assignment folder. Check the status bar along the bottom of
+your VS Code window: it should show <strong>Provenance: recording</strong>. (If it doesn't,
+make sure the Provenance extension is installed and that you opened the
+<code>lab00</code> folder itself in VS Code, as described in Setup above.)</p>
+<h3 id="running-tests">Running Tests</h3>
+<p>Each assignment comes with tests that check your work. Use the terminal to test
+the function you just completed:</p>
+<div class="pytest-command" data-command="python3 -m pytest -k twenty_twenty_six"><pre><code>python3 -m pytest -k twenty_twenty_six</code></pre></div>
+<p>Now Preceptor will pop up (if you installed it). If your answer was wrong, it will offer to help you understand why. If your answer was right, it will ask you questions about how it works to verify your understanding of your own answer.</p>
+<h2 id="task-c-submit-the-assignment">Task C: Submit the Assignment</h2>
+<p>Now that you have completed your first assignment, it is time to turn it in.
+You can follow these next steps to submit your work and get points.</p>
+<h3 id="create-your-submission-zip-with-provenance">Create Your Submission Zip with Provenance</h3>
+<p>Your submission is a single zip file that contains your completed assignment
+files, the record of how you completed it (from Provenance), and a record of
+your Preceptor interviews. To create it:</p>
+<ol>
+<li>
+<p>Open the VS Code command palette: press <code>Shift</code>+<code>Command</code>+<code>P</code> (Mac) or
+<code>Ctrl</code>+<code>Shift</code>+<code>P</code> (Windows/Linux).</p>
+</li>
+<li>
+<p>Type <code>Prepare Submission Bundle</code> and select <strong>Provenance: Prepare Submission
+Bundle</strong>. (If asked which assignment, pick the one containing <code>lab00</code>.)</p>
+</li>
+<li>
+<p>A sealed <code>.zip</code> file is saved <strong>inside your <code>lab00</code> folder</strong>. Its name
+contains <code>lab00-bundle</code> followed by the date and time it was created. This
+zip is all you need to upload.</p>
+</li>
+</ol>
+<h3 id="submit-to-gradescope">Submit to Gradescope</h3>
+<ol>
+<li>
+<p>Log in to <a href="https://www.gradescope.com/">Gradescope</a> using your Berkeley
+email address. You'll be taken to your <strong>Dashboard</strong> as soon as you log
+in. (You should have already been added to Gradescope. If this is not the
+case, please make a private Ed post.)</p>
+</li>
+<li>
+<p>On your <strong>Dashboard</strong>, select this course. This will take you to the list
+of assignments in the course that you are able to submit.</p>
+</li>
+<li>
+<p>Click on the Lab 0 assignment to open it.</p>
+</li>
+<li>
+<p>Upload the <code>.zip</code> file that Provenance just created. That one file is all
+you need to submit: it already contains your code, so don't upload any
+other files. (Each time you run <em>Prepare Submission Bundle</em> you get
+another zip, so if there are several, upload the one with the most recent
+time in its name.)</p>
+</li>
+<li>
+<p>Next, wait a few minutes for the autograder to score your submission. If
+you are surprised by your score, make sure you submitted a
+<code>lab00-bundle</code> zip that Provenance created, and not the <code>lab00.zip</code>
+starter file you downloaded. Assignments can be resubmitted as many times
+as you would like before the deadline.</p>
+</li>
+</ol>
+<p>Your responses to WWPD questions are not submitted to Gradescope, and they do
+not need to be. Lab credit is based on the code writing questions.</p>
+<p><strong>Congratulations</strong>, you just submitted your first assignment!</p>
+<h1 id="appendix-useful-python-command-line-options">Appendix: Useful Python Command Line Options</h1>
+<details class="hint"><summary>Using Python</summary><div>
+<p>Here are the most common ways to run Python on a file. (The examples use
+<code>lab00.py</code>, but these commands work for any assignment.)</p>
+<ol>
+<li>
+<p>Using no command-line options will run the code in the file you provide and
+return you to the command line. If your file just contains function
+definitions, you'll see no output unless there is a syntax error.</p>
+<pre><code> python3 lab00.py
+</code></pre>
+</li>
+<li>
+<p><strong><code>-i</code></strong>: The <code>-i</code> option runs the code in the file you provide, then opens
+an interactive session (with a <code>&gt;&gt;&gt;</code> prompt). You can then evaluate
+expressions such as calling functions you defined. To exit, type
+<code>exit()</code>. You can also use the keyboard shortcut <code>Ctrl-D</code> on Linux/Mac
+machines or <code>Ctrl-Z  Enter</code> on Windows.</p>
+</li>
+</ol>
+<p>If you edit the Python file while running it interactively, you will need to
+exit and restart the interpreter in order for those changes to take effect.</p>
+<p>Here's how we can run <code>lab00.py</code> interactively:</p>
+<pre><code>    python3 -i lab00.py
+</code></pre>
+</div></details>
+{% endraw %}
