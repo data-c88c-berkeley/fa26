@@ -5,6 +5,6 @@ pronouns: she/her/hers
 email: mirawagner@berkeley.edu
 access_email: true
 access_dsp: true
-photo: assets/images/staff-photos/mira-wagner.jpeg
+photo: staff-photos/mira-wagner.jpeg
 ---
 Hi!! My name is Mira and I am a senior majoring in Data Science and Linguistics. I love reading (especially mysteries) and trying new coffee shops. Excited for this semester :) 
