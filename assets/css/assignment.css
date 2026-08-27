@@ -87,9 +87,10 @@
   background: #141414;
 }
 
+/* Full-strength text color: dimming the label (e.g. opacity) fails the
+   WCAG AA 4.5:1 contrast check at this font size. */
 .python-toggle-label {
   padding: 0 0.4rem 0 0.6rem;
-  opacity: 0.75;
 }
 
 .python-toggle-pill button {
