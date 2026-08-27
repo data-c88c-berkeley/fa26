@@ -34,4 +34,9 @@ schedule:
         location: Undergrad Academic Bldg 100
   - name: Thursday
   - name: Friday
+    events:
+      - name: Lab 0 Drop-In Office Hours
+        start: 10:00 AM
+        end: 12:00 PM
+        location: Gateway B1040
 ---
