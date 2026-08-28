@@ -205,6 +205,9 @@ problems from the homework. Students will complete the quiz on their computer,
 without assistance from AI or from other students. Students who understood the
 homework will be well-prepared to succeed on the quiz.
 
+There will be 8 total quizzes.  Each student's top 5 quiz scores will be counted
+and the remaining quiz scores will be dropped.
+
 ## Exams
 
 There will be 4 exams:
@@ -318,7 +321,8 @@ broken down as follows:
 - Midterm 1, worth 20 points (computer-based)
 - Midterm 2, worth 30 points (paper-based)
 - The final exam, worth 75 points (paper-based)
-- Quizzes, worth 10 points (computer-based)
+- Quizzes, worth 10 points (computer-based; only the best 5 quiz scores, out of
+  8 total quizzes, are counted)
 - Homework, worth 10 points
 - Two projects, worth 45 points
 - Lab, worth 10 points
