@@ -124,11 +124,22 @@
                         <div class="syllabus-item" style="margin-bottom: 4px;">
                             {%- assign lecture_obj = nil -%}
                             
-                            {%- comment -%} 1. FIND THE OBJECT (If slug exists) {%- endcomment -%}
+                            {%- comment -%} 1. FIND THE OBJECT: by slug if the entry names one,
+                            otherwise by matching the entry title against a page title, so that
+                            adding a page to _lectures/ is enough to link it and show its
+                            materials. {%- endcomment -%}
                             {%- if lec_entry.slug -%}
                                 {%- assign target_slug = lec_entry.slug | append: "" -%}
                                 {%- for l in site.lectures -%}
                                     {%- if l.slug == target_slug -%}
+                                        {%- assign lecture_obj = l -%}
+                                        {%- break -%}
+                                    {%- endif -%}
+                                {%- endfor -%}
+                            {%- elsif lec_entry.title -%}
+                                {%- assign target_title = lec_entry.title | append: "" -%}
+                                {%- for l in site.lectures -%}
+                                    {%- if l.title == target_title -%}
                                         {%- assign lecture_obj = l -%}
                                         {%- break -%}
                                     {%- endif -%}
@@ -178,6 +189,9 @@
                                         <a href="{{ item.link }}" target="{{ item.target }}" style="font-size: 0.85em;">({{ item.name }})</a>
                                     {%- endif -%}
                                 {%- endfor -%}
+                                {%- if lecture_obj.files.code -%}
+                                    <a href="{{ lecture_obj.files.code }}" style="font-size: 0.85em;">(Examples)</a>
+                                {%- endif -%}
                             {%- endif -%}
                         </div>
                     {%- endunless -%}

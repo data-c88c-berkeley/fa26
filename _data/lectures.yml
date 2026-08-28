@@ -3,8 +3,9 @@
 # 2026-08-26 (see _data/syllabus.yml). Campus holidays that fall on class days
 # get an unnumbered "Holiday" entry so numbering stays aligned.
 #
-# Once lecture pages exist in _lectures/, switch entries to `slug:` form to
-# link them (see the template docs).
+# An entry is matched to a page in _lectures/ by its title, so adding a page
+# there is enough to link it and surface its materials. Add `slug:` to an entry
+# only when its title here differs from the page title.
 
 lectures:
   # Week 1
