@@ -2,6 +2,13 @@
 
 require 'jekyll'
 
+# Load the gems in the Gemfile's :jekyll_plugins group, exactly as the `jekyll`
+# CLI does. Without this, plugins that are not also named in `_config.yml`'s
+# `plugins:` list (e.g. jekyll-redirect-from, jemoji) are silently missing and
+# the specs audit a different site than the one `bundle exec jekyll build`
+# deploys.
+Jekyll::PluginManager.require_from_bundler
+
 # Tools to build / compile the Jekyll site and extract the sitemap
 def site_config
   # TODO(template): We should standardize the build for specs
