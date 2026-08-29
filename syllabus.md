@@ -319,12 +319,11 @@ Your course grade is computed using a point system with a total of 200 points,
 broken down as follows:
 
 - Midterm 1, worth 20 points (computer-based)
-- Midterm 2, worth 30 points (paper-based)
-- The final exam, worth 75 points (paper-based)
-- Quizzes, worth 10 points (computer-based; only the best 5 quiz scores, out of
-  8 total quizzes, are counted)
+- Midterm 2, worth 40 points (paper-based)
+- The final exam, worth 60 points (paper-based)
+- Quizzes, worth 10 points (computer-based; only the best 5 quiz scores, out of 8 total quizzes, are counted)
 - Homework, worth 10 points
-- Two projects, worth 45 points
+- Two projects, worth 50 points
 - Lab, worth 10 points
 
 There are 2 extra credit points available to everyone for early submission of
@@ -332,10 +331,10 @@ projects.
 
 Each letter grade for the course corresponds to a range of scores:
 
-                 A  ≥ 185    A-  ≥ 170
-    B+  ≥ 155    B  ≥ 140    B-  ≥ 125
-    C+  ≥ 115    C  ≥ 105    C-  ≥ 95
-    D+  ≥ 90     D  ≥ 85     D-  ≥ 80
+                 A  ≥ 185    A-  ≥ 175
+    B+  ≥ 165    B  ≥ 145    B-  ≥ 130
+    C+  ≥ 115    C  ≥ 110    C-  ≥ 105
+    D+  ≥ 100    D  ≥ 95     D-  ≥ 90
 
 Your final score will be rounded to the nearest integer before being converted
 to a letter grade. 0.5 rounds up to 1, but 0.49 rounds down to 0.
