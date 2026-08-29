@@ -180,7 +180,7 @@ homework assignments and projects.
 Weekly homework assignments let you apply the concepts learned in lecture and
 section to more challenging problems. Homeworks will typically be released on
 Wednesdays and be due the following Tuesday. Homeworks will be completed alongside
-an AI tutor that will ask students questions to ensure that students understand
+an AI tutor called Preceptor that asks students questions to ensure they understand
 the code that they have written. Students who do not pass the questions from the
 AI tutor or who would prefer to talk to a human may instead elect to answer
 questions from a member of course staff in lab or office hours.
