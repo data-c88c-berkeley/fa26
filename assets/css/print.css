@@ -1,0 +1,139 @@
+/* The printable worksheet (print.html), emitted by 61a-build for each
+   discussion. Its layout is standalone — no theme stylesheet loads behind
+   this one — so everything the page needs is here. Installed into the site
+   checkout by the builder; edit the copy in the assignments repo
+   (src/publish/site_support/), not this one. */
+
+@page {
+  margin: 0.75in;
+}
+
+body {
+  margin: 0;
+  color: #000;
+  background: #fff;
+  font: 11.5pt/1.5 Georgia, "Times New Roman", serif;
+}
+
+.printable {
+  max-width: 7.5in;
+  margin: 0 auto;
+}
+
+/* On screen the page still floats in a browser window; on paper @page
+   supplies the margin, so drop this one to avoid doubling it. */
+@media screen {
+  .printable {
+    padding: 2rem 1.5rem 4rem;
+  }
+}
+
+h1, h2, h3, h4 {
+  font-family: Helvetica, Arial, sans-serif;
+  line-height: 1.25;
+  margin: 1.4em 0 0.5em;
+  break-after: avoid;
+}
+
+h1 { font-size: 1.6em; margin-top: 0; }
+h2 { font-size: 1.25em; }
+h3 { font-size: 1.05em; }
+
+.assignment-header {
+  margin-bottom: 1.5em;
+  padding-bottom: 0.4em;
+  border-bottom: 1px solid #000;
+}
+
+p, ul, ol {
+  margin: 0.7em 0;
+  orphans: 2;
+  widows: 2;
+}
+
+a {
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+  break-inside: avoid;
+}
+
+blockquote {
+  margin: 0.8em 0;
+  padding: 0.1em 0 0.1em 1em;
+  border-left: 2px solid #999;
+}
+
+table {
+  border-collapse: collapse;
+  margin: 0.8em 0;
+}
+
+td, th {
+  border: 1px solid #999;
+  padding: 0.2em 0.5em;
+  text-align: left;
+}
+
+/* Code is set in plain black: a worksheet is read on paper, often
+   photocopied, so syntax colors would only turn into indistinguishable
+   greys. The Pygments spans are left unstyled on purpose. */
+code, pre {
+  font-family: Menlo, Consolas, "DejaVu Sans Mono", monospace;
+}
+
+code {
+  font-size: 0.88em;
+}
+
+pre {
+  margin: 0.8em 0;
+  padding: 0.6em 0.8em;
+  font-size: 0.85em;
+  line-height: 1.45;
+  border: 1px solid #bbb;
+  border-radius: 3px;
+  white-space: pre-wrap;
+  break-inside: avoid;
+}
+
+pre code {
+  font-size: inherit;
+}
+
+/* Room to write, standing where a solution would be. Its height comes from
+   how long that solution is (see solutions.printable). */
+.write-space {
+  display: block;
+  height: calc(var(--lines, 3) * 1.45em);
+  break-inside: avoid;
+}
+
+/* Hints live at the end of the handout; this is the pointer left behind. */
+.hint-ref {
+  font-size: 0.9em;
+  font-style: italic;
+  color: #444;
+}
+
+.hint-ref::before {
+  content: "→ ";
+}
+
+.hints {
+  break-before: page;
+  margin-top: 2em;
+  padding-top: 0.5em;
+  border-top: 1px solid #000;
+}
+
+.hint-note {
+  margin: 1em 0;
+  break-inside: avoid;
+}
+
+.hint-note h3 {
+  margin: 0 0 0.3em;
+}

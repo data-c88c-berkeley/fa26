@@ -1,7 +1,12 @@
 // Support script for assignment pages emitted by the assignment builder:
-// copy buttons on pytest command boxes, and a python3/python/py switch on
-// the title line so Windows students see (and copy) commands that use
-// their interpreter.
+// copy buttons on pytest command boxes, a python3/python/py switch on the
+// title line so Windows students see (and copy) commands that use their
+// interpreter, and the loader for the inline code editors on discussion
+// pages.
+
+// This script's own URL, so the editor bundle beside it can be found without
+// knowing the site's baseurl. Read at load time, while currentScript is set.
+var ASSIGNMENT_JS = document.currentScript && document.currentScript.src;
 
 // Adds a copy button to each pytest command box emitted by the assignment
 // builder. dataset.command is read at click time so it reflects the
@@ -30,6 +35,9 @@ document.querySelectorAll('.pytest-command').forEach(function (box) {
   var TOKEN = /\bpython3\b/;
   var names = [];
   document.querySelectorAll('.assignment pre code').forEach(function (code) {
+    // An editable block's text is read back out of the <pre> when the editor
+    // mounts, so leave it exactly as the builder wrote it.
+    if (code.closest('.code-editor')) return;
     var walker = document.createTreeWalker(code, NodeFilter.SHOW_TEXT);
     var nodes = [];
     while (walker.nextNode()) nodes.push(walker.currentNode);
@@ -107,4 +115,14 @@ document.querySelectorAll('.pytest-command').forEach(function (box) {
   assignment.insertBefore(bar, assignment.firstChild);
 
   apply(remembered() || (isWindows ? 'python' : 'python3'));
+})();
+
+// The scraped code blocks of a discussion are published as .code-editor
+// wrappers (see render.code_block) for CodeMirror to take over. That bundle is
+// far bigger than this script, so only a page that has one fetches it.
+(function () {
+  if (!ASSIGNMENT_JS || !document.querySelector('.code-editor')) return;
+  var script = document.createElement('script');
+  script.src = ASSIGNMENT_JS.replace(/assignment\.js(\?.*)?$/, 'code-editor.js');
+  document.head.appendChild(script);
 })();

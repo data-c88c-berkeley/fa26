@@ -1,0 +1,21 @@
+<!doctype html>
+{%- comment -%}
+  The printable form of an assignment page: a standalone document with no
+  parent layout, so none of the site's chrome (top bar, side menu,
+  breadcrumbs, footer) reaches the paper. Installed by 61a-build
+  (publish-61a release) — edit it in the assignments repo
+  (src/publish/site_support/), not here.
+{%- endcomment -%}
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ page.title }}</title>
+<link rel="stylesheet" href="{{ '/assets/css/print.css' | relative_url }}">
+</head>
+<body>
+<main class="printable">
+{{ content }}
+</main>
+</body>
+</html>

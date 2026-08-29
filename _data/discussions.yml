@@ -3,9 +3,10 @@
 discussions:
 - slug: disc00
   title: Getting Started
-- title: Functions
+- slug: disc01
+  title: Functions
 - skip: true
-- title: Control
+- title: Control, Environment Diagrams
 - skip: true
 - title: Higher-Order Functions
 - skip: true

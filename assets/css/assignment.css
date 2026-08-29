@@ -216,3 +216,15 @@ pre.wwpd .wwpd-answer {
   font-size: 1.4rem;
   word-break: break-all;
 }
+
+/* Inline code editors on a discussion's web page (code-editor.js replaces the
+   highlighted <pre> inside each .code-editor with a CodeMirror editor). The
+   editor brings no colors of its own: the wrapper takes the theme's own code
+   block styling — the `highlight` class the script adds once mounted — and the
+   editor's tokens carry the same Pygments class names a listing does, so an
+   editor and a listing look alike in either color scheme. */
+/* The one signal that this block is different from a listing: it lights up
+   while it has the cursor. */
+.code-editor:focus-within {
+  box-shadow: 0 0 0 2px rgba(127, 127, 127, 0.35);
+}

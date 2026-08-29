@@ -1,0 +1,110 @@
+---
+title: "Discussion 1: Functions"
+layout: print
+nav_exclude: true
+excerpt_separator: ""
+permalink: /:collection/:path:output_ext
+---
+
+{% raw %}
+<header class="assignment-header"><h1>Discussion 1: Functions</h1></header>
+<h2 id="attendance">Attendance</h2>
+<p>Your TA will come around during discussion to check you in. You can start on
+the worksheet before being checked in; you don't need to wait for your TA to
+get started.</p>
+<p>If you didn't attend for a good reason (such as being sick), fill out this
+form (within 2 weeks of your discussion):
+<a href="https://go.cs61a.org/discussion-attendance">attendance form</a></p>
+<h2 id="ice-breaker">Ice Breaker</h2>
+<p>Everyone say your name and some activity you enjoy doing outside. For each
+activity, ask if anyone else in your group likes to do that too. (Optional:
+after discussion you could make plans to go do one of these activities
+together.)</p>
+<p>Then, each person share an expression that people say when they really like
+something, such as &quot;awesome&quot; or &quot;nice one&quot; or &quot;that's tuff.&quot;  Each person should
+try to come up with a different expression. Feel free to ask your group for help
+if you're stuck. You can even use other languages than English. Then, during the
+discussion, if someone says or does something well, use your expression!</p>
+<h2 id="functions">Functions</h2>
+<p>Functions (such as <code>pow</code>) are called using <em>call expressions</em> (such as
+<code>pow(10, 3)</code> which returns 1000; 10 to the third power). The body of a function
+can <code>print</code> or <code>return</code> values (or both).</p>
+<ul>
+<li>When <code>print</code> is called anywhere, its arguments are displayed right away.</li>
+<li>Executing a <code>return</code> statement stops the function call and provides the value
+for its call expression.</li>
+<li>When the end of a function body is reached without a <code>return</code>, the function
+returns <code>None</code>.</li>
+</ul>
+<p><strong>Tip:</strong> If a value needs to be used by code outside of a function, then return
+the value (instead of printing it).</p>
+<h3 id="q1-multiply">Q1: Multiply</h3>
+<p>Implement <code>multiply</code>, which takes two numbers <code>x</code> and <code>y</code>. It prints out an
+equation showing the result of multiplying <code>x</code> and <code>y</code>, then returns the result.</p>
+<p>Try to multiply numbers together just once in the body of <code>multiply</code> so that the
+Python interpreter doesn't have to perform multiplication more <em>times</em> than
+necessary (pun intended).</p>
+<pre class="highlight language-python"><code><span class="k">def</span><span class="w"> </span><span class="nf">multiply</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Multiply x by y and print what happened.</span>
+
+<span class="sd">    &gt;&gt;&gt; multiply(3, multiply(multiply(4, 5), 6))</span>
+<span class="sd">    4 * 5 = 20</span>
+<span class="sd">    20 * 6 = 120</span>
+<span class="sd">    3 * 120 = 360</span>
+<span class="sd">    360</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<span class="write-space" style="--lines: 4"></span>
+</code></pre>
+<p class="hint-ref"><a href="#hint-1">Hint 1: Printing an equation</a> (at the end)</p>
+<h3 id="q2-cut-one-out">Q2: Cut One Out</h3>
+<p>Implement <code>cut</code>, which takes non-negative integers <code>n</code> and <code>k</code> and has only a
+return statement in its body. It returns a positive integer with all of the
+digits of <code>n</code> except the digit that is <code>k</code> positions to the left of the
+rightmost digit (the one's digit). If <code>k</code> is 0, then it returns <code>n</code> without its
+one's digit. If there is no digit of <code>n</code> that is <code>k</code> positions to the left of
+the rightmost digit, then it returns <code>n</code>.</p>
+<pre class="highlight language-python"><code><span class="k">def</span><span class="w"> </span><span class="nf">cut</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return n with the kth digit from the right removed.</span>
+
+<span class="sd">    &gt;&gt;&gt; cut(3579, 2)</span>
+<span class="sd">    379</span>
+<span class="sd">    &gt;&gt;&gt; cut(3579, 0)</span>
+<span class="sd">    357</span>
+<span class="sd">    &gt;&gt;&gt; cut(3579, 1)</span>
+<span class="sd">    359</span>
+<span class="sd">    &gt;&gt;&gt; cut(3579, 5)</span>
+<span class="sd">    3579</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">____</span>
+</code></pre>
+<p>Please don't look at the hint until everyone in your group agrees that you're
+stuck and need some extra help.</p>
+<p class="hint-ref"><a href="#hint-2">Hint 2</a> (at the end)</p>
+<section class="hints">
+<h2>Hints</h2>
+<div class="hint-note" id="hint-1"><h3>Hint 1: Printing an equation</h3>
+<p>Calling <code>print</code> on multiple arguments displays those values separated by spaces.
+For example, the call expression <code>print(1, '+', 2, '=', 3)</code> displays <code>1 + 2 = 3</code>.</p>
+</div>
+<div class="hint-note" id="hint-2"><h3>Hint 2</h3>
+<p>To implement a function, it can be helpful to open a Python interpreter and
+focus on an example. Here are all the pieces you need to put together to solve
+this problem for the example <code>n=3579</code> and <code>k=2</code>.</p>
+<pre><code>&gt;&gt;&gt; n = 3579
+&gt;&gt;&gt; k = 2
+&gt;&gt;&gt; pow(10, k)
+100
+&gt;&gt;&gt; pow(10, k + 1)
+1000
+&gt;&gt;&gt; n // 1000
+3
+&gt;&gt;&gt; 3 * 100
+300
+&gt;&gt;&gt; 3579 % 100
+79
+&gt;&gt;&gt; 300 + 79
+379
+</code></pre>
+</div>
+</section>
+{% endraw %}
