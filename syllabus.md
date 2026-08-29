@@ -210,7 +210,7 @@ and the remaining quiz scores will be dropped.
 
 ## Exams
 
-There will be 4 exams:
+There will be 3 exams:
 - Midterm 1 will be administered in the Computer-Based Testing Facility during the week
   of 10/19. Students are responsible for reading and following all
   [CBTF policies and procedures](https://rtl.berkeley.edu/services-programs/computer-based-testing-facility-cbtf/students/cbtf-policies-and-procedures), including instantiating a PrairieTest
@@ -327,7 +327,7 @@ broken down as follows:
 - Two projects, worth 45 points
 - Lab, worth 10 points
 
-There are 4 extra credit points available to everyone for early submission of
+There are 2 extra credit points available to everyone for early submission of
 projects.
 
 Each letter grade for the course corresponds to a range of scores:
