@@ -55,12 +55,19 @@ RSpec.shared_examples 'a11y tests' do
   end
 end
 
+# Standalone pages (the printable handouts) carry no parent layout, so the
+# theme's JS never loads and there is no `jtd` to call: they are black on
+# white in either mode. Switching the theme is therefore best-effort.
+def set_theme(mode)
+  page.execute_script("if (window.jtd) { jtd.setTheme(\"#{mode}\"); }")
+end
+
 PAGES_TO_TEST.each do |path|
   describe "#{path} is accessible", :js, type: :feature do
     context 'when light mode' do
       before do
         visit(path)
-        page.execute_script('jtd.setTheme("light")')
+        set_theme('light')
       end
 
       include_context 'a11y tests'
@@ -69,7 +76,7 @@ PAGES_TO_TEST.each do |path|
     context 'when dark mode' do
       before do
         visit(path)
-        page.execute_script('jtd.setTheme("dark")')
+        set_theme('dark')
       end
 
       include_context 'a11y tests'

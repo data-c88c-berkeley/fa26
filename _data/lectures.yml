@@ -16,18 +16,29 @@ lectures:
     slug: functions
     readings:
       - title: "1.1"
-        link: https://composingprograms.com/getting-started/
+        link: https://composingprograms.com/3ed/getting-started/
       - title: "1.2"
-        link: https://composingprograms.com/elements-of-programming/
+        link: https://composingprograms.com/3ed/elements-of-programming/
       - title: "1.3"
-        link: https://composingprograms.com/defining-new-functions/
+        link: https://composingprograms.com/3ed/defining-new-functions/
   - title: "Control"            # Wed 09/02
+    slug: control
+    readings:
+      - title: "1.4"
+        link: https://composingprograms.com/3ed/designing-functions/
+      - title: "1.5"
+        link: https://composingprograms.com/3ed/control/
   # Week 3
   - title: "Holiday"            # Mon 09/07 (Labor Day)
     nonumber: true
   - title: "Higher-Order Functions" # Wed 09/09
+    slug: higher-order-functions
+    readings:
+      - title: "1.6"
+        link: https://composingprograms.com/3ed/higher-order-functions/
   # Week 4
   - title: "Environments"       # Mon 09/14
+    slug: environments
   - title: "Abstraction"        # Wed 09/16
   # Week 5
   - title: "Recursion"          # Mon 09/21
