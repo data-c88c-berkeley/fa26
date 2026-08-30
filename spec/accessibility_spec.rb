@@ -21,7 +21,12 @@ SKIPPED_RULES = [].freeze
 # It should be rare to add to this list. This disables all rules for an element.
 # e.g. <img data-a11y-errors="true" src="..." /> would pass even though it's missing alt text.
 EXCLUDED_ELEMENTS = [
-  '[data-a11y-errors="true"]'
+  '[data-a11y-errors="true"]',
+  # Inside the Python Tutor embeds is a third-party document we cannot edit,
+  # and its code pane is a scrollable region with no keyboard access. Only
+  # that pane is excluded: the iframe elements we do write are still audited
+  # (they need a title), as is everything else Python Tutor renders.
+  { iframe: 'iframe[src*="pythontutor.com"]', selector: '#pyCodeOutputDiv' }
 ].freeze
 
 # Add pages here that do not need to have a11y tests run.
