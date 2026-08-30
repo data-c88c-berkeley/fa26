@@ -140,11 +140,28 @@ Live lecture **will not** cover all course material and will focus on examples
 
 ### Lab
 
-Coming soon...
+This semester, we are offering two lab section formats: an
+attendance-required option called regular section (for most students) and an
+asynchronous mega section. Both are designed to help students learn the course
+material. You can choose which format you want, and you may
+change formats using sections.c88c.org until the add/drop deadline.
 
-### Discussion
+**Regular section** meets for 110-minutes each week. You will be
+placed in a small group (typically 5 students) that will work together on a
+discussion-based worksheet for the first hour. For the second hour, you will
+write code on your own laptop to complete a lab assignment. To receive credit for section, students
+must attend **and** submit the lab assignment with all questions answered
+correctly.
 
-Coming soon...
+**Mega section** does not meet on a weekly basis. There will be videos released
+each week that cover the material. Students in the mega section must
+complete and submit the weekly lab assignments but are not expected to come to
+lab, and will recieve full participation credit. Mega section
+is only recommended for students with considerable prior programming experience,
+who are confident they can succeed in the course with this self-paced format.
+Students in the mega section are also required to complete short
+in-person quizzes as part of most labs, and will signup for a time slot that is
+at the end of one of the in-person lab times.
 
 ### Office Hours
 
@@ -161,9 +178,12 @@ homework assignments and projects.
 ### Homework
 
 Weekly homework assignments let you apply the concepts learned in lecture and
-section to more challenging problems.
-
-Details coming soon...
+section to more challenging problems. Homeworks will typically be released on
+Wednesdays and be due the following Tuesday. Homeworks will be completed alongside
+an AI tutor called Preceptor that asks students questions to ensure they understand
+the code that they have written. Students who do not pass the questions from the
+AI tutor or who would prefer to talk to a human may instead elect to answer
+questions from a member of course staff in lab or office hours.
 
 ### Projects
 
@@ -175,14 +195,36 @@ with a partner. Make sure to alternate roles so that both of you understand the
 complete results. You may also work alone on all projects, although partners
 are recommended.
 
-Details coming soon...
+## Quizzes
 
-## Quizzes and Exams
+Most weeks, lab will include a 10 minute quiz that students take in-person during
+their lab time (for students enrolled in regular lab section) or at the end of one of
+the in-person lab times (for students enrolled in the asynchronous mega lab
+section). The quiz will have one problem that is a slight variant of one of the
+problems from the homework. Students will complete the quiz on their computer,
+without assistance from AI or from other students. Students who understood the
+homework will be well-prepared to succeed on the quiz.
 
-Details coming soon...
+There will be 8 total quizzes.  Each student's top 5 quiz scores will be counted
+and the remaining quiz scores will be dropped.
+
+## Exams
+
+There will be 3 exams:
+- Midterm 1 will be administered in the Computer-Based Testing Facility during the week
+  of 10/19. Students are responsible for reading and following all
+  [CBTF policies and procedures](https://rtl.berkeley.edu/services-programs/computer-based-testing-facility-cbtf/students/cbtf-policies-and-procedures), including instantiating a PrairieTest
+  account. Students will sign up for a one-hour time slot one week prior
+  to the exam.
+- Midterm 2 will be a paper exam, held 7pm-9pm on Thursday 11/12.
+- The final exam will be held 11:30am-2:30pm Wednesday 12/16.
+
+Paper exams will be taken in-person in various rooms across campus.
 
 We will post an announcement on Ed ahead of each exam with information for
-students who cannot take the exam.
+students who cannot take the exam. Students with a conflicting final exam may
+take the Data C88C final exam in the next final exam slot: 3pm-6pm Wednesday
+12/16.
 
 Exam Study Guides:
 - Midterm 1 (to be posted)
@@ -273,7 +315,35 @@ Past exams appear on the [Resources]({% link resources.md %}) page.
 
 ## Grading
 
-Details coming soon...
+Your course grade is computed using a point system with a total of 200 points,
+broken down as follows:
+
+- Midterm 1, worth 20 points (computer-based)
+- Midterm 2, worth 40 points (paper-based)
+- The final exam, worth 60 points (paper-based)
+- Quizzes, worth 10 points (computer-based; only the best 5 quiz scores, out of 8 total quizzes, are counted)
+- Homework, worth 10 points
+- Two projects, worth 50 points
+- Lab, worth 10 points
+
+There are 2 extra credit points available to everyone for early submission of
+projects.
+
+Each letter grade for the course corresponds to a range of scores:
+
+                 A  ≥ 185    A-  ≥ 175
+    B+  ≥ 165    B  ≥ 145    B-  ≥ 130
+    C+  ≥ 115    C  ≥ 110    C-  ≥ 105
+    D+  ≥ 100    D  ≥ 95     D-  ≥ 90
+
+Your final score will be rounded to the nearest integer before being converted
+to a letter grade. 0.5 rounds up to 1, but 0.49 rounds down to 0.
+
+To receive an A+, students must receive at least 205 A+ points. Each regular
+point is worth 1 A+ point. You can earn additional A+ points from optional
+contests (to be announced later) and A+ questions on exams. A+ exam questions
+are not worth any regular points and only serve to qualify students for an A+;
+they are each worth 5 A+ points each, and there are typically 4 per semester.
 
 There is no curve; your grade will depend only on how well you do, and not on
 how well everyone else does. Score thresholds are based on how students
@@ -286,19 +356,18 @@ have completed the majority of the coursework, and only if work up to the point
 of the emergency has been satisfactory. If you wish to discuss an incomplete
 in the course, please contact [cs88@berkeley.edu](mailto:cs88@berkeley.edu).
 
-Many students end the course with perfect homework, project, lab, and discussion
-scores. These parts of the course are not meant to be evaluations, but instead
-learning tools.
+Most students are expected to end the course with perfect quiz, homework,
+project, and lab scores. These parts of the course are not meant to
+be evaluations, but instead learning tools.
 
 ### Exam Recovery
 
-It is possible to recover lost points on the midterms by showing
-improvement on the final. Your score for each midterm (as a percentage of the
-total points) will be **at least 90%** of your score on the final exam.
-For example, a student who scored 10/40 on Midterm 1, but scored 37.5/75 (50%)
-on the final exam would receive an adjusted Midterm 1 score of 50% * 90% =
-18/40 points, and so would recover 8 Midterm 1 points in addition to the 10
-Midterm 1 points already scored.
+It is possible to recover lost points on midterms by showing improvement on the
+final. Your score for each midterm (as a percentage of the total points) will be
+**at least 90%** of your score on the final exam. For example, a student who
+scored 5/20 on Midterm 1, but scored 37.5/75 (50%) on the final exam would
+receive an adjusted Midterm 1 score of 50% * 90% = 9/20 points, and so would
+recover 4 Midterm 1 points in addition to the 5 Midterm 1 points already scored.
 
 **Exam recovery only applies to students who take the final exam during finals week.**
 Students who receive an incomplete are not eligible for exam recovery.
