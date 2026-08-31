@@ -11,7 +11,6 @@ def pick_digit(n, k):
     >>> pick_digit(3579, 10)
     0
     """
-    assert n > 0 and k >= 0, 'n should be positive and k should be non-negative'
     return ____
 
 
