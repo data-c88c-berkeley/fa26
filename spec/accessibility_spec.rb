@@ -26,7 +26,12 @@ EXCLUDED_ELEMENTS = [
   # and its code pane is a scrollable region with no keyboard access. Only
   # that pane is excluded: the iframe elements we do write are still audited
   # (they need a title), as is everything else Python Tutor renders.
-  { iframe: 'iframe[src*="pythontutor.com"]', selector: '#pyCodeOutputDiv' }
+  { iframe: 'iframe[src*="pythontutor.com"]', selector: '#pyCodeOutputDiv' },
+  # The Google Calendar embed renders a third-party document we cannot edit,
+  # and its markup has contrast, landmark, and keyboard-access violations. The
+  # whole embedded document is excluded; the iframe element we write is still
+  # audited (it needs a title).
+  { iframe: 'iframe[src*="calendar.google.com"]', selector: 'body' }
 ].freeze
 
 # Add pages here that do not need to have a11y tests run.
