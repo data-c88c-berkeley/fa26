@@ -123,7 +123,6 @@ pre code {
 }
 
 .hints {
-  break-before: page;
   margin-top: 2em;
   padding-top: 0.5em;
   border-top: 1px solid #000;
