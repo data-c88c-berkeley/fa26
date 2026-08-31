@@ -70,7 +70,6 @@ berkeley_theme_options:
 collections:
   staffers:
     sort_by: name
-  calendars:
   announcements:
   labs:
     output: true
@@ -132,11 +131,6 @@ defaults:
       height: 300
       subpath: '/assets/images/'
       width: 300
-  - scope:
-      path: ''
-      type: calendars
-    values:
-      layout: calendar
   - scope:
       path: ''
       type: announcements

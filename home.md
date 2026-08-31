@@ -14,8 +14,6 @@ seo:
 
 {% include announcement-navigation.html %}
 
-*This lecture schedule is still being revised!*
-
 <div>
 {%- include schedule.html -%}
 </div>
