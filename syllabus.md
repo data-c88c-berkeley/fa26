@@ -173,7 +173,10 @@ and come by.
 ## Assignments
 
 In addition to programming-based lab assignments, there are programming-based
-homework assignments and projects.
+homework assignments and projects.  While completing your programming
+assignments, an extension called [Provenance](https://cs61a.org/fa26/articles/provenance/)
+tracks how you created your submission by logging activity in the assignment
+folder. Students submit this log with their assignments.
 
 ### Homework
 
