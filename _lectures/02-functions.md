@@ -5,6 +5,8 @@ number: 2
 date: 2026-08-31
 layout: lecture
 files:
+  pdf_slides: /fa26/assets/lec/02-Functions.pdf
+  code: /fa26/assets/lec/02.py
   additional_files:
     - name: Videos
       link: https://www.youtube.com/watch?v=gNv81_4X0uU&list=PL6BsET-8jgYULSxiV2garZ0FxbnXR08MP&index=1
