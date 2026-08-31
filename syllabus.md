@@ -262,7 +262,7 @@ short notice.
 ### Assignment Extensions
 
 If you need to request an extension, regardless of your DSP status, fill out
-[this form](https://links.c88c.org/extensions). Submissions to this form will be
+[this form](https://go.c88c.org/extensions). Submissions to this form will be
 visible only to the course instructors, and certain Student Support staff members.
 
 Any extension request up to 24 hours will be approved.  Any extension request up
