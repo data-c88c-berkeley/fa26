@@ -31,7 +31,31 @@
     site.data.syllabus.hw_days contains day_of_week or
     site.data.syllabus.hw_due_days contains day_of_week or
     site.data.syllabus.quiz_days contains day_of_week -%}
-    {%- assign valid_dates = valid_dates | push: date -%}
+
+    {%- comment -%}
+      A day listed as `from` in moved_days (e.g. a campus holiday) hands its
+      scheduled items to its `to` date, which joins the calendar. The `from`
+      date keeps a row only if `keep` leaves something on it. Use moved_days in
+      syllabus.yml to control this.
+    {%- endcomment -%}
+    {%- assign date_string = date | date: '%Y-%m-%d' -%}
+    {%- assign moved_to = nil -%}
+    {%- assign moved_keep = nil -%}
+    {%- for moved in site.data.syllabus.moved_days -%}
+      {%- assign moved_from_string = moved.from | date: '%Y-%m-%d' -%}
+      {%- if moved_from_string == date_string -%}
+        {%- assign moved_to = moved.to | date: '%s' | plus: 0 -%}
+        {%- assign moved_keep = moved.keep -%}
+        {%- break -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- if moved_to -%}
+      {%- assign valid_dates = valid_dates | push: moved_to -%}
+    {%- endif -%}
+    {%- if moved_to == nil or moved_keep -%}
+      {%- assign valid_dates = valid_dates | push: date -%}
+    {%- endif -%}
   {%- endif -%}
 {%- endfor -%}
 
@@ -113,9 +137,42 @@
             {%- endif -%}
             {%- endfor -%}
 
-            {%- assign day_of_week = day | date: '%w' -%}
+            {%- comment -%}
+              Everything below is scheduled by weekday. A moved_days entry sends
+              the items scheduled for `from` to the `to` row instead, except for
+              the components named in its `keep` list, which stay on `from`. So
+              a row can stand in for another day: use the weekday of the day it
+              stands in for, and render only the components that belong here.
+              That keeps the lecture, quiz, discussion, lab, and homework
+              counters advancing exactly once per scheduled day.
+            {%- endcomment -%}
+            {%- assign all_components = "lecture,quiz,discussion,lab,homework,homework_due" | split: ',' -%}
+            {%- assign slot_day = day -%}
+            {%- assign active_components = all_components -%}
+            {%- for moved in site.data.syllabus.moved_days -%}
+              {%- assign moved_from_string = moved.from | date: '%Y-%m-%d' -%}
+              {%- assign moved_to_string = moved.to | date: '%Y-%m-%d' -%}
+              {%- if moved_to_string == current_date -%}
+                {%- assign slot_day = moved.from -%}
+                {%- assign active_components = '' | split: '' -%}
+                {%- for component in all_components -%}
+                  {%- unless moved.keep contains component -%}
+                    {%- assign active_components = active_components | push: component -%}
+                  {%- endunless -%}
+                {%- endfor -%}
+                {%- break -%}
+              {%- elsif moved_from_string == current_date -%}
+                {%- assign active_components = '' | split: '' -%}
+                {%- if moved.keep -%}
+                  {%- assign active_components = moved.keep -%}
+                {%- endif -%}
+                {%- break -%}
+              {%- endif -%}
+            {%- endfor -%}
+            {%- assign day_of_week = slot_day | date: '%w' -%}
+
             {%- comment -%} --- LECTURE LOGIC (Tues/Thurs) --- {%- endcomment -%}
-            {%- if site.data.syllabus.class_days contains day_of_week -%}
+            {%- if site.data.syllabus.class_days contains day_of_week and active_components contains 'lecture' -%}
                 {%- assign lec_entry = site.data.lectures.lectures[lecture_index] -%}
                 
                 {%- if lec_entry -%}
@@ -202,7 +259,7 @@
             {%- endif -%}
 
             {%- comment -%} --- QUIZ LOGIC --- {%- endcomment -%}
-            {%- if site.data.syllabus.quiz_days contains day_of_week -%}
+            {%- if site.data.syllabus.quiz_days contains day_of_week and active_components contains 'quiz' -%}
                 {%- assign quiz_entry = site.data.quizzes.quizzes[quiz_index] -%}
                 
                 {%- if quiz_entry -%}
@@ -253,7 +310,7 @@
             {%- endif -%}
 
             {%- comment -%} --- DISCUSSION LOGIC --- {%- endcomment -%}
-            {%- if site.data.syllabus.discussion_days contains day_of_week -%}
+            {%- if site.data.syllabus.discussion_days contains day_of_week and active_components contains 'discussion' -%}
                 {%- assign disc_entry = site.data.discussions.discussions[discussion_index] -%}
                 
                 {%- if disc_entry -%}
@@ -304,7 +361,7 @@
             {%- endif -%}
 
             {%- comment -%} --- LAB LOGIC --- {%- endcomment -%}
-            {%- if site.data.syllabus.lab_days contains day_of_week -%}
+            {%- if site.data.syllabus.lab_days contains day_of_week and active_components contains 'lab' -%}
                 {%- assign lab_entry = site.data.labs.labs[lab_index] -%}
                 
                 {%- if lab_entry -%}
@@ -355,7 +412,7 @@
             {%- endif -%}
 
             {%- comment -%} --- HOMEWORK LOGIC --- {%- endcomment -%}
-            {%- if site.data.syllabus.hw_days contains day_of_week -%}
+            {%- if site.data.syllabus.hw_days contains day_of_week and active_components contains 'homework' -%}
                 {%- assign hw_entry = site.data.homework.homework[homework_index] -%}
                 
                 {%- if hw_entry -%}
@@ -406,7 +463,7 @@
             {%- endif -%}
 
             {%- comment -%} --- HOMEWORK DUE LOGIC --- {%- endcomment -%}
-            {%- if site.data.syllabus.hw_due_days contains day_of_week -%}
+            {%- if site.data.syllabus.hw_due_days contains day_of_week and active_components contains 'homework_due' -%}
                 {%- assign hw_due_entry = site.data.homework-due.homework-due[homework_due_index] -%}
                 
                 {%- if hw_due_entry -%}
@@ -477,7 +534,7 @@
 
           <td style="width:{{ site.data.syllabus.col3_width }}; vertical-align: top;">
             {%- comment -%} --- READINGS LOGIC (Consolidated & Inline) --- {%- endcomment -%}
-            {%- if site.data.syllabus.class_days contains day_of_week -%}
+            {%- if site.data.syllabus.class_days contains day_of_week and active_components contains 'lecture' -%}
                 {%- if lec_entry.readings -%}
                     <div class="syllabus-item" style="margin-bottom: 4px;">
                         <strong class="label label-reading">Reading</strong>

@@ -17,6 +17,16 @@ extra_days_col2:
     label: exam
     title: "Midterm 2"
 
+# Days whose scheduled items are held on another date, e.g. a campus holiday
+# that falls on a lab day. Everything scheduled for `from` renders on the `to`
+# row instead, except the components named in `keep`, which stay on `from`.
+# Components are lecture, quiz, discussion, lab, homework, and homework_due.
+# `to` must be a date that is not otherwise on the calendar.
+moved_days:
+  - from: 2026-09-07   # Labor Day: no lab sections, so the lab and its quiz
+    to: 2026-09-08     # meet Tuesday. The Holiday lecture entry stays on Monday.
+    keep: [lecture]
+
 # The dates used in extra_links_col3 below must already be included on the calendar
 # Use this to provide extra links in the third (reading) column
 extra_links_col3: []

@@ -4,7 +4,7 @@
 # `skip: true` consumes a Monday with no quiz.
 quizzes:
   - skip: true                      # Mon 08/31 (no quiz in week 2)
-  - title: "Functions"              # Mon 09/07 (week 3)
+  - title: "Functions"              # Tue 09/08 (week 3; Mon 09/07 is Labor Day)
   - title: "Control"                # Mon 09/14 (week 4)
   - title: "Higher-Order Functions" # Mon 09/21 (week 5)
   - title: "Recursion"              # Mon 09/28 (week 6)
