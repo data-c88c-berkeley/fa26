@@ -1,0 +1,195 @@
+---
+title: "Lab 1: Functions"
+layout: assignment
+nav_exclude: true
+excerpt_separator: ""
+due: "Friday 09/04"
+---
+
+{% raw %}
+<header class="assignment-header"><h1>Lab 1: Functions</h1><ul class="assignment-facts"><li><strong>Due:</strong> Friday 09/04 @ 11:59pm</li><li><strong>Points:</strong> 1</li><li><strong>Download:</strong> <a href="lab01.zip">lab01.zip</a></li></ul></header>
+<h1 id="attendance">Attendance</h1>
+<p>You need to submit the lab problems in addition to attending to get credit for lab. Students in mega lab only need to submit the lab problems. Preceptor interviews are highly recommended but not required for lab submissions.</p>
+<p>Your TA will come around during lab to check you in. If you didn't attend for a good reason (such as being sick), fill out this form (within 2 weeks of your lab): <a href="https://forms.gle/QsRLAvLnn5xoJgdv9">attendance form</a>.</p>
+<h1 id="prairielearn-and-prairietest">PrairieLearn and PrairieTest</h1>
+<p>This semester we will be using [PrairieLearn] (https://us.prairielearn.com/) and
+[PrairieTest] (https://us.prairietest.com/pt) for our quizzes.</p>
+<p>PrairieLearn is where you will access any practice quizzes as well as view your
+quiz scores. PrairieTest will be used to sign up for a quiz slot (for mega lab
+students) and to take the quiz (for all students).</p>
+<p>Please visit each website and accept the invitation for this course. If you have
+not recieved an invitation, please post on Ed and we will send you the invite.</p>
+<h1 id="required-questions">Required Questions</h1>
+<h2 id="review">Review</h2>
+<details class="hint"><summary>Running Python Files</summary><div>
+<p>Here are the most common ways to run Python on a file from the VS Code terminal. (The examples use
+<code>lab00.py</code>, but these commands work for any assignment.)</p>
+<ol>
+<li>
+<p>Using no command-line options will run the code in the file you provide and
+return you to the command line. If your file just contains function
+definitions, you'll see no output unless there is a syntax error.</p>
+<pre><code> python3 lab00.py
+</code></pre>
+</li>
+<li>
+<p><strong><code>-i</code></strong>: The <code>-i</code> option runs the code in the file you provide, then opens
+an interactive session (with a <code>&gt;&gt;&gt;</code> prompt). You can then evaluate
+expressions such as calling functions you defined. To exit, type
+<code>exit()</code>. You can also use the keyboard shortcut <code>Ctrl-D</code> on Linux/Mac
+machines or <code>Ctrl-Z  Enter</code> on Windows.</p>
+</li>
+</ol>
+<p>If you edit the Python file while running it interactively, you will need to
+exit and restart the interpreter in order for those changes to take effect.</p>
+<p>Here's how we can run <code>lab00.py</code> interactively:</p>
+<pre><code>    python3 -i lab00.py
+</code></pre>
+<p>If the <code>python3</code> command doesn't work, please try using <code>python</code> or <code>py</code>. You
+can switch all of the copy/paste commands on this page from <code>python3</code> to
+<code>python</code> or <code>py</code> using the toggle at the top right.</p>
+</div></details>
+<details class="hint"><summary>Division, Floor Div, and Modulo</summary><div>
+<p>Here are examples of the three division-related operators in Python 3.</p>
+<p><strong>True division: <code>/</code></strong> (decimal division)</p>
+<pre><code>&gt;&gt;&gt; 1 / 5
+0.2
+&gt;&gt;&gt; 25 / 4
+6.25
+&gt;&gt;&gt; 4 / 2
+2.0
+</code></pre>
+<p><strong>Floor division: <code>//</code></strong> (integer division; discards the remainder)</p>
+<pre><code>&gt;&gt;&gt; 1 // 5
+0
+&gt;&gt;&gt; 25 // 4
+6
+&gt;&gt;&gt; 4 // 2
+2
+</code></pre>
+<p><strong>Modulo: <code>%</code></strong> (the remainder after dividing)</p>
+<pre><code>&gt;&gt;&gt; 1 % 5
+1
+&gt;&gt;&gt; 25 % 4
+1
+&gt;&gt;&gt; 4 % 2
+0
+</code></pre>
+<p>A <code>ZeroDivisionError</code> occurs when dividing by 0 with any of these operators.</p>
+<p>The remainder when dividing integer <code>n</code> by integer <code>k</code> is the smallest <code>r</code> such that <code>k*d + r</code> equals <code>n</code> for some integer <code>d</code>. The remainder when dividing <code>n</code>...</p>
+<ul>
+<li>by 10 is the last digit of <code>n</code></li>
+<li>by 100 is the last two digits of <code>n</code></li>
+<li>by <code>pow(10, p)</code> is the last <code>p</code> digits of <code>n</code> for positive integer <code>p</code>.</li>
+</ul>
+<p>One useful technique involving the <code>%</code> operator is to check
+whether a number <code>x</code> is divisible by another number <code>y</code>:</p>
+<pre><code>x % y == 0
+</code></pre>
+<p>For example, in order to check if <code>x</code> is an even number: <code>x % 2 == 0</code></p>
+</div></details>
+<details class="hint"><summary>Return and Print</summary><div>
+<p>Most functions that you define will contain a <code>return</code> statement that provides
+the value of the call expression that was used to call the function.</p>
+<p>When Python executes a <code>return</code> statement, the function call terminates
+immediately.  If Python reaches the end of the function body without executing a
+<code>return</code> statement, the function returns <code>None</code>.</p>
+<p>In contrast, the <code>print</code> function is used to display values. Unlike a <code>return</code>
+statement, when Python evaluates a call to <code>print</code>, the function containg that <code>print</code> call does <em>not</em>
+terminate immediately.</p>
+<pre><code>def what_prints():
+    print('Hello World!')
+    return 'Goodbye.'
+    print('What about me?')
+
+&gt;&gt;&gt; what_prints()
+Hello World!
+'Goodbye.'
+</code></pre>
+<blockquote>
+<p>Notice also that <code>print</code> displays just the text within the quotes, while
+the return value quotes are displayed as well.</p>
+</blockquote>
+<p>Only the returned value, not the printed one, is the value of the call
+expression. Printed values are always displayed right away, but whether or when
+return values are displayed depends on the rest of the code.</p>
+<pre><code>&gt;&gt;&gt; result = what_prints()
+Hello World!
+&gt;&gt;&gt; 2 + 2
+4
+&gt;&gt;&gt; result
+'Goodbye.'
+</code></pre>
+</div></details>
+<h2 id="what-would-python-display-wwpd">What Would Python Display? (WWPD)</h2>
+<h3 id="q1-return-and-print">Q1: Return and Print</h3>
+<p>Predict what Python will display by running this unlocking session:</p>
+<div class="pytest-command" data-command="python3 -m pytest -k return_and_print --unlock"><pre><code>python3 -m pytest -k return_and_print --unlock</code></pre></div>
+<h2 id="defining-functions">Defining Functions</h2>
+<h3 id="q2-pick-a-digit">Q2: Pick a Digit</h3>
+<p>Implement <code>pick_digit</code>, which takes positive integer <code>n</code> and non-negative
+integer <code>k</code> and has only a single return statement as its body. It returns the
+digit of <code>n</code> that is <code>k</code> positions to the left of the rightmost digit (the one's
+digit). If <code>k</code> is 0, return the rightmost digit. If there is no digit of <code>n</code>
+that is <code>k</code> positions to the left of the rightmost digit, return 0.</p>
+<blockquote>
+<p><strong>Hint:</strong> Use <code>//</code> and <code>%</code> and the built-in <code>pow</code> function to isolate a
+particular digit of <code>n</code>.</p>
+</blockquote>
+<pre class="highlight language-python"><code><span class="k">def</span><span class="w"> </span><span class="nf">pick_digit</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the k-th digit from the right of n.</span>
+
+<span class="sd">    &gt;&gt;&gt; pick_digit(3579, 2)</span>
+<span class="sd">    5</span>
+<span class="sd">    &gt;&gt;&gt; pick_digit(3579, 0)</span>
+<span class="sd">    9</span>
+<span class="sd">    &gt;&gt;&gt; pick_digit(3579, 10)</span>
+<span class="sd">    0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">k</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;n should be positive and k should be non-negative&#39;</span>
+    <span class="k">return</span> <span class="n">____</span>
+</code></pre>
+<div class="pytest-command" data-command="python3 -m pytest -k pick_digit"><pre><code>python3 -m pytest -k pick_digit</code></pre></div>
+<h3 id="q3-middle-number">Q3: Middle Number</h3>
+<p>Implement <code>middle</code> by writing a single return expression that evaluates to the
+value that is neither the largest or smallest among three different integers
+<code>a</code>, <code>b</code>, and <code>c</code>.</p>
+<blockquote>
+<p><strong>Hint:</strong> Try combining all the numbers and then taking away the ones you
+don't want to return by using the built-in <code>min</code> and <code>max</code> functions:</p>
+<pre><code>&gt;&gt;&gt; max(1, 2, 3)
+3
+&gt;&gt;&gt; min(-1, -2, -3)
+-3
+</code></pre>
+</blockquote>
+<pre class="highlight language-python"><code><span class="k">def</span><span class="w"> </span><span class="nf">middle</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the number among a, b, and c that is not the smallest or largest.</span>
+<span class="sd">    Assume a, b, and c are all different numbers.</span>
+
+<span class="sd">    &gt;&gt;&gt; middle(3, 5, 4)</span>
+<span class="sd">    4</span>
+<span class="sd">    &gt;&gt;&gt; middle(30, 5, 4)</span>
+<span class="sd">    5</span>
+<span class="sd">    &gt;&gt;&gt; middle(3, 5, 40)</span>
+<span class="sd">    5</span>
+<span class="sd">    &gt;&gt;&gt; middle(30, 5, 40)</span>
+<span class="sd">    30</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">____</span>
+</code></pre>
+<div class="pytest-command" data-command="python3 -m pytest -k middle"><pre><code>python3 -m pytest -k middle</code></pre></div>
+<h2 id="syllabus-quiz">Syllabus Quiz</h2>
+<h3 id="q4-syllabus-quiz">Q4: Syllabus Quiz</h3>
+<p>Please fill out the <a href="https://docs.google.com/forms/d/e/1FAIpQLSdF_ze5dj1Iy5AyqCFkgk37dbThV8GnYqC7JI4e5tOH_X4RWQ/viewform">Syllabus Quiz</a>,
+which confirms your understanding of the policies on the syllabus page.</p>
+<h1 id="submit-assignment">Submit Assignment</h1>
+<p>Submit this assignment by running
+<strong>Provenance: Prepare Submission Bundle</strong> from the VS Code command palette and
+uploading the resulting zip <strong>to Gradescope</strong>. The zip already contains the
+files you've edited.
+<a href="../../labs/lab00/#task-c-submitting-the-assignment">Lab 00</a> has detailed
+instructions.</p>
+<p>Your responses to WWPD questions are not submitted, and they do not need to
+be. Lab credit is based on the code writing questions.</p>
+{% endraw %}
