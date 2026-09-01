@@ -55,6 +55,11 @@
   align-items: flex-start;
   height: 0;
   pointer-events: none;
+  /* The bar is inserted just before .assignment-header, which follows it in
+     the flow and would otherwise paint (and take clicks) on top of the
+     overlapping pill. Positioning lifts the pill above that later content. */
+  position: relative;
+  z-index: 1;
 }
 
 .python-toggle-pill {
