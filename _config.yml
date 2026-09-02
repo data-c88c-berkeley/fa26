@@ -58,6 +58,8 @@ aux_links:
     - 'https://bcourses.berkeley.edu/courses/1557897/external_tools/90481'
   Ed:
     - 'https://edstem.org/us/courses/102273/discussion'
+  Extensions:
+    - 'https://go.c88c.org/extensions'
   OH Queue:
     - 'https://oh.c88c.org'
   Python Tutor:
