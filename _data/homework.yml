@@ -3,7 +3,8 @@
 homework:
 - skip: true
 - skip: true
-- title: Functions (due Tue 9/8)
+- slug: hw01
+  title: Functions (due Tue 9/8)
 - skip: true
 - title: Control (due Tue 9/15)
 - skip: true

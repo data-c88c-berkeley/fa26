@@ -1,0 +1,152 @@
+---
+title: "Homework 1: Functions"
+layout: assignment
+nav_exclude: true
+excerpt_separator: ""
+due: "Tuesday 09/08"
+---
+
+{% raw %}
+<header class="assignment-header"><h1>Homework 1: Functions</h1><ul class="assignment-facts"><li><strong>Due:</strong> Tuesday 09/08 @ 11:59pm</li><li><strong>Points:</strong> 2</li><li><strong>Download:</strong> <a href="hw01.zip">hw01.zip</a></li></ul></header>
+<p class="assignment-intro">To receive credit, you must solve each problem and then complete a short checkoff interview about your solution. You may use Preceptor for the interview or come to office hours to be interviewed by a member of the course staff. You will submit a Provenance bundle that includes a record of how you used VS Code, including interactions with Preceptor. Please do not use AI tools other than Preceptor for this assignment.</p>
+<p><strong>Readings:</strong> This homework relies on the following readings from
+<a href="https://composingprograms.com">Composing Programs</a>:</p>
+<ul>
+<li><a href="https://composingprograms.com/3ed/getting-started">1.1: Getting Started</a></li>
+<li><a href="https://composingprograms.com/3ed/elements-of-programming">1.2: Elements of Programming</a></li>
+<li><a href="https://composingprograms.com/3ed/defining-new-functions">1.3: Defining New Functions</a></li>
+<li><a href="https://composingprograms.com/3ed/designing-functions">1.4: Designing Functions</a></li>
+<li><a href="https://composingprograms.com/3ed/control">1.5: Control</a></li>
+</ul>
+<h1 id="required-questions">Required Questions</h1>
+<h2 id="q1-a-plus-abs-b">Q1: A Plus Abs B</h2>
+<p>Python's <code>operator</code> module contains two-argument functions such as <code>add</code> and
+<code>sub</code> for Python's built-in arithmetic operators. For example, <code>add(2, 3)</code>
+evalutes to 5, just like the expression <code>2 + 3</code>.</p>
+<p>Fill in the blanks in the following function to add <code>a</code> to the
+absolute value of <code>b</code>, without calling the <code>abs</code> function. You may <strong>not</strong> modify any
+of the provided code other than the two blanks.</p>
+<pre class="highlight language-python"><code><span class="k">def</span><span class="w"> </span><span class="nf">a_plus_abs_b</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a+abs(b), but without calling abs.</span>
+
+<span class="sd">    &gt;&gt;&gt; a_plus_abs_b(2, 3)</span>
+<span class="sd">    5</span>
+<span class="sd">    &gt;&gt;&gt; a_plus_abs_b(2, -3)</span>
+<span class="sd">    5</span>
+<span class="sd">    &gt;&gt;&gt; a_plus_abs_b(-1, 4)</span>
+<span class="sd">    3</span>
+<span class="sd">    &gt;&gt;&gt; a_plus_abs_b(-1, -4)</span>
+<span class="sd">    3</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">b</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">_____</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">_____</span>
+    <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+</code></pre>
+<div class="pytest-command" data-command="python3 -m pytest -k a_plus_abs_b"><pre><code>python3 -m pytest -k a_plus_abs_b</code></pre></div>
+<h2 id="q2-two-of-three">Q2: Two of Three</h2>
+<p>Write a function that takes three <em>positive</em> numbers as arguments and returns
+the sum of the squares of the two smallest numbers. <strong>Use only a single line
+for the body of the function.</strong></p>
+<pre class="highlight language-python"><code><span class="k">def</span><span class="w"> </span><span class="nf">two_of_three</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return m*m + n*n, where m and n are the two smallest members of the</span>
+<span class="sd">    positive numbers i, j, and k.</span>
+
+<span class="sd">    &gt;&gt;&gt; two_of_three(1, 2, 3)</span>
+<span class="sd">    5</span>
+<span class="sd">    &gt;&gt;&gt; two_of_three(5, 3, 1)</span>
+<span class="sd">    10</span>
+<span class="sd">    &gt;&gt;&gt; two_of_three(10, 2, 8)</span>
+<span class="sd">    68</span>
+<span class="sd">    &gt;&gt;&gt; two_of_three(5, 5, 5)</span>
+<span class="sd">    50</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_____</span>
+</code></pre>
+<blockquote>
+<p><strong>Hint:</strong> Consider using the <code>max</code> or <code>min</code> function:</p>
+<pre><code>&gt;&gt;&gt; max(1, 2, 3)
+3
+&gt;&gt;&gt; min(-1, -2, -3)
+-3
+</code></pre>
+</blockquote>
+<div class="pytest-command" data-command="python3 -m pytest -k two_of_three"><pre><code>python3 -m pytest -k two_of_three</code></pre></div>
+<h2 id="q3-move-to-the-end">Q3: Move to the End</h2>
+<p>Implement <code>move_to_end</code>, which takes a positive integer <code>n</code> and a non-negative
+integer <code>k</code>. It returns an integer with all of the digits of <code>n</code>, but with the
+digit that is <code>k</code> positions to the left of the rightmost digit (the one's
+digit) moved to the end, so that it becomes the new one's digit. If there is
+no digit of <code>n</code> that is <code>k</code> positions to the left of the one's digit, then a
+zero is added to the end instead.</p>
+<p>The body of <code>move_to_end</code> must be a single return statement.</p>
+<p>Reimplement <code>pick_digit</code> from Lab 1 and <code>cut</code> from Discussion 1, then call them in
+your implementation of <code>move_to_end</code>.</p>
+<pre class="highlight language-python"><code><span class="k">def</span><span class="w"> </span><span class="nf">move_to_end</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return n with the digit at position k moved to the end.</span>
+
+<span class="sd">    &gt;&gt;&gt; move_to_end(97531, 2)</span>
+<span class="sd">    97315</span>
+<span class="sd">    &gt;&gt;&gt; move_to_end(97531, 0)</span>
+<span class="sd">    97531</span>
+<span class="sd">    &gt;&gt;&gt; move_to_end(97531, 4)</span>
+<span class="sd">    75319</span>
+<span class="sd">    &gt;&gt;&gt; move_to_end(97531, 10)</span>
+<span class="sd">    975310</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">____</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">pick_digit</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the k-th digit from the right of n.</span>
+
+<span class="sd">    &gt;&gt;&gt; pick_digit(3579, 2)</span>
+<span class="sd">    5</span>
+<span class="sd">    &gt;&gt;&gt; pick_digit(3579, 0)</span>
+<span class="sd">    9</span>
+<span class="sd">    &gt;&gt;&gt; pick_digit(3579, 10)</span>
+<span class="sd">    0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">____</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">cut</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return n with the kth digit from the right removed.</span>
+
+<span class="sd">    &gt;&gt;&gt; cut(3579, 2)</span>
+<span class="sd">    379</span>
+<span class="sd">    &gt;&gt;&gt; cut(3579, 0)</span>
+<span class="sd">    357</span>
+<span class="sd">    &gt;&gt;&gt; cut(3579, 1)</span>
+<span class="sd">    359</span>
+<span class="sd">    &gt;&gt;&gt; cut(3579, 5)</span>
+<span class="sd">    3579</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">____</span>
+</code></pre>
+<p>Check each function separately:</p>
+<div class="pytest-command" data-command="python3 -m pytest -k pick_digit"><pre><code>python3 -m pytest -k pick_digit</code></pre></div>
+<div class="pytest-command" data-command="python3 -m pytest -k cut"><pre><code>python3 -m pytest -k cut</code></pre></div>
+<div class="pytest-command" data-command="python3 -m pytest -k move_to_end"><pre><code>python3 -m pytest -k move_to_end</code></pre></div>
+<h2 id="q4-print-smaller">Q4: Print Smaller</h2>
+<p>Implement <code>print_smaller</code>, which takes two different numbers <code>x</code> and <code>y</code>. It
+prints the smaller of the two numbers and returns the larger one.</p>
+<p>Before writing any code, study the doctest below to understand why these four
+lines are printed in this order.</p>
+<pre class="highlight language-python"><code><span class="k">def</span><span class="w"> </span><span class="nf">print_smaller</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Print the smaller of x and y and return the larger.</span>
+
+<span class="sd">    &gt;&gt;&gt; print_smaller(print_smaller(5, 3), print_smaller(4, 6))</span>
+<span class="sd">    3</span>
+<span class="sd">    4</span>
+<span class="sd">    5</span>
+<span class="sd">    6</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre>
+<div class="pytest-command" data-command="python3 -m pytest -k print_smaller"><pre><code>python3 -m pytest -k print_smaller</code></pre></div>
+<h2 id="submit">Submit</h2>
+<p>Run <strong>Provenance: Prepare Submission Bundle</strong> from
+the VS Code command palette to create your submission zip, and upload that zip
+<strong>to Gradescope</strong>. For a refresher on how to do this, refer to
+<a href="../../labs/lab00/#task-c-submit-the-assignment">Lab 00</a>.</p>
+{% endraw %}
