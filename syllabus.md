@@ -329,6 +329,8 @@ broken down as follows:
 - Two projects, worth 50 points
 - Lab, worth 10 points
 
+Lab 0 is not graded. Attending a lab and fully completing the lab assignment earns one lab point, up to a maximum of 10. Students in the mega lab must complete lab assignments (but need not attend for credit).
+
 There are 2 extra credit points available to everyone for early submission of
 projects.
 
