@@ -109,6 +109,20 @@
   background: transparent;
   color: inherit;
   cursor: pointer;
+  position: relative;
+}
+
+/* The pill's padding and border leave a strip above and below the buttons
+   that looks like part of the toggle but takes no clicks. Stretch each
+   button's hit area over that strip so the full visible height is
+   clickable. */
+.python-toggle-pill button::after {
+  content: "";
+  position: absolute;
+  top: -0.35rem;
+  bottom: -0.35rem;
+  left: 0;
+  right: 0;
 }
 
 .python-toggle-pill button:hover {
