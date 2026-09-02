@@ -36,7 +36,7 @@ equation showing the result of multiplying <code>x</code> and <code>y</code>, th
 <p>Try to multiply numbers together just once in the body of <code>multiply</code> so that the
 Python interpreter doesn't have to perform multiplication more <em>times</em> than
 necessary (pun intended).</p>
-<div class="code-editor" data-language="python">
+<div class="code-editor" data-language="python" data-question="multiply">
 <pre class="highlight language-python"><code><span class="k">def</span><span class="w"> </span><span class="nf">multiply</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Multiply x by y and print what happened.</span>
 
@@ -53,7 +53,7 @@ necessary (pun intended).</p>
 <p>Calling <code>print</code> on multiple arguments displays those values separated by spaces.
 For example, the call expression <code>print(1, '+', 2, '=', 3)</code> displays <code>1 + 2 = 3</code>.</p>
 </div></details>
-<div class="pytest-command" data-command="python3 -m pytest -k multiply"><pre><code>python3 -m pytest -k multiply</code></pre></div>
+<div class="discuss-check" data-question="multiply"></div>
 <h3 id="q2-cut-one-out">Q2: Cut One Out</h3>
 <p>Implement <code>cut</code>, which takes non-negative integers <code>n</code> and <code>k</code> and has only a
 return statement in its body. It returns a positive integer with all of the
@@ -61,7 +61,7 @@ digits of <code>n</code> except the digit that is <code>k</code> positions to th
 rightmost digit (the one's digit). If <code>k</code> is 0, then it returns <code>n</code> without its
 one's digit. If there is no digit of <code>n</code> that is <code>k</code> positions to the left of
 the rightmost digit, then it returns <code>n</code>.</p>
-<div class="code-editor" data-language="python">
+<div class="code-editor" data-language="python" data-question="cut">
 <pre class="highlight language-python"><code><span class="k">def</span><span class="w"> </span><span class="nf">cut</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return n with the kth digit from the right removed.</span>
 
@@ -99,5 +99,5 @@ this problem for the example <code>n=3579</code> and <code>k=2</code>.</p>
 379
 </code></pre>
 </div></details>
-<div class="pytest-command" data-command="python3 -m pytest -k cut"><pre><code>python3 -m pytest -k cut</code></pre></div>
+<div class="discuss-check" data-question="cut"></div>
 {% endraw %}

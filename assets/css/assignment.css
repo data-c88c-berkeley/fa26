@@ -247,3 +247,239 @@ pre.wwpd .wwpd-answer {
 .code-editor:focus-within {
   box-shadow: 0 0 0 2px rgba(127, 127, 127, 0.35);
 }
+
+/* The Reset button code-editor.js appends below each editor. Theme-neutral
+   like the rest of the editor: it borrows the wrapper's colors and type and
+   signals state with opacity alone, so it works in either color scheme. */
+.code-editor-reset {
+  display: block;
+  margin: 0.5em 0 0 auto;
+  padding: 0.1em 0.7em;
+  font-family: inherit;
+  font-size: 0.8em;
+  color: inherit;
+  background: transparent;
+  border: 1px solid rgba(127, 127, 127, 0.5);
+  border-radius: 4px;
+  opacity: 0.7;
+  cursor: pointer;
+}
+
+.code-editor-reset:hover:enabled,
+.code-editor-reset:focus-visible {
+  opacity: 1;
+}
+
+.code-editor-reset:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+/* ── Discuss (discuss.js): group bar, member tabs, Verify, cooldown ────── */
+
+.discuss-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0 0 1rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.85rem;
+  border: 1px solid rgba(127, 127, 127, 0.45);
+  border-radius: 6px;
+}
+
+/* Author display rules beat the UA's [hidden] { display: none }, so the
+   flex containers discuss.js toggles need their own hidden rule. */
+.discuss-bar form[hidden] {
+  display: none;
+}
+
+.discuss-bar form {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.discuss-bar input {
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  padding: 0.25em 0.5em;
+  border: 1px solid rgba(127, 127, 127, 0.5);
+  border-radius: 4px;
+}
+
+.discuss-bar input[type="number"] {
+  /* Wide enough for the "Group number" placeholder plus the spinner. */
+  width: 11em;
+}
+
+.discuss-bar button {
+  font: inherit;
+  padding: 0.25em 0.9em;
+  border: 1px solid rgba(127, 127, 127, 0.5);
+  border-radius: 4px;
+  background: #003262; /* Berkeley Blue */
+  color: #fff;
+  cursor: pointer;
+}
+
+.discuss-bar button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+[data-theme="dark"] .discuss-bar button {
+  background: #6ea3ff; /* the dark scheme's link blue */
+  color: #141414;
+}
+
+.discuss-hint {
+  opacity: 0.7;
+  font-style: italic;
+}
+
+/* While in a group, each editor sits in a flex row beside its tab column:
+   "You" on top, then one tab per other member (their light color, name, and
+   ✅/❌ marks), then the group strikes line. The editor narrows to fit. */
+.discuss-pane {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.discuss-pane .code-editor {
+  flex: 1;
+  min-width: 0;
+}
+
+.discuss-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  /* Room for a 22-char name plus … plus six marks (discuss.js truncates). */
+  width: 15rem;
+  flex-shrink: 0;
+}
+
+.discuss-tab {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5em;
+  font: inherit;
+  font-size: 0.8rem;
+  padding: 0.35em 0.7em;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-radius: 0 6px 6px 0;
+  background: #e8e8e8;
+  color: #1c1c1c;
+  cursor: pointer;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.discuss-tab .discuss-tab-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.discuss-tab.active {
+  outline: 2px solid #003262;
+  outline-offset: 1px;
+  font-weight: bold;
+}
+
+[data-theme="dark"] .discuss-tab.active {
+  outline-color: #6ea3ff;
+}
+
+[data-theme="dark"] .discuss-tab-you {
+  background: #2a2a2a;
+  color: #e0e0e0;
+}
+
+.discuss-strikes {
+  font-size: 0.75rem;
+  opacity: 0.8;
+  padding: 0.2em 0.7em;
+}
+
+/* Any strikes at all get loud: a big red count (a state color, fixed in
+   both schemes, like the red Verify button). */
+.discuss-strikes-count.nonzero {
+  color: #c62828;
+  font-size: 2em;
+  font-weight: bold;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+/* While a member's code is shown in a pane: no selecting (answers are for
+   reading, not pasting) and no Reset (it would edit their snapshot). */
+.discuss-pane.showing-member .code-editor,
+.discuss-pane.showing-member .code-editor * {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.discuss-pane.showing-member .code-editor-reset {
+  display: none;
+}
+
+/* The Verify button: gray until run, then the outcome. The colors are
+   states, not theme decoration, so they are fixed in both schemes. The
+   ✅/❌ history of past presses sits beside it. */
+.discuss-check-button {
+  position: relative;
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 0.35em 1em;
+  border: 1px solid rgba(127, 127, 127, 0.5);
+  border-radius: 4px;
+  background: #e0e0e0;
+  color: #1c1c1c;
+  cursor: pointer;
+}
+
+.discuss-check-button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.discuss-check-button[data-state="green"] {
+  background: #2e7d32;
+  border-color: #2e7d32;
+  color: #fff;
+}
+
+.discuss-check-button[data-state="red"] {
+  background: #c62828;
+  border-color: #c62828;
+  color: #fff;
+}
+
+[data-theme="dark"] .discuss-check-button[data-state="gray"] {
+  background: #2a2a2a;
+  color: #e0e0e0;
+}
+
+.discuss-history {
+  margin-left: 0.5em;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+}
+
+/* Failed-doctest output under a red button. */
+.discuss-check-output {
+  margin: 0.5rem 0 0;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  border: 1px solid rgba(127, 127, 127, 0.45);
+  border-left: 3px solid #c62828;
+  border-radius: 4px;
+  overflow-x: auto;
+}
+

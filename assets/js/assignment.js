@@ -119,10 +119,14 @@ document.querySelectorAll('.pytest-command').forEach(function (box) {
 
 // The scraped code blocks of a discussion are published as .code-editor
 // wrappers (see render.code_block) for CodeMirror to take over. That bundle is
-// far bigger than this script, so only a page that has one fetches it.
+// far bigger than this script, so only a page that has one fetches it — along
+// with discuss.js, the Discuss collaboration app (check buttons, groups,
+// peeking), which drives the editors and so belongs to the same pages.
 (function () {
   if (!ASSIGNMENT_JS || !document.querySelector('.code-editor')) return;
-  var script = document.createElement('script');
-  script.src = ASSIGNMENT_JS.replace(/assignment\.js(\?.*)?$/, 'code-editor.js');
-  document.head.appendChild(script);
+  ['code-editor.js', 'discuss.js'].forEach(function (name) {
+    var script = document.createElement('script');
+    script.src = ASSIGNMENT_JS.replace(/assignment\.js(\?.*)?$/, name);
+    document.head.appendChild(script);
+  });
 })();
