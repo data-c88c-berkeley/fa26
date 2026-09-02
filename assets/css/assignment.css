@@ -249,19 +249,20 @@ pre.wwpd .wwpd-answer {
 }
 
 /* The Reset button code-editor.js appends below each editor. Theme-neutral
-   like the rest of the editor: it borrows the wrapper's colors and type and
-   signals state with opacity alone, so it works in either color scheme. */
+   like the rest of the editor: it borrows the wrapper's text color (also for
+   the border, via currentColor) and signals state with opacity alone, so it
+   keeps its contrast in either color scheme. */
 .code-editor-reset {
   display: block;
-  margin: 0.5em 0 0 auto;
+  margin: 0.5em 0 0.5em auto;
   padding: 0.1em 0.7em;
   font-family: inherit;
   font-size: 0.8em;
   color: inherit;
   background: transparent;
-  border: 1px solid rgba(127, 127, 127, 0.5);
+  border: 1px solid currentColor;
   border-radius: 4px;
-  opacity: 0.7;
+  opacity: 0.9;
   cursor: pointer;
 }
 
@@ -271,7 +272,7 @@ pre.wwpd .wwpd-answer {
 }
 
 .code-editor-reset:disabled {
-  opacity: 0.3;
+  opacity: 0.4;
   cursor: default;
 }
 

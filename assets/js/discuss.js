@@ -241,7 +241,7 @@
   // The checker: run the student's code, then the doctests parsed from the
   // published listing. Everything returns through one JSON string.
   var HARNESS = [
-    'import ast, doctest, io, json, traceback',
+    'import ast, doctest, io, json, tokenize, traceback',
     '',
     'def _discuss_examples(canonical):',
     '    # The doctests live in docstrings. Parsing the raw file text',
@@ -251,7 +251,25 @@
     '    try:',
     '        tree = ast.parse(canonical)',
     '    except SyntaxError:',
-    '        return parser.get_examples(canonical)',
+    '        # A listing with fill-in blanks (e.g. a bare ____: line) does',
+    '        # not parse, but it still tokenizes: take examples from its',
+    '        # string literals only, for the same reason as the ast walk.',
+    '        try:',
+    '            tokens = list(tokenize.generate_tokens(',
+    '                io.StringIO(canonical).readline))',
+    '        except (tokenize.TokenError, SyntaxError):',
+    '            return parser.get_examples(canonical)',
+    '        examples = []',
+    '        for token in tokens:',
+    '            if token.type != tokenize.STRING:',
+    '                continue',
+    '            try:',
+    '                text = ast.literal_eval(token.string)',
+    '            except (ValueError, SyntaxError):',
+    '                continue',
+    '            if isinstance(text, str):',
+    '                examples.extend(parser.get_examples(text))',
+    '        return examples',
     '    examples = []',
     '    for node in ast.walk(tree):',
     '        if isinstance(node, (ast.Module, ast.ClassDef,',
@@ -261,10 +279,15 @@
     '                examples.extend(parser.get_examples(docstring))',
     '    return examples',
     '',
-    'def _discuss_check(canonical, student):',
+    'def _discuss_check(canonical, student, lib=""):',
     '    examples = _discuss_examples(canonical)',
     '    env = {}',
     '    try:',
+    '        # Shared classes the page ships alongside the question (data-lib,',
+    '        # e.g. Link or the tree ADT): defined first so the doctests can',
+    '        # use them, overridden by the student\'s own definitions.',
+    '        if lib:',
+    '            exec(lib, env)',
     '        exec(student, env)',
     '    except BaseException:',
     '        return json.dumps({"ok": False,',
@@ -298,7 +321,7 @@
     '  ready.then(function (py) {',
     '    var check = py.globals.get("_discuss_check");',
     '    var out;',
-    '    try { out = check(data.canonical, data.student); }',
+    '    try { out = check(data.canonical, data.student, data.lib); }',
     '    finally { check.destroy(); }',
     '    postMessage(out);',
     '  }).catch(function () {',
@@ -330,7 +353,7 @@
     return workerReady;
   }
 
-  function runInWorker(canonical, student) {
+  function runInWorker(canonical, student, lib) {
     var run = runQueue.then(function () {
       return ensureWorker().then(function (w) {
         return new Promise(function (resolve) {
@@ -356,6 +379,7 @@
           };
           w.postMessage({
             canonical: clampCode(canonical), student: clampCode(student),
+            lib: lib || '',
           });
         });
       });
@@ -371,7 +395,7 @@
     var failedRun = false;
     button.disabled = true;
     button.textContent = workerReady ? 'Checking…' : 'Loading Python…';
-    runInWorker(api(q).original, api(q).getText()).then(function (result) {
+    runInWorker(api(q).original, api(q).getText(), q.lib).then(function (result) {
       var status = result.ok ? 'green' : 'red';
       var marks = history(answers[qid]) + (result.ok ? PASS : FAIL);
       if (marks.length > MAX_HISTORY) { // invisible middle marks give way
@@ -440,6 +464,7 @@
     output.className = 'discuss-check-output';
     output.hidden = true;
     box.append(button, marks, output);
+    q.lib = box.dataset.lib || '';
     q.check = button;
     q.marks = marks;
     q.output = output;
@@ -512,6 +537,7 @@
     var saved = stored('discuss-group');
     if (name && saved && /^\d+$/.test(saved)) {
       groupInput.value = saved;
+      validate();              // setting .value fires no input event
       joinGroup(name, parseInt(saved, 10)); // auto-rejoin is idempotent
     }
   }
