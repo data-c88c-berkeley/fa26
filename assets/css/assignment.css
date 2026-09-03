@@ -343,8 +343,13 @@ pre.wwpd .wwpd-answer {
 }
 
 /* While in a group, each editor sits in a flex row beside its tab column:
-   "You" on top, then one tab per other member (their light color, name, and
-   ✅/❌ marks), then the group strikes line. The editor narrows to fit. */
+   "You" on top, then one tab per other member (their color, name, and ✅/❌
+   marks), then the group strikes line. The editor narrows to fit.
+
+   Member colors: discuss.js puts a member's tint for each scheme on the tab
+   (and on the pane while their code is shown) as --discuss-tint (near-white)
+   and --discuss-tint-dark (very dark); the rules below pick one by
+   [data-theme], so the live light/dark toggle recolors without a reload. */
 .discuss-pane {
   display: flex;
   align-items: flex-start;
@@ -375,11 +380,17 @@ pre.wwpd .wwpd-answer {
   padding: 0.35em 0.7em;
   border: 1px solid rgba(0, 0, 0, 0.25);
   border-radius: 0 6px 6px 0;
-  background: #e8e8e8;
+  background: var(--discuss-tint, #e8e8e8);
   color: #1c1c1c;
   cursor: pointer;
   text-align: left;
   white-space: nowrap;
+}
+
+[data-theme="dark"] .discuss-tab {
+  background: var(--discuss-tint-dark, #2a2a2a);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.25);
 }
 
 .discuss-tab .discuss-tab-name {
@@ -397,10 +408,8 @@ pre.wwpd .wwpd-answer {
   outline-color: #6ea3ff;
 }
 
-[data-theme="dark"] .discuss-tab-you {
-  background: #2a2a2a;
-  color: #e0e0e0;
-}
+/* The You tab has no member tint: the #e8e8e8 / #2a2a2a fallbacks above are
+   its colors in each scheme. */
 
 .discuss-strikes {
   font-size: 0.75rem;
@@ -418,8 +427,18 @@ pre.wwpd .wwpd-answer {
   vertical-align: middle;
 }
 
-/* While a member's code is shown in a pane: no selecting (answers are for
-   reading, not pasting) and no Reset (it would edit their snapshot). */
+/* While a member's code is shown in a pane: the pane takes their tint
+   (outranking the wrapper's `highlight` code-block background), no selecting
+   (answers are for reading, not pasting) and no Reset (it would edit their
+   snapshot). */
+.discuss-pane.showing-member .code-editor {
+  background: var(--discuss-tint);
+}
+
+[data-theme="dark"] .discuss-pane.showing-member .code-editor {
+  background: var(--discuss-tint-dark);
+}
+
 .discuss-pane.showing-member .code-editor,
 .discuss-pane.showing-member .code-editor * {
   -webkit-user-select: none;

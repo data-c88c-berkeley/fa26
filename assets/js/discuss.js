@@ -43,11 +43,20 @@
   var MAX_CODE = 20000;      // code chars shared/saved per question (server cap)
   var MAX_MEMBERS = 10;      // members shown at once (matches the server + palette)
 
-  // One background tint per group member: near-white hue tints, close to
-  // the editors' default light-gray ground so the differences stay subtle.
+  // One background tint per group member, in each color scheme (same index
+  // = same member). Light: near-white hue tints, close to the editors'
+  // default light-gray ground so the differences stay subtle. Dark: the same
+  // hues as very dark tints near the dark scheme's code-block ground, with
+  // white text on top. Both go on the element as custom properties and
+  // assignment.css picks one by [data-theme], so the site's live light/dark
+  // toggle switches tints without a reload.
   var PALETTE = [
     '#fdf0e2', '#e9f7e6', '#e4f6f8', '#f9edfa', '#faf8e0',
     '#e8f0fc', '#fcecec', '#efecfb', '#e9f6ef', '#fbeff2',
+  ];
+  var DARK_PALETTE = [
+    '#3a2a1c', '#1e3620', '#1a353b', '#361e39', '#37351a',
+    '#1e2a45', '#3d1f1f', '#282244', '#1c3529', '#3b1f2a',
   ];
 
   // ── Page identity and storage ─────────────────────────────────────────────
@@ -676,7 +685,7 @@
   // session even if a member leaves.
   var colorSlots = {};       // client id -> palette index
 
-  function colorFor(id) {
+  function slotFor(id) {
     if (!(id in colorSlots)) {
       var used = {};
       Object.keys(colorSlots).forEach(function (other) {
@@ -692,7 +701,20 @@
       }
       colorSlots[id] = slot;
     }
-    return PALETTE[colorSlots[id]];
+    return colorSlots[id];
+  }
+
+  // Give an element a member's tint in both schemes; the stylesheet applies
+  // whichever matches the page's [data-theme].
+  function tint(el, id) {
+    var slot = slotFor(id);
+    el.style.setProperty('--discuss-tint', PALETTE[slot]);
+    el.style.setProperty('--discuss-tint-dark', DARK_PALETTE[slot]);
+  }
+
+  function untint(el) {
+    el.style.removeProperty('--discuss-tint');
+    el.style.removeProperty('--discuss-tint-dark');
   }
 
   function tabName(text) {
@@ -750,7 +772,7 @@
     // pane color, and the outgoing code cleared away — so the switch feels
     // immediate; the member's code fills in on the next frame.
     q.pane.el.classList.add('showing-member');
-    q.wrapper.style.background = colorFor(id);
+    tint(q.wrapper, id);
     handle.setReadOnly(true);
     silently(function () { handle.setText(''); });
     renderPaneTabs(qid);
@@ -782,7 +804,7 @@
     if (!q.pane || q.pane.showing === null) return;
     q.pane.showing = null;
     q.pane.el.classList.remove('showing-member');
-    q.wrapper.style.background = '';
+    untint(q.wrapper);
     var handle = api(q);
     if (handle) {
       silently(function () {
@@ -840,7 +862,7 @@
       var tab = document.createElement('button');
       tab.type = 'button';
       tab.className = 'discuss-tab';
-      tab.style.background = colorFor(id);
+      tint(tab, id);
       var label = document.createElement('span');
       label.className = 'discuss-tab-name';
       label.textContent = tabName(members[id].name);
