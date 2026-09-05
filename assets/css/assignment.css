@@ -25,6 +25,28 @@
   content: none;
 }
 
+/* The discussion's link to its printable worksheet: a printer button at the
+   right end of the title line, explained by its hover text. Floated rather
+   than flexed so the h1's text and badge keep their inline layout. */
+.assignment-header .print-button {
+  float: right;
+  font-size: 0.6em;
+  line-height: 1;
+  margin: 0.2em 0 0 0.75em;
+  padding: 0.3em 0.45em;
+  border: 1px solid rgba(127, 127, 127, 0.45);
+  border-radius: 6px;
+  background: rgba(127, 127, 127, 0.12);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.assignment-header .print-button:hover,
+.assignment-header .print-button:focus-visible {
+  background: rgba(127, 127, 127, 0.28);
+  text-decoration: none;
+}
+
 .assignment-header .solution-badge {
   font-size: 0.6em;
   vertical-align: middle;
