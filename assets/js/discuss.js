@@ -21,6 +21,11 @@
 //     they can run their code). A strikes line counts the whole group's ❌s
 //     for the question. State is shared through the discuss server while
 //     members are on the page.
+//   * Observer (staff view): a page opened with #discuss-view=<token> (the
+//     View link on discuss.cs61a.org, see apps/discuss/server.py) watches
+//     one group without joining it. No join bar, nothing saved or shared,
+//     every editor read-only and Verify disabled; each pane shows a
+//     member's work, with one tab per member and no "You" tab.
 //
 // The editors announce themselves with bubbling code-editor-ready events and
 // expose a cmEditor handle on each wrapper (editor_src/code-editor.js);
@@ -68,6 +73,11 @@
   var PAGE_URL = location.origin + page;
   var ANSWERS_KEY = 'discuss-answers:' + page;
 
+  // Staff view: the token from a View link's hash. It stays in the URL (the
+  // hash never reaches a server, and a reload keeps watching).
+  var VIEW_TOKEN = (location.hash.match(/discuss-view=([^&]+)/) || [])[1] || null;
+  var OBSERVER = !!VIEW_TOKEN;
+
   function stored(key) {
     try { return localStorage.getItem(key); } catch (e) { return null; }
   }
@@ -89,6 +99,7 @@
 
   var answers = {};          // qid -> {code, status, history}; the saved record
   try { answers = JSON.parse(stored(ANSWERS_KEY)) || {}; } catch (e) {}
+  if (OBSERVER) answers = {};  // a watcher's own saved work never shows
 
   // ── The verify history (✅/❌ strings) ────────────────────────────────────
 
@@ -176,6 +187,7 @@
   }
 
   function record(qid, code, status, marks) {
+    if (OBSERVER) return;
     if (marks === undefined) marks = history(answers[qid]);
     answers[qid] = { code: clampCode(code), status: status, history: marks };
     store(ANSWERS_KEY, JSON.stringify(answers));
@@ -193,6 +205,7 @@
     }
     setStatus(qid, (saved && saved.status) || 'gray');
     showMarks(qid);
+    if (OBSERVER) handle.setReadOnly(true);
   }
 
   function showMarks(qid) {
@@ -202,7 +215,7 @@
 
   var saveTimers = {};
   document.addEventListener('code-editor-change', function (event) {
-    if (restoring) return;
+    if (restoring || OBSERVER) return;
     var wrapper = event.target;
     if (!wrapper.classList || !wrapper.classList.contains('code-editor')) return;
     var qid = questionFor(wrapper);
@@ -215,6 +228,7 @@
   });
 
   function flushSaves() {
+    if (OBSERVER) return;
     Object.keys(saveTimers).forEach(function (qid) {
       clearTimeout(saveTimers[qid]);
       var q = questions[qid];
@@ -399,7 +413,7 @@
 
   function runCheck(qid) {
     var q = questions[qid];
-    if (!q || !api(q) || showingMember(q)) return;
+    if (!q || !api(q) || showingMember(q) || OBSERVER) return;
     var button = q.check;
     var failedRun = false;
     button.disabled = true;
@@ -466,6 +480,7 @@
     button.className = 'discuss-check-button';
     button.dataset.state = (answers[qid] && answers[qid].status) || 'gray';
     button.textContent = 'Verify';
+    button.disabled = OBSERVER;  // only a member can run their own code
     button.addEventListener('click', function () { runCheck(qid); });
     var marks = document.createElement('span');
     marks.className = 'discuss-history';
@@ -499,6 +514,22 @@
     bar = document.createElement('div');
     bar.className = 'discuss-bar';
 
+    joined = document.createElement('div');
+    joined.className = 'discuss-joined';
+    hint = document.createElement('span');
+    hint.className = 'discuss-hint';
+    hint.hidden = true;
+
+    if (OBSERVER) {
+      // No form, no Leave, no auto-rejoin: `group` stays null, so nothing
+      // ever syncs or leaves on this page's behalf.
+      bar.append(joined, hint);
+      assignment.insertBefore(bar, assignment.firstChild);
+      showObserving(null);
+      startObserving();
+      return;
+    }
+
     form = document.createElement('form');
     var nameInput = document.createElement('input');
     nameInput.type = 'text';
@@ -531,15 +562,7 @@
     label.className = 'discuss-bar-label';
     label.textContent = 'Discuss with your group:';
     form.append(label, nameInput, groupInput, join);
-
-    joined = document.createElement('div');
-    joined.className = 'discuss-joined';
     joined.hidden = true;
-
-    hint = document.createElement('span');
-    hint.className = 'discuss-hint';
-    hint.hidden = true;
-
     bar.append(form, joined, hint);
     assignment.insertBefore(bar, assignment.firstChild);
 
@@ -564,6 +587,19 @@
     leave.textContent = 'Leave';
     leave.addEventListener('click', leaveGroup);
     joined.append(who, text, leave);
+  }
+
+  // The observer's bar: who is watching what, and the way back to the tiles.
+  function showObserving(label, back) {
+    joined.textContent = '';
+    var who = document.createElement('strong');
+    who.textContent = 'Staff view';
+    var text = document.createElement('span');
+    text.textContent = label === null ? ' — connecting… ' : ' — Group ' + label + ' ';
+    var link = document.createElement('a');
+    link.href = back || SERVER + '/';  // this course's staff view
+    link.textContent = 'Active groups';
+    joined.append(who, text, link);
   }
 
   function joinGroup(newName, newGroup) {
@@ -613,22 +649,47 @@
     return body;
   }
 
+  // Carry the status so a caller can tell "server rejected us" (4xx) apart
+  // from "server unreachable" (a network failure, which rejects the fetch
+  // itself with no status).
+  function parsed(response) {
+    if (!response.ok) {
+      var error = new Error('sync ' + response.status);
+      error.status = response.status;
+      throw error;
+    }
+    return response.json();
+  }
+
   function sync(leave) {
     // No Content-Type header: the request stays CORS-simple (no preflight).
     return fetch(SERVER + '/sync', {
       method: 'POST',
       body: JSON.stringify(payload(leave)),
-    }).then(function (response) {
-      if (!response.ok) {
-        // Carry the status so poll() can tell "server rejected us" (4xx)
-        // apart from "server unreachable" (a network failure, which rejects
-        // the fetch itself with no status).
-        var error = new Error('sync ' + response.status);
-        error.status = response.status;
-        throw error;
-      }
-      return response.json();
+    }).then(parsed);
+  }
+
+  function observe() {
+    return fetch(SERVER + '/observe', {
+      method: 'POST',
+      body: JSON.stringify({ token: VIEW_TOKEN }),
+    }).then(parsed);
+  }
+
+  // Replace the membership with the server's reply and redraw the panes.
+  function applyMembers(data) {
+    members = {};
+    memberOrder = [];
+    // Never show more than the palette can distinguish; the server already
+    // caps this, so the slice is belt-and-suspenders.
+    (data.members || []).slice(0, MAX_MEMBERS).forEach(function (member) {
+      members[member.client] = {
+        name: member.name,
+        answers: member.answers || {},
+      };
+      memberOrder.push(member.client);
     });
+    renderPanes();
   }
 
   function poll() {
@@ -645,18 +706,7 @@
       } else {
         hint.hidden = true;
       }
-      members = {};
-      memberOrder = [];
-      // Never show more than the palette can distinguish; the server already
-      // caps this, so the slice is belt-and-suspenders.
-      (data.members || []).slice(0, MAX_MEMBERS).forEach(function (member) {
-        members[member.client] = {
-          name: member.name,
-          answers: member.answers || {},
-        };
-        memberOrder.push(member.client);
-      });
-      renderPanes();
+      applyMembers(data);
     }).catch(function (error) {
       failCount++;
       if (failCount >= STALE_AFTER) {
@@ -675,6 +725,40 @@
   function showHint(text) {
     hint.textContent = text;
     hint.hidden = false;
+  }
+
+  // ── Observing (staff view) ────────────────────────────────────────────────
+
+  var observedGroup = null;  // the group label shown in the bar
+
+  function observePoll() {
+    observe().then(function (data) {
+      failCount = 0;
+      hint.hidden = true;
+      if (String(data.group) !== observedGroup) {
+        observedGroup = String(data.group);
+        showObserving(observedGroup, data.back);
+      }
+      applyMembers(data);
+    }).catch(function (error) {
+      if (error && error.status === 403) {
+        // The token was signed for a few hours; after that, come back in
+        // through the tiles page for a fresh one.
+        if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+        showHint('This staff view link has expired; reopen it from '
+          + SERVER.replace(/^https?:\/\//, '') + '.');
+        return;
+      }
+      failCount++;
+      if (failCount >= STALE_AFTER) {
+        showHint('Staff view is offline (can\'t reach the server); retrying.');
+      }
+    });
+  }
+
+  function startObserving() {
+    if (!pollTimer) pollTimer = setInterval(observePoll, POLL_MS);
+    observePoll();
   }
 
   // ── Per-pane member tabs ──────────────────────────────────────────────────
@@ -810,11 +894,11 @@
       silently(function () {
         if (handle.getText() !== q.pane.ownText) handle.setText(q.pane.ownText);
       });
-      handle.setReadOnly(false);
+      handle.setReadOnly(OBSERVER);
     }
     if (q.check) {
       q.check.dataset.state = q.ownState;
-      q.check.disabled = coolingDown(q);
+      q.check.disabled = OBSERVER || coolingDown(q);
       showMarks(qid);
     }
     renderPaneTabs(qid);
@@ -845,19 +929,21 @@
     q.pane.sig = sig;
     var tabs = q.pane.tabs;
     tabs.textContent = '';
-    var you = document.createElement('button');
-    you.type = 'button';
-    you.className = 'discuss-tab discuss-tab-you';
-    var youLabel = document.createElement('span');
-    youLabel.className = 'discuss-tab-name';
-    youLabel.textContent = tabName('You (' + name + ')');
-    var youSeq = document.createElement('span');
-    youSeq.className = 'discuss-tab-marks';
-    youSeq.textContent = abbrev(history(answers[qid]));
-    you.append(youLabel, youSeq);
-    if (q.pane.showing === null) you.classList.add('active');
-    you.addEventListener('click', function () { showYou(qid); });
-    tabs.appendChild(you);
+    if (!OBSERVER) {  // a watcher has no work of their own to show
+      var you = document.createElement('button');
+      you.type = 'button';
+      you.className = 'discuss-tab discuss-tab-you';
+      var youLabel = document.createElement('span');
+      youLabel.className = 'discuss-tab-name';
+      youLabel.textContent = tabName('You (' + name + ')');
+      var youSeq = document.createElement('span');
+      youSeq.className = 'discuss-tab-marks';
+      youSeq.textContent = abbrev(history(answers[qid]));
+      you.append(youLabel, youSeq);
+      if (q.pane.showing === null) you.classList.add('active');
+      you.addEventListener('click', function () { showYou(qid); });
+      tabs.appendChild(you);
+    }
     memberOrder.forEach(function (id) {
       var tab = document.createElement('button');
       tab.type = 'button';
@@ -898,6 +984,9 @@
       if (q.pane.showing && memberOrder.indexOf(q.pane.showing) < 0) {
         showYou(qid); // whoever was shown has left
       }
+      // A watcher's pane always shows someone: the first member until a
+      // tab is clicked, the next one when the shown member leaves.
+      if (OBSERVER && !q.pane.showing) showMember(qid, memberOrder[0]);
       renderPaneTabs(qid);
       if (q.pane.showing) refreshShown(qid);
     });
