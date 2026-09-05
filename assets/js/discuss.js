@@ -302,6 +302,22 @@
     '                examples.extend(parser.get_examples(docstring))',
     '    return examples',
     '',
+    'def _discuss_error(e):',
+    '    # The one line Python would print last: the type and its message',
+    '    # (a SyntaxError\'s names the line, since the code was compiled as',
+    '    # "your code").',
+    '    return type(e).__name__ + (": " + str(e) if str(e) else "")',
+    '',
+    'class _DiscussRunner(doctest.DocTestRunner):',
+    '    # Remembers the first exception an example raised, in one line.',
+    '    error = None',
+    '    def report_unexpected_exception(self, out, test, example, exc_info):',
+    '        if self.error is None:',
+    '            self.error = (example.source.strip() + " raised "',
+    '                          + _discuss_error(exc_info[1]))',
+    '        doctest.DocTestRunner.report_unexpected_exception(',
+    '            self, out, test, example, exc_info)',
+    '',
     'def _discuss_check(canonical, student, lib=""):',
     '    examples = _discuss_examples(canonical)',
     '    env = {}',
@@ -311,19 +327,18 @@
     '        # use them, overridden by the student\'s own definitions.',
     '        if lib:',
     '            exec(lib, env)',
-    '        exec(student, env)',
-    '    except BaseException:',
-    '        return json.dumps({"ok": False,',
-    '            "output": traceback.format_exc(limit=0)})',
+    '        exec(compile(student, "your code", "exec"), env)',
+    '    except BaseException as e:',
+    '        return json.dumps({"ok": False, "error": _discuss_error(e)})',
     '    if not examples:',
     '        return json.dumps({"ok": False,',
-    '            "output": "No doctests found for this question."})',
+    '            "error": "No doctests found for this question."})',
     '    test = doctest.DocTest(examples, env, "question", None, 0, None)',
     '    out = io.StringIO()',
-    '    runner = doctest.DocTestRunner(verbose=False,',
+    '    runner = _DiscussRunner(verbose=False,',
     '        optionflags=doctest.ELLIPSIS)',
     '    result = runner.run(test, out=out.write, clear_globs=False)',
-    '    return json.dumps({"ok": result.failed == 0,',
+    '    return json.dumps({"ok": result.failed == 0, "error": runner.error,',
     '        "output": out.getvalue()})',
   ].join('\n');
 
@@ -425,11 +440,18 @@
         marks = marks.slice(0, 4) + marks.slice(4 - MAX_HISTORY);
       }
       setStatus(qid, status);
+      // An exception is named (its type and one-line message, from the
+      // harness: a SyntaxError or NameError in the code, or the first one
+      // an example raised). Beyond that only the outcome is reported (the
+      // button color and ❌ mark), not the failing doctests: working out
+      // what went wrong is the exercise.
+      if (q.output) {
+        q.output.textContent = result.error || '';
+        q.output.hidden = !result.error;
+      }
       record(qid, api(q).getText(), status, marks);
       showMarks(qid);
       renderPanes();
-      // Only the outcome is reported (the button color and ❌ mark), not
-      // the failing doctests: working out what went wrong is the exercise.
       if (!result.ok) failedRun = true;
     }).catch(function () {
       if (q.output) {

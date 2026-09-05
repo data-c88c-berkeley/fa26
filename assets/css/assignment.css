@@ -63,6 +63,20 @@
   background: rgba(0, 50, 98, 0.08);
 }
 
+/* Python Tutor has no dark mode: paints no background of its own;
+   dark text unreadable on dark mode page --> light background for readability. */
+iframe[src*="pythontutor.com"] {
+  background: #fff;
+  color-scheme: light;
+  border-radius: 4px;
+}
+
+/* Dimmed as a whole rather than tinted, so nothing Python Tutor paints white
+   itself is left brighter than the surface around it. */
+[data-theme="dark"] iframe[src*="pythontutor.com"] {
+  filter: brightness(0.9);
+}
+
 /* Python-command switch (python3/python/py rewritten in commands), inserted
    by assignment.js when a page contains python3 commands. The zero-height
    bar overlays the pill on the right end of the page-title line, so it adds
@@ -273,10 +287,12 @@ pre.wwpd .wwpd-answer {
 /* The Reset button code-editor.js appends below each editor. Theme-neutral
    like the rest of the editor: it borrows the wrapper's text color (also for
    the border, via currentColor) and signals state with opacity alone, so it
-   keeps its contrast in either color scheme. */
+   keeps its contrast in either color scheme. Its own right margin keeps it
+   off the wrapper's edge: the wrapper carries no padding of its own (the
+   listing's inset is copied onto the editor element instead). */
 .code-editor-reset {
   display: block;
-  margin: 0.5em 0 0.5em auto;
+  margin: 0.5em 0.5em 0.5em auto;
   padding: 0.1em 0.7em;
   font-family: inherit;
   font-size: 0.8em;
@@ -296,6 +312,15 @@ pre.wwpd .wwpd-answer {
 .code-editor-reset:disabled {
   opacity: 0.4;
   cursor: default;
+}
+
+/* The hover tooltip on a squiggle (python-lint.js). The editor carries no
+   CodeMirror theme, so its tooltip is light in both schemes; restyle it for
+   the dark one. */
+[data-theme="dark"] .code-editor .cm-tooltip {
+  background: #2a2a2e;
+  color: #e6e6e6;
+  border-color: #555;
 }
 
 /* ── Discuss (discuss.js): group bar, member tabs, Verify, cooldown ────── */
