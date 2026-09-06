@@ -1,6 +1,4 @@
 ---
-title: Monday 8/31
-week: 2
 date: 2026-08-31
 ---
 

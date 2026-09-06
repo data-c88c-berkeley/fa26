@@ -1,5 +1,5 @@
 {% assign today = site.time | date: "%Y-%m-%d" %}
-{% assign announcements = site.announcements | sort: 'week' | reverse %}
+{% assign announcements = site.announcements | sort: 'date' | reverse %}
 {% assign most_recent = nil %}
 
 <div id="announcement-container" style="border: 1px solid var(--border-color); padding: 20px; border-radius: 5px; background-color: var(--code-background-color);">
@@ -12,12 +12,13 @@
 
     {% for post in announcements %}
     {% assign announcement_date = post.date | date: "%Y-%m-%d" %}
-    {% if post.week and post.week >= 0 and announcement_date <= today %}
+    {% assign announcement_title = post.date | date: "%A %-m/%-d" %}
+    {% if post.date and announcement_date <= today %}
       {% if most_recent == nil %}{% assign most_recent = post %}{% endif %}
 
-      <div class="announcement" data-week="{{ post.week }}" data-date="{{ announcement_date }}" {% if post != most_recent %}style="display: none;"{% endif %}>
+      <div class="announcement" data-date="{{ announcement_date }}" {% if post != most_recent %}style="display: none;"{% endif %}>
         <div class="announcement-inner">
-          <h2 id="{{ post.title | slugify }}" style="margin-top: 0; margin-bottom: 5px; color: var(--heading-color);">{{ post.title }}</h2>
+          <h2 id="{{ announcement_title | slugify }}" style="margin-top: 0; margin-bottom: 5px; color: var(--heading-color);">{{ announcement_title }}</h2>
           
           <div class="announcement-meta" style="color: var(--body-text-color); opacity: 0.9; font-size: 0.9em; margin-bottom: 20px;">
             {% if post.date %}{{ post.date | date: '%b %e' }}  {% endif %}

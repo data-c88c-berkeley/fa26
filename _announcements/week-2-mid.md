@@ -1,6 +1,4 @@
 ---
-title: Wednesday 9/2
-week: 2.5
 date: 2026-09-02
 ---
 

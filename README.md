@@ -9,8 +9,9 @@ Based on the [berkeley-class-site](https://github.com/berkeley-cdss/berkeley-cla
 template (Jekyll + Just the Docs + Just the Class).
 
 Assignment pages (homework, labs, discussions, projects) are generated and
-published into this repository by `61a-build` from the private assignments
-repository; do not hand-edit them here.
+published into this repository by `publish-61a release` from the private
+assignments repository; do not hand-edit them here. To see an assignment page
+before it is released, run `publish-61a preview` there.
 
 ## Local development
 
