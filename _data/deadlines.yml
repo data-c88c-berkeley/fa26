@@ -19,3 +19,9 @@ deadlines:
   label: Homework 1
   title: Functions
   link: /hw/hw01/
+- when: Fri 9/11
+  day: '2026-09-11'
+  kind: lab
+  label: Lab 2
+  title: Control
+  link: /labs/lab02/
