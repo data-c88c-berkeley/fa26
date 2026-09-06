@@ -14,6 +14,8 @@ seo:
 
 {% include announcement-navigation.html %}
 
+{% include upcoming-deadlines.html %}
+
 <div>
 {%- include schedule.html -%}
 </div>
