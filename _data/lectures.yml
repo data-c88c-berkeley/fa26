@@ -40,9 +40,18 @@ lectures:
   - title: "Environments"       # Mon 09/14
     slug: environments
   - title: "Abstraction"        # Wed 09/16
+    slug: abstraction
   # Week 5
   - title: "Recursion"          # Mon 09/21
+    slug: recursion
+    readings:
+      - title: "1.7"
+        link: https://composingprograms.com/3ed/recursive-functions/
   - title: "Tree Recursion"     # Wed 09/23
+    slug: tree-recursion
+    readings:
+      - title: "1.7"
+        link: https://composingprograms.com/3ed/recursive-functions/#tree-recursion
   # Week 6
   - title: "Sequences"          # Mon 09/28
   - title: "Containers"         # Wed 09/30
