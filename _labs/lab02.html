@@ -1,0 +1,160 @@
+---
+title: "Lab 2: Control"
+layout: assignment
+nav_exclude: true
+excerpt_separator: ""
+due: "Friday 09/11"
+---
+
+{% raw %}
+<header class="assignment-header"><h1>Lab 2: Control</h1><ul class="assignment-facts"><li><strong>Due:</strong> Friday 09/11 @ 11:59pm</li><li><strong>Points:</strong> 1</li><li><strong>Download:</strong> <a href="lab02.zip">lab02.zip</a></li></ul></header>
+<h1 id="attendance">Attendance</h1>
+<p>You need to submit the lab problems in addition to attending to get credit for lab. Students in mega lab only need to submit the lab problems. Preceptor interviews are highly recommended but <strong>not required</strong> for lab submissions.</p>
+<p>If you are in regular lab, your TA will come around during lab to check you in. If you didn't attend for a good reason (such as being sick), fill out this form (within 2 weeks of your lab): <a href="https://forms.gle/QsRLAvLnn5xoJgdv9">attendance form</a>.</p>
+<h1 id="required-questions">Required Questions</h1>
+<h2 id="what-would-python-display-wwpd">What Would Python Display? (WWPD)</h2>
+<h3 id="q1-wwpd-what-if">Q1: WWPD: What If?</h3>
+<p>Predict what Python will display by running this unlocking session:</p>
+<blockquote>
+<p><strong>Hint</strong>: <code>print</code> (unlike <code>return</code>) does <em>not</em> cause a function to exit.</p>
+</blockquote>
+<div class="pytest-command" data-command="python3 -m pytest -k if_statements --unlock"><pre><code>python3 -m pytest -k if_statements --unlock</code></pre></div>
+<details class="unlock-examples" open>
+<summary>Unlocking Examples</summary>
+<pre class="wwpd"><code>
+&gt;&gt;&gt; def ab(c, d):
+...     if c &gt; 5:
+...         print(c)
+...     elif c &gt; 7:
+...         print(d)
+...     print(&#x27;foo&#x27;)
+&gt;&gt;&gt; ab(10, 20)
+<span class="wwpd-blank">______</span>
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; def bake(cake, make):
+...     if cake == 0:
+...         cake = cake + 1
+...         print(cake)
+...     if cake == 1:
+...         print(make)
+...     else:
+...         return cake
+...     return make
+&gt;&gt;&gt; bake(0, 5)
+<span class="wwpd-blank">______</span>
+<span class="wwpd-blank">______</span>
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; bake(1, &quot;yum&quot;)
+<span class="wwpd-blank">______</span>
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; bake(2, 3)
+<span class="wwpd-blank">______</span>
+</code></pre>
+</details>
+<h2 id="write-code">Write Code</h2>
+<h3 id="q2-falling-factorial">Q2: Falling Factorial</h3>
+<p>Let's write a function <code>falling</code>, which is a &quot;falling&quot; factorial
+that takes two arguments, <code>n</code> and <code>k</code>, and returns the product of <code>k</code>
+consecutive numbers, starting from <code>n</code> and working downwards.
+When <code>k</code> is 0, the function should return 1.</p>
+<pre class="highlight language-python"><code><span class="k">def</span><span class="w"> </span><span class="nf">falling</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the falling factorial of n to depth k.</span>
+
+<span class="sd">    &gt;&gt;&gt; falling(6, 3)  # 6 * 5 * 4</span>
+<span class="sd">    120</span>
+<span class="sd">    &gt;&gt;&gt; falling(4, 3)  # 4 * 3 * 2</span>
+<span class="sd">    24</span>
+<span class="sd">    &gt;&gt;&gt; falling(4, 1)  # 4</span>
+<span class="sd">    4</span>
+<span class="sd">    &gt;&gt;&gt; falling(4, 0)</span>
+<span class="sd">    1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre>
+<div class="pytest-command" data-command="python3 -m pytest -k falling"><pre><code>python3 -m pytest -k falling</code></pre></div>
+<h3 id="q3-divisible-by-k">Q3: Divisible By k</h3>
+<p>Write a function <code>divisible_by_k</code> that takes positive integers <code>n</code> and <code>k</code>.
+It prints all positive integers less than or equal to <code>n</code> that are divisible
+by <code>k</code> from smallest to largest. Then, it returns how many numbers were
+printed.</p>
+<pre class="highlight language-python"><code><span class="k">def</span><span class="w"> </span><span class="nf">divisible_by_k</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Print all positive integers up to n that are divisible by k from smallest</span>
+<span class="sd">    to largest, then return how many numbers were printed.</span>
+
+<span class="sd">    &gt;&gt;&gt; a = divisible_by_k(10, 2)  # 2, 4, 6, 8, and 10 are divisible by 2</span>
+<span class="sd">    2</span>
+<span class="sd">    4</span>
+<span class="sd">    6</span>
+<span class="sd">    8</span>
+<span class="sd">    10</span>
+<span class="sd">    &gt;&gt;&gt; a</span>
+<span class="sd">    5</span>
+<span class="sd">    &gt;&gt;&gt; b = divisible_by_k(3, 1)  # 1, 2, and 3 are divisible by 1</span>
+<span class="sd">    1</span>
+<span class="sd">    2</span>
+<span class="sd">    3</span>
+<span class="sd">    &gt;&gt;&gt; b</span>
+<span class="sd">    3</span>
+<span class="sd">    &gt;&gt;&gt; c = divisible_by_k(6, 7)  # There are no integers up to 6 that are divisible by 7</span>
+<span class="sd">    &gt;&gt;&gt; c</span>
+<span class="sd">    0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre>
+<div class="pytest-command" data-command="python3 -m pytest -k divisible_by_k"><pre><code>python3 -m pytest -k divisible_by_k</code></pre></div>
+<h3 id="q4-double-eights">Q4: Double Eights</h3>
+<p>Write a function that takes in a number and determines if the digits contain
+two adjacent 8s.</p>
+<pre class="highlight language-python"><code><span class="k">def</span><span class="w"> </span><span class="nf">double_eights</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return true if n has two eights in a row.</span>
+<span class="sd">    &gt;&gt;&gt; double_eights(8)</span>
+<span class="sd">    False</span>
+<span class="sd">    &gt;&gt;&gt; double_eights(88)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; double_eights(2882)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; double_eights(880088)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; double_eights(12345)</span>
+<span class="sd">    False</span>
+<span class="sd">    &gt;&gt;&gt; double_eights(80808080)</span>
+<span class="sd">    False</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre>
+<div class="pytest-command" data-command="python3 -m pytest -k double_eights"><pre><code>python3 -m pytest -k double_eights</code></pre></div>
+<h1 id="submit-assignment">Submit Assignment</h1>
+<p>Submit this assignment by running
+<strong>Provenance: Prepare Submission Bundle</strong> from the VS Code command palette and
+uploading the resulting zip <strong>to Gradescope</strong>. The zip already contains the
+files you've edited.
+<a href="../../labs/lab00/#task-c-submit-the-assignment">Lab 00</a> has detailed
+instructions.</p>
+<p>Your responses to WWPD questions are not submitted, and they do not need to
+be. Lab credit is based on the code writing questions.</p>
+<h1 id="optional-questions">Optional Questions</h1>
+<blockquote>
+<p>These questions are optional. If you don't complete them, you will
+still receive credit for this assignment. They are great practice, so do them
+anyway!</p>
+</blockquote>
+<h2 id="q5-sum-digits">Q5: Sum Digits</h2>
+<p>Write a function that takes in a nonnegative integer and sums its digits.
+(Using floor division and modulo might be helpful here!)</p>
+<pre class="highlight language-python"><code><span class="k">def</span><span class="w"> </span><span class="nf">sum_digits</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sum all the digits of y.</span>
+
+<span class="sd">    &gt;&gt;&gt; sum_digits(10) # 1 + 0 = 1</span>
+<span class="sd">    1</span>
+<span class="sd">    &gt;&gt;&gt; sum_digits(4224) # 4 + 2 + 2 + 4 = 12</span>
+<span class="sd">    12</span>
+<span class="sd">    &gt;&gt;&gt; sum_digits(1234567890)</span>
+<span class="sd">    45</span>
+<span class="sd">    &gt;&gt;&gt; a = sum_digits(123) # make sure that you are using return rather than print</span>
+<span class="sd">    &gt;&gt;&gt; a</span>
+<span class="sd">    6</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre>
+<div class="pytest-command" data-command="python3 -m pytest -k sum_digits"><pre><code>python3 -m pytest -k sum_digits</code></pre></div>
+{% endraw %}
