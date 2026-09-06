@@ -63,8 +63,9 @@
   background: rgba(0, 50, 98, 0.08);
 }
 
-/* Python Tutor has no dark mode: paints no background of its own;
-   dark text unreadable on dark mode page --> light background for readability. */
+/* Python Tutor embeds (topic pages) have no dark mode and paint no
+   background of their own, so they get a light one: their dark text is
+   unreadable on the dark scheme's ground. */
 iframe[src*="pythontutor.com"] {
   background: #fff;
   color-scheme: light;
@@ -290,13 +291,28 @@ pre.wwpd .wwpd-answer {
    keeps its contrast in either color scheme. Its own right margin keeps it
    off the wrapper's edge: the wrapper carries no padding of its own (the
    listing's inset is copied onto the editor element instead). */
-.code-editor-reset {
-  display: block;
-  margin: 0.5em 0.5em 0.5em auto;
+/* The row under an editor: Reset, and (on discussion pages) the Discuss
+   app's Visualize link beside it, styled alike. */
+.code-editor-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5em;
+  margin: 0.5em;
+}
+
+.code-editor-reset,
+.discuss-visualize {
+  /* A button and a link, boxed alike: the link would otherwise take the
+     listing's line-height and size its border outside its box. */
+  display: inline-block;
+  box-sizing: border-box;
+  line-height: normal;
   padding: 0.1em 0.7em;
   font-family: inherit;
   font-size: 0.8em;
   color: inherit;
+  text-decoration: none;
   background: transparent;
   border: 1px solid currentColor;
   border-radius: 4px;
@@ -305,7 +321,9 @@ pre.wwpd .wwpd-answer {
 }
 
 .code-editor-reset:hover:enabled,
-.code-editor-reset:focus-visible {
+.code-editor-reset:focus-visible,
+.discuss-visualize:hover,
+.discuss-visualize:focus-visible {
   opacity: 1;
 }
 
@@ -492,7 +510,7 @@ pre.wwpd .wwpd-answer {
   user-select: none;
 }
 
-.discuss-pane.showing-member .code-editor-reset {
+.discuss-pane.showing-member .code-editor-actions {
   display: none;
 }
 
@@ -539,14 +557,17 @@ pre.wwpd .wwpd-answer {
   letter-spacing: 0.1em;
 }
 
-/* Failed-doctest output under a red button. */
+/* An exception (SyntaxError, NameError, or the first one an example
+   raised) named in one line next to the Verify button, after the marks. */
 .discuss-check-output {
-  margin: 0.5rem 0 0;
-  padding: 0.5rem 0.75rem;
+  margin-left: 0.75em;
   font-size: 0.75rem;
-  border: 1px solid rgba(127, 127, 127, 0.45);
-  border-left: 3px solid #c62828;
-  border-radius: 4px;
-  overflow-x: auto;
+  color: #c62828;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+[data-theme="dark"] .discuss-check-output {
+  color: #ef9a9a;
 }
 

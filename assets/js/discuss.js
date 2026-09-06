@@ -10,7 +10,9 @@
 //     every press. The doctests come from the editor's published listing
 //     (cmEditor.original), never its current contents, so editing or
 //     deleting them cannot fake a pass. A failed verify cools the button
-//     down for 30 seconds.
+//     down for 30 seconds, and a reload does not cut the wait short.
+//   * Visualize: a link beside Reset that opens a Python Tutor diagram of
+//     the code (plus the doctests as calls) in a new tab.
 //   * Saved answers: edits, outcomes, and the verify history are kept in
 //     localStorage per page and restored on the next visit. The server
 //     never stores answers.
@@ -72,6 +74,7 @@
   if (page.slice(-1) !== '/') page += '/';
   var PAGE_URL = location.origin + page;
   var ANSWERS_KEY = 'discuss-answers:' + page;
+  var COOLDOWN_KEY = 'discuss-cooldown:' + page;
 
   // Staff view: the token from a View link's hash. It stays in the URL (the
   // hash never reaches a server, and a reload keeps watching).
@@ -101,6 +104,14 @@
   try { answers = JSON.parse(stored(ANSWERS_KEY)) || {}; } catch (e) {}
   if (OBSERVER) answers = {};  // a watcher's own saved work never shows
 
+  // qid -> epoch ms when a failed verify's cooldown ends, so a reload does
+  // not skip the wait. Only the live ones are kept; the record goes away
+  // once the last one runs out.
+  var cooldowns = {};
+  try { cooldowns = JSON.parse(stored(COOLDOWN_KEY)) || {}; } catch (e) {}
+  if (OBSERVER) cooldowns = {};
+  saveCooldowns();  // drop the ones that ran out while the page was closed
+
   // ── The verify history (✅/❌ strings) ────────────────────────────────────
 
   function history(record) {
@@ -119,7 +130,8 @@
 
   // ── Questions: editors and Verify widgets ─────────────────────────────────
 
-  // qid -> {wrapper, check, marks, output, pane, ownState, cooldownUntil}.
+  // qid -> {wrapper, check, marks, output, pane, ownState, cooldownUntil,
+  // visualize}.
   // The editor handle is wrapper.cmEditor once mounted; pane appears when
   // the group first has another member (see buildPanes).
   var questions = {};
@@ -147,7 +159,7 @@
     if (!questions[qid]) {
       questions[qid] = { wrapper: null, check: null, marks: null,
                          output: null, pane: null, ownState: 'gray',
-                         cooldownUntil: 0 };
+                         cooldownUntil: 0, visualize: null };
       order.push(qid);
     }
     var q = questions[qid];
@@ -176,7 +188,7 @@
     var q = questions[qid];
     q.ownState = status;
     if (q.check && !showingMember(q)) q.check.dataset.state = status;
-    if (q.output && status !== 'red') q.output.hidden = true;
+    if (q.output) q.output.hidden = true;
   }
 
   // What is saved and shared is bounded: a giant paste (all of Shakespeare
@@ -205,6 +217,7 @@
     }
     setStatus(qid, (saved && saved.status) || 'gray');
     showMarks(qid);
+    buildVisualize(qid);
     if (OBSERVER) handle.setReadOnly(true);
   }
 
@@ -440,9 +453,10 @@
         marks = marks.slice(0, 4) + marks.slice(4 - MAX_HISTORY);
       }
       setStatus(qid, status);
-      // An exception is named (its type and one-line message, from the
-      // harness: a SyntaxError or NameError in the code, or the first one
-      // an example raised). Beyond that only the outcome is reported (the
+      // An exception is named next to the button, to the right of the
+      // marks (its type and one-line message, from the harness: a
+      // SyntaxError or NameError in the code, or the first one an example
+      // raised). Beyond that only the outcome is reported (the
       // button color and ❌ mark), not the failing doctests: working out
       // what went wrong is the exercise.
       if (q.output) {
@@ -472,14 +486,31 @@
 
   function coolingDown(q) { return q.cooldownUntil > Date.now(); }
 
-  function startCooldown(qid) {
+  function saveCooldowns() {
+    var now = Date.now();
+    Object.keys(cooldowns).forEach(function (qid) {
+      if (!(cooldowns[qid] > now)) delete cooldowns[qid];
+    });
+    store(COOLDOWN_KEY,
+          Object.keys(cooldowns).length ? JSON.stringify(cooldowns) : null);
+  }
+
+  // A fresh cooldown, or (given `until`, from storage) the rest of one that
+  // a reload interrupted. A saved deadline never buys more than a full
+  // cooldown, in case the clock has moved.
+  function startCooldown(qid, until) {
     var q = questions[qid];
-    q.cooldownUntil = Date.now() + COOLDOWN_MS;
+    var now = Date.now();
+    q.cooldownUntil = Math.min(until || 0, now + COOLDOWN_MS) || now + COOLDOWN_MS;
+    cooldowns[qid] = q.cooldownUntil;
+    saveCooldowns();
     q.check.disabled = true;
     function step() {
       var left = q.cooldownUntil - Date.now();
       if (left <= 0) {
         clearInterval(timer);
+        delete cooldowns[qid];
+        saveCooldowns();
         q.check.textContent = 'Verify';
         if (!showingMember(q)) q.check.disabled = false;
         return;
@@ -491,6 +522,88 @@
     }
     step();
     var timer = setInterval(step, 5000);
+  }
+
+  // ── Visualize (Python Tutor, in a new tab) ───────────────────────────────
+
+  // A link beside Reset in the editor's action row, to a Python Tutor
+  // diagram of the code in the pane with the listing's doctests appended as
+  // calls so there is something to step through: a red button says only
+  // that something is wrong, and this is how a student finds out what.
+  // The Composing Programs edition of Python Tutor (the textbook's and the
+  // lectures'), not the vanilla visualizer: it draws lists and function
+  // parents the way the course does. mode=display opens straight on the
+  // diagram. A new tab, not an iframe: the page is a full one, with its
+  // own title, links, and ads, and the diagram wants the room anyway.
+  var TUTOR_URL = 'https://pythontutor.com/cp/composingprograms.html#code=';
+  var TUTOR_OPTS = '&cumulative=true&curInstr=0&mode=display' +
+                   '&origin=composingprograms.js&py=3&rawInputLstJSON=%5B%5D';
+  var PROMPT = /^>>>( |$)/;
+  var CONTINUE = /^\.\.\.( |$)/;
+
+  // The calls in the listing's doctests: every `>>>` line plus the `...`
+  // continuations right after it, without prompts or expected output. A
+  // bare `...` body only counts as a continuation when it follows a prompt.
+  function doctestCalls(original) {
+    var calls = [];
+    var inExample = false;
+    original.split('\n').forEach(function (line) {
+      var text = line.replace(/^\s+/, '');
+      if (PROMPT.test(text) || (inExample && CONTINUE.test(text))) {
+        calls.push(text.slice(4));
+        inExample = true;
+      } else {
+        inExample = false;   // expected output, prose, or ordinary code
+      }
+    });
+    return calls.join('\n');
+  }
+
+  function tutorCode(qid) {
+    var q = questions[qid];
+    var parts = [];
+    if (q.lib) parts.push(q.lib);     // Link, the tree ADT: as Verify does
+    parts.push(api(q).getText());
+    var calls = doctestCalls(api(q).original);
+    if (calls) parts.push('# doctests\n' + calls);
+    return clampCode(parts.join('\n\n'));
+  }
+
+  function tutorUrl(code) {
+    return TUTOR_URL + encodeURIComponent(code) + TUTOR_OPTS;
+  }
+
+  // The link carries the program in its fragment, so it is rebuilt from the
+  // pane on the events that precede a navigation — rather than on every
+  // keystroke — which keeps it a real link: middle-click and cmd-click open
+  // the current code too. (A groupmate's code is never offered: the action
+  // row is hidden with their pane, and the guard here backs that up.)
+  function freshenLink(qid) {
+    var q = questions[qid];
+    if (!api(q) || showingMember(q)) return;
+    q.visualize.href = tutorUrl(tutorCode(qid));
+  }
+
+  // Built once the question has both its editor (the row to sit in) and its
+  // Verify widget (the doctests and lib to include); either can come second.
+  function buildVisualize(qid) {
+    var q = questions[qid];
+    if (OBSERVER || q.visualize || !q.check || !api(q)) return;
+    var actions = q.wrapper.querySelector('.code-editor-actions');
+    if (!actions) return;
+    var link = document.createElement('a');
+    link.className = 'discuss-visualize';
+    link.href = TUTOR_URL;
+    link.target = '_blank';
+    link.rel = 'noopener';
+    link.textContent = 'Visualize';
+    link.title = 'Step through an environment diagram of this code in ' +
+                 'Python Tutor (opens a new tab)';
+    ['pointerdown', 'focus', 'click'].forEach(function (event) {
+      link.addEventListener(event, function () { freshenLink(qid); });
+    });
+    actions.prepend(link);
+    q.visualize = link;
   }
 
   document.querySelectorAll('.discuss-check').forEach(function (box) {
@@ -506,7 +619,7 @@
     button.addEventListener('click', function () { runCheck(qid); });
     var marks = document.createElement('span');
     marks.className = 'discuss-history';
-    var output = document.createElement('pre');
+    var output = document.createElement('code');  // exception, after the marks
     output.className = 'discuss-check-output';
     output.hidden = true;
     box.append(button, marks, output);
@@ -514,12 +627,15 @@
     q.check = button;
     q.marks = marks;
     q.output = output;
+    buildVisualize(qid);
     showMarks(qid);
+    // A cooldown that a reload interrupted picks up where it left off.
+    if (!OBSERVER && cooldowns[qid] > Date.now()) startCooldown(qid, cooldowns[qid]);
   });
 
   // ── Group membership (top bar) ────────────────────────────────────────────
 
-  var group = null;          // non-negative integer while joined
+  var group = null;          // the group's name (trimmed) while joined
   var name = stored('discuss-name') || '';
   var members = {};          // client id -> {name, answers}
   var memberOrder = [];      // client ids in the server's join order
@@ -560,9 +676,8 @@
     nameInput.value = name;
     nameInput.setAttribute('aria-label', 'Name');
     var groupInput = document.createElement('input');
-    groupInput.type = 'number';
-    groupInput.min = '0';
-    groupInput.step = '1';
+    groupInput.type = 'text';  // any name: 3, 3a, "back table"…
+    groupInput.maxLength = 64;
     groupInput.placeholder = 'Group number';
     groupInput.setAttribute('aria-label', 'Group number');
     var join = document.createElement('button');
@@ -570,15 +685,13 @@
     join.textContent = 'Join Group';
     join.disabled = true;
     function validate() {
-      join.disabled = !(nameInput.value.trim() &&
-        /^\d+$/.test(groupInput.value.trim()));
+      join.disabled = !(nameInput.value.trim() && groupInput.value.trim());
     }
     nameInput.addEventListener('input', validate);
     groupInput.addEventListener('input', validate);
     form.addEventListener('submit', function (event) {
       event.preventDefault();
-      joinGroup(nameInput.value.trim(),
-                parseInt(groupInput.value.trim(), 10));
+      joinGroup(nameInput.value.trim(), groupInput.value.trim());
     });
     var label = document.createElement('span');
     label.className = 'discuss-bar-label';
@@ -589,10 +702,10 @@
     assignment.insertBefore(bar, assignment.firstChild);
 
     var saved = stored('discuss-group');
-    if (name && saved && /^\d+$/.test(saved)) {
-      groupInput.value = saved;
+    if (name && saved && saved.trim()) {
+      groupInput.value = saved.trim();
       validate();              // setting .value fires no input event
-      joinGroup(name, parseInt(saved, 10)); // auto-rejoin is idempotent
+      joinGroup(name, saved.trim()); // auto-rejoin is idempotent
     }
   }
 
@@ -628,7 +741,7 @@
     name = newName;
     group = newGroup;
     store('discuss-name', name);
-    store('discuss-group', String(group));
+    store('discuss-group', group);
     dirty = true;
     showJoined();
     if (!pollTimer) pollTimer = setInterval(poll, POLL_MS);
