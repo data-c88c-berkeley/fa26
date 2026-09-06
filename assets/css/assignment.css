@@ -223,6 +223,40 @@ details.hint summary {
   font-weight: 600;
 }
 
+/* The "Unlocking Examples" toggle under an unlock command box: a button
+   that reveals the transcript of the locked doctests (blanks to predict). */
+details.unlock-examples {
+  margin: 0.5rem 0 1rem;
+}
+
+details.unlock-examples > summary {
+  display: inline-block;
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.3rem 0.8rem;
+  border: 1px solid rgba(127, 127, 127, 0.4);
+  border-radius: 4px;
+}
+
+details.unlock-examples > summary::-webkit-details-marker {
+  display: none;
+}
+
+details.unlock-examples > summary::before {
+  content: "\25B8  ";
+}
+
+details.unlock-examples[open] > summary::before {
+  content: "\25BE  ";
+}
+
+details.unlock-examples > pre.wwpd {
+  margin-top: 0.75rem;
+}
+
 .solution {
   margin: 1rem 0;
   padding: 0.75rem 1rem;
