@@ -12,9 +12,8 @@ seo:
 
 **Fall 2026, UC Berkeley**
 
-{% include announcement-navigation.html %}
-
 {% include upcoming-deadlines.html %}
+{% include announcement-navigation.html %}
 
 <div>
 {%- include schedule.html -%}

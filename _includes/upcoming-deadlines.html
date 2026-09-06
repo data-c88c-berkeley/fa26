@@ -5,19 +5,24 @@ publish-61a release). Rendered statically, like the announcements pane: a
 deadline drops off at the next site build after it passes. Jekyll builds in
 UTC and the dates are Pacific, so "today" is taken 8 hours behind the build
 time to keep a deadline listed through the end of its day. Nothing is
-rendered when no deadline is pending.
+rendered when no deadline is pending. The pane sits directly above the
+announcements and is styled as the top section of that card: no gap, no
+bottom edge of its own, and the announcement card's top corners squared.
 {%- endcomment -%}
 {%- assign today = site.time | date: '%s' | minus: 28800 | date: '%Y-%m-%d' -%}
 {%- assign pending = site.data.deadlines.deadlines | default: empty | where_exp: "d", "d.day >= today" -%}
 {%- if pending.size > 0 -%}
-<div id="upcoming-deadlines" style="border: 1px solid var(--border-color); padding: 20px; border-radius: 5px; background-color: var(--code-background-color); margin-top: 20px;">
-  <div style="margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; text-align: center;">
-    <span style="font-weight: bold; color: var(--body-text-color); text-transform: uppercase; letter-spacing: 1px; font-size: 0.8em; opacity: 0.9;">Upcoming Deadlines</span>
-  </div>
-  <ul style="list-style: none; padding: 0; margin: 0;">
+<style>
+  #upcoming-deadlines + #announcement-container { border-top-left-radius: 0 !important; border-top-right-radius: 0 !important; }
+  #upcoming-deadlines ul { list-style: none; padding: 0; margin: 0; }
+  #upcoming-deadlines li { padding-left: 0; margin-bottom: 4px; }
+  #upcoming-deadlines li::before { content: none; }
+</style>
+<div id="upcoming-deadlines" style="border: 1px solid var(--border-color); border-bottom: none; padding: 14px 20px 0; border-radius: 5px 5px 0 0; background-color: var(--code-background-color); margin-bottom: 0;">
+  <ul>
   {%- for d in pending %}
-    <li style="margin-bottom: 6px;">
-      <span style="display: inline-block; min-width: 5.5em; font-weight: bold;">{{ d.when }}</span>
+    <li>
+      <span style="display: inline-block; min-width: 7.5em; font-weight: bold;">Due {{ d.when }}</span>
       {%- if d.label %}
       <strong class="label {% case d.kind %}{% when 'hw' %}label-homework-released{% when 'lab' %}label-lab{% when 'proj' %}label-project{% endcase %}">{{ d.label }}</strong>
       {%- endif %}
