@@ -41,7 +41,8 @@
   var POLL_MS = 1000;        // group sync cadence
   var SAVE_MS = 2000;        // debounce for saving/sharing edits
   var STALE_AFTER = 3;       // failed polls before the offline notice
-  var COOLDOWN_MS = 30000;   // Verify lockout after a failed run
+  var COOLDOWN_MS = 20000;   // Verify lockout after a failed run
+  var ERROR_COOLDOWN_MS = 5000; // ...but only this after an exception
   var RUN_TIMEOUT_MS = 2000; // a verify slower than this counts as a failure
   var PASS = '✅';
   var FAIL = '❌';
@@ -443,7 +444,7 @@
     var q = questions[qid];
     if (!q || !api(q) || showingMember(q) || OBSERVER) return;
     var button = q.check;
-    var failedRun = false;
+    var cooldownMs = 0;  // set by a failed run
     button.disabled = true;
     button.textContent = workerReady ? 'Checking…' : 'Loading Python…';
     runInWorker(api(q).original, api(q).getText(), q.lib).then(function (result) {
@@ -466,7 +467,10 @@
       record(qid, api(q).getText(), status, marks);
       showMarks(qid);
       renderPanes();
-      if (!result.ok) failedRun = true;
+      // An exception (a SyntaxError or NameError in the code, or one an
+      // example raised) is a quick fix, so it earns a much shorter wait
+      // than failing doctests or a timeout.
+      if (!result.ok) cooldownMs = result.error ? ERROR_COOLDOWN_MS : COOLDOWN_MS;
     }).catch(function () {
       if (q.output) {
         q.output.textContent =
@@ -478,11 +482,11 @@
       // textContent replaces the button's children.
       button.textContent = 'Verify';
       button.disabled = showingMember(q) || coolingDown(q);
-      if (failedRun) startCooldown(qid);
+      if (cooldownMs) startCooldown(qid, 0, cooldownMs);
     });
   }
 
-  // ── Cooldown: 30s between failed verifies, with a progress ring ───────────
+  // ── Cooldown: 20s between failed verifies (5s after an exception) ────────
 
   function coolingDown(q) { return q.cooldownUntil > Date.now(); }
 
@@ -495,13 +499,15 @@
           Object.keys(cooldowns).length ? JSON.stringify(cooldowns) : null);
   }
 
-  // A fresh cooldown, or (given `until`, from storage) the rest of one that
-  // a reload interrupted. A saved deadline never buys more than a full
-  // cooldown, in case the clock has moved.
-  function startCooldown(qid, until) {
+  // A fresh cooldown of `ms` (the full COOLDOWN_MS unless given), or
+  // (given `until`, from storage) the rest of one that a reload
+  // interrupted. A saved deadline never buys more than a full cooldown,
+  // in case the clock has moved.
+  function startCooldown(qid, until, ms) {
     var q = questions[qid];
     var now = Date.now();
-    q.cooldownUntil = Math.min(until || 0, now + COOLDOWN_MS) || now + COOLDOWN_MS;
+    q.cooldownUntil = Math.min(until || 0, now + COOLDOWN_MS)
+                      || now + (ms || COOLDOWN_MS);
     cooldowns[qid] = q.cooldownUntil;
     saveCooldowns();
     q.check.disabled = true;
@@ -515,7 +521,7 @@
         if (!showingMember(q)) q.check.disabled = false;
         return;
       }
-      // Counts 30, 25, ..., 5: a 5-second tick is enough to explain the
+      // Counts 20, 15, 10, 5: a 5-second tick is enough to explain the
       // wait without the flicker of a per-second countdown.
       q.check.textContent =
         'Retry in ' + (Math.ceil(left / 5000) * 5) + 's';
