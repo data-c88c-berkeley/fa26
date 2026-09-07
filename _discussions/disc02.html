@@ -1,0 +1,201 @@
+---
+title: "Discussion 2: Control"
+layout: assignment
+nav_exclude: true
+excerpt_separator: ""
+---
+
+{% raw %}
+<header class="assignment-header"><h1>Discussion 2: Control<a class="print-button" href="print.html" title="Printable version" aria-label="Printable version">🖨️</a></h1></header>
+<h2 id="while-and-if">While and If</h2>
+<p>Learning to use <code>if</code> and <code>while</code> is essential. During this discussion,
+focus on what we've studied in the first three lectures: <code>if</code>, <code>while</code>,
+assignment (<code>=</code>), comparison (<code>&lt;</code>, <code>&gt;</code>, <code>==</code>, ...), and arithmetic. Please don't
+use <strong>any</strong> features of Python that we haven't discussed in class yet, such as <code>for</code>,
+<code>range</code>, and lists. We'll have plenty of time for those later, but
+now is the time to practice <code>if</code> (textbook
+<a href="https://composingprograms.com/3ed/control#conditional-statements">1.5.4</a>)
+and <code>while</code> (textbook
+<a href="https://composingprograms.com/3ed/control#conditional-statements">1.5.5</a>).</p>
+<h3 id="q1-fizzbuzz">Q1: Fizzbuzz</h3>
+<p>Implement the classic <a href="https://en.wikipedia.org/wiki/Fizz_buzz"><em>Fizz Buzz</em>
+sequence</a>. The <code>fizzbuzz</code> function
+takes a positive integer <code>n</code> and prints out a <em>single line</em> for each integer
+from 1 to <code>n</code>. For each <code>i</code>:</p>
+<ul>
+<li>If <code>i</code> is divisible by both 3 and 5, print <code>fizzbuzz</code>.</li>
+<li>If <code>i</code> is divisible by 3 (but not 5), print <code>fizz</code>.</li>
+<li>If <code>i</code> is divisible by 5 (but not 3), print <code>buzz</code>.</li>
+<li>Otherwise, print the number <code>i</code>.</li>
+</ul>
+<p>Try to make your implementation of <code>fizzbuzz</code> concise.</p>
+<div class="code-editor" data-language="python" data-question="fizzbuzz">
+<pre class="highlight language-python"><code><span class="k">def</span><span class="w"> </span><span class="nf">fizzbuzz</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &gt;&gt;&gt; result = fizzbuzz(16)</span>
+<span class="sd">    1</span>
+<span class="sd">    2</span>
+<span class="sd">    fizz</span>
+<span class="sd">    4</span>
+<span class="sd">    buzz</span>
+<span class="sd">    fizz</span>
+<span class="sd">    7</span>
+<span class="sd">    8</span>
+<span class="sd">    fizz</span>
+<span class="sd">    buzz</span>
+<span class="sd">    11</span>
+<span class="sd">    fizz</span>
+<span class="sd">    13</span>
+<span class="sd">    14</span>
+<span class="sd">    fizzbuzz</span>
+<span class="sd">    16</span>
+<span class="sd">    &gt;&gt;&gt; print(result)</span>
+<span class="sd">    None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre>
+</div>
+<div class="discuss-check" data-question="fizzbuzz"></div>
+<h2 id="problem-solving">Problem Solving</h2>
+<p>A useful approach to implementing a function is to:</p>
+<ol>
+<li>Pick an example input and corresponding output.</li>
+<li>Describe a process (in English) that computes the output from the input using simple steps.</li>
+<li>Figure out what additional names you'll need to carry out this process.</li>
+<li>Implement the process in code using those additional names.</li>
+<li>Determine whether the implementation really works on your original example.</li>
+<li>Determine whether the implementation really works on other examples. (If not, you might need to revise step 2.)</li>
+</ol>
+<p>Importantly, this approach doesn't go straight from reading a question to
+writing code.</p>
+<p><strong>Important:</strong> <strong>Don't</strong> check your work using a computer right away. Instead,
+talk to your group and think to try to figure out if an answer is correct. On
+exams, you won't be able to guess and check because you won't have a Python
+interpreter. Now is a great time to practice checking your work by thinking
+through examples. You could even draw an environment diagram!</p>
+<p>If you're not sure about how something works or get stuck, ask for help from
+the course staff.</p>
+<h3 id="q2-is-prime">Q2: Is Prime?</h3>
+<p>Write a function that returns <code>True</code> if a positive integer <code>n</code> is a prime
+number and <code>False</code> otherwise.</p>
+<p>A prime number n is a number that is not divisible by any numbers other than
+1 and n itself. For example, 13 is prime, since it is only divisible by 1 and
+13, but 14 is not, since it is divisible by 1, 2, 7, and 14.</p>
+<p>Use the <code>%</code> operator: <code>x % y</code> returns the remainder of <code>x</code> when divided by <code>y</code>.</p>
+<p>The approach to implementing functions described above would go:</p>
+<ol>
+<li>Pick <code>n</code> is 9 as the input and <code>False</code> as the output.</li>
+<li>Invent a process to determine whether 9 is prime, such as: Check that <code>9</code>
+(<code>n</code>) is not a multiple of any integers between 1 and <code>9</code> (<code>n</code>).</li>
+<li>Introduce <code>i</code> to represent each number between 1 and 9 (<code>n</code>).</li>
+<li>Implement <code>is_prime</code></li>
+<li>Check that <code>is_prime(9)</code> will return <code>False</code> by thinking through the execution of the code.</li>
+<li>Check that <code>is_prime(3)</code> will return <code>True</code> and <code>is_prime(1)</code> will return <code>False</code>.</li>
+</ol>
+<div class="code-editor" data-language="python" data-question="is_prime">
+<pre class="highlight language-python"><code><span class="k">def</span><span class="w"> </span><span class="nf">is_prime</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &gt;&gt;&gt; is_prime(10)</span>
+<span class="sd">    False</span>
+<span class="sd">    &gt;&gt;&gt; is_prime(7)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; is_prime(1) # one is not a prime number!!</span>
+<span class="sd">    False</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre>
+</div>
+<details class="hint"><summary>Hint</summary><div>
+<p>Here's a <code>while</code> statement that goes through all numbers above 1 and below <code>n</code>:</p>
+<pre><code>i = 2
+while i &lt; n:
+    ...
+    i = i + 1
+</code></pre>
+<p>You can use <code>n % i == 0</code> to check whether <code>i</code> is a factor of <code>n</code>. If it is,
+<code>return False</code>.</p>
+</div></details>
+<div class="discuss-check" data-question="is_prime"></div>
+<p><strong>Description Time</strong>: Come up with a <strong>one sentence description</strong> of the
+process you implemented to solve <code>is_prime</code> that you think someone could
+understand without looking at your code. Try not to just read your code, but
+instead describe the process it carries out.</p>
+<h2 id="recommended-but-more-challenging-if-theres-time">Recommended, but more challenging (if there's time)</h2>
+<h3 id="q3-repeating">Q3: Repeating</h3>
+<p><strong>Definition</strong>: A positive integer <code>n</code> is a <em>repeating sequence</em> of positive
+integer <code>m</code> if <code>n</code> is written by repeating the digits of <code>m</code> one or more times.
+For example, 616161 is a repeating sequence of 61, but 61616 is not.</p>
+<p>Implement <code>repeating</code> which takes positive integers <code>t</code> and <code>n</code>. It returns
+whether <code>n</code> is a repeating sequence of some <code>t</code>-digit integer.</p>
+<blockquote>
+<p><strong>Tip:</strong> You can use <code>//</code> and <code>%</code> to separate a positive integer into its last few digits and all the ones before those.</p>
+</blockquote>
+<div class="code-editor" data-language="python" data-question="repeating">
+<pre class="highlight language-python"><code><span class="k">def</span><span class="w"> </span><span class="nf">repeating</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return whether t digits repeat to form positive integer n.</span>
+
+<span class="sd">    &gt;&gt;&gt; repeating(1, 6161)</span>
+<span class="sd">    False</span>
+<span class="sd">    &gt;&gt;&gt; repeating(2, 6161)  # repeats 61 (2 digits)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; repeating(3, 6161)</span>
+<span class="sd">    False</span>
+<span class="sd">    &gt;&gt;&gt; repeating(4, 6161)  # repeats 6161 (4 digits)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; repeating(5, 6161)  # there are only 4 digits</span>
+<span class="sd">    False</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">pow</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">t</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">n</span><span class="p">:</span>  <span class="c1"># make sure n has at least t digits</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">_____</span>
+    <span class="k">while</span> <span class="n">n</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">%</span> <span class="nb">pow</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span> <span class="o">!=</span> <span class="n">end</span><span class="p">:</span>
+           <span class="k">return</span> <span class="n">_____</span>
+        <span class="n">_____</span>
+    <span class="k">return</span> <span class="kc">True</span>
+</code></pre>
+</div>
+<details class="hint"><summary>Hint</summary><div>
+<p>The iterative process needed to implement this function is to repeatedly check
+that the last <code>t</code> digits of the current <code>n</code> match the last <code>t</code> digits of the
+original <code>n</code>, then remove the last <code>t</code> digits of the current <code>n</code>.</p>
+</div></details>
+<div class="discuss-check" data-question="repeating"></div>
+<h3 id="q4-unique-digits">Q4: Unique Digits</h3>
+<p>Write a function that returns the number of unique digits in a positive integer. Also implement <code>has_digit</code>, which
+determines whether a number <code>n</code> contains digit <code>k</code>, and call it in your
+implementation of <code>unique_digits</code>.</p>
+<blockquote>
+<p><strong>Tip:</strong> You can use <code>// 10</code> and <code>% 10</code> to separate a positive integer into its one's digit and the rest of its digits.</p>
+</blockquote>
+<div class="code-editor" data-language="python" data-question="unique_digits">
+<pre class="highlight language-python"><code><span class="k">def</span><span class="w"> </span><span class="nf">unique_digits</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the number of unique digits in positive integer n.</span>
+
+<span class="sd">    &gt;&gt;&gt; unique_digits(8675309) # All are unique</span>
+<span class="sd">    7</span>
+<span class="sd">    &gt;&gt;&gt; unique_digits(13173131) # 1, 3, and 7</span>
+<span class="sd">    3</span>
+<span class="sd">    &gt;&gt;&gt; unique_digits(101) # 0 and 1</span>
+<span class="sd">    2</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">has_digit</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns whether k is a digit in n.</span>
+
+<span class="sd">    &gt;&gt;&gt; has_digit(10, 1)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; has_digit(12, 7)</span>
+<span class="sd">    False</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">k</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="mi">10</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre>
+</div>
+<details class="hint"><summary>Hint</summary><div>
+<p>One approach is to loop through every digit from 0 to 9 and check whether <code>n</code>
+has the digit. Count up the ones it has.</p>
+</div></details>
+<div class="discuss-check" data-question="unique_digits"></div>
+{% endraw %}

@@ -6,7 +6,8 @@ discussions:
 - slug: disc01
   title: Functions
 - skip: true
-- title: Control, Environment Diagrams
+- slug: disc02
+  title: Control
 - skip: true
 - title: Higher-Order Functions
 - skip: true
