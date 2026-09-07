@@ -6,7 +6,8 @@ homework:
 - slug: hw01
   title: Functions (due Tue 9/8)
 - skip: true
-- title: Control (due Tue 9/15)
+- slug: hw02
+  title: Control (due Tue 9/15)
 - skip: true
 - title: Higher-Order Functions (due Tue 9/22)
 - skip: true

@@ -25,3 +25,9 @@ deadlines:
   label: Lab 2
   title: Control
   link: /labs/lab02/
+- when: Tue 9/15
+  day: '2026-09-15'
+  kind: hw
+  label: Homework 2
+  title: Control
+  link: /hw/hw02/

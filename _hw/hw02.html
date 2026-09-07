@@ -1,0 +1,136 @@
+---
+title: "Homework 2: Control"
+layout: assignment
+nav_exclude: true
+excerpt_separator: ""
+due: "Tuesday 09/15"
+---
+
+{% raw %}
+<header class="assignment-header"><h1>Homework 2: Control</h1><ul class="assignment-facts"><li><strong>Due:</strong> Tuesday 09/15 @ 11:59pm</li><li><strong>Points:</strong> 2</li><li><strong>Download:</strong> <a href="hw02.zip">hw02.zip</a></li></ul></header>
+<p class="assignment-intro">To receive credit, you must solve each problem and then complete a short checkoff interview about your solution. You may use Preceptor for the interview or come to office hours to be interviewed by a member of the course staff. <strong>Staff will be doing in-person checkoffs for up to 3 days after the assignment deadline (including any approved extension)</strong>. If a checkoff happens more than 3 days after the regular deadline, staff may ask to confirm your extended deadline via Flextensions. You will submit a Provenance bundle that includes a record of how you used VS Code, including interactions with Preceptor. Please do not use AI tools other than Preceptor for this assignment.</p>
+<p><strong>Readings:</strong> This homework relies on the following readings from
+<a href="https://composingprograms.com">Composing Programs</a>:</p>
+<ul>
+<li><a href="https://composingprograms.com/3ed/designing-functions">1.4: Designing Functions</a></li>
+<li><a href="https://composingprograms.com/3ed/control">1.5: Control</a></li>
+</ul>
+<h1 id="required-questions">Required Questions</h1>
+<h2 id="q1-hailstone">Q1: Hailstone</h2>
+<p>Douglas Hofstadter's Pulitzer-prize-winning book, <em>Gödel, Escher, Bach</em>, poses
+the following mathematical puzzle.</p>
+<ol>
+<li>Pick a positive integer <code>n</code> as the start.</li>
+<li>If <code>n</code> is even, divide it by 2.</li>
+<li>If <code>n</code> is odd, multiply it by 3 and add 1.</li>
+<li>Continue this process until <code>n</code> is 1.</li>
+</ol>
+<p>The number <code>n</code> will travel up and down but eventually end at 1 (at least for
+all numbers that have ever been tried—nobody has ever proved that the
+sequence will terminate). Analogously, a hailstone travels up and down in the
+atmosphere before eventually landing on earth.</p>
+<p>This sequence of values of <code>n</code> is often called a Hailstone sequence. Write a
+function that takes a single argument with formal parameter name <code>n</code>, prints
+out the hailstone sequence starting at <code>n</code>, and returns the number of steps in
+the sequence:</p>
+<pre class="highlight language-python"><code><span class="k">def</span><span class="w"> </span><span class="nf">hailstone</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Print the hailstone sequence starting at n and return its length.</span>
+
+<span class="sd">    &gt;&gt;&gt; a = hailstone(10)</span>
+<span class="sd">    10</span>
+<span class="sd">    5</span>
+<span class="sd">    16</span>
+<span class="sd">    8</span>
+<span class="sd">    4</span>
+<span class="sd">    2</span>
+<span class="sd">    1</span>
+<span class="sd">    &gt;&gt;&gt; a</span>
+<span class="sd">    7</span>
+<span class="sd">    &gt;&gt;&gt; b = hailstone(1)</span>
+<span class="sd">    1</span>
+<span class="sd">    &gt;&gt;&gt; b</span>
+<span class="sd">    1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre>
+<p>Hailstone sequences can get quite long! Try 27. What's the longest you can
+find?</p>
+<blockquote>
+<p>Note that if <code>n == 1</code> initially, then the sequence is one step long. <br>
+<strong>Hint:</strong> If you see 4.0 but want just 4, try using floor division <code>//</code> instead of regular division <code>/</code>.</p>
+</blockquote>
+<div class="pytest-command" data-command="python3 -m pytest -k hailstone"><pre><code>python3 -m pytest -k hailstone</code></pre></div>
+<p><strong>Fun fact</strong>: In 2019, there was a major <a href="https://www.quantamagazine.org/mathematician-terence-tao-and-the-collatz-conjecture-20191211/">development</a> in understanding how the hailstone conjecture works for most numbers! This <a href="https://www.youtube.com/watch?v=IkPOwoqkE2Q">2026 StarTalk interview</a> with Terence Tao discusses the problem.</p>
+<h2 id="q2-abundant">Q2: Abundant</h2>
+<p><strong>Definitions</strong>:</p>
+<ul>
+<li>A <em>proper divisor</em> of positive integer <code>n</code> is a positive integer smaller than
+<code>n</code> that evenly divides <code>n</code>.</li>
+<li>A positive integer is <em>abundant</em> if it is smaller than the sum of of its
+proper divisors.</li>
+</ul>
+<p>Implement a function <code>abundant</code> that takes a positive integer <code>n</code>. It prints
+all ways of multiplying two positive integers to make <code>n</code>, with the smaller
+factor first, ordered from the smallest first factor to the largest. Each pair
+is printed only once (so <code>3 * 4</code> is printed but <code>4 * 3</code> is not). It
+returns whether <code>n</code> is an <em>abundant</em>.</p>
+<p><em>Hint</em>: To print <code>1 * 2</code>, write <code>print(1, '*', 2)</code>.</p>
+<pre class="highlight language-python"><code><span class="k">def</span><span class="w"> </span><span class="nf">abundant</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Print all ways of forming positive integer n by multiplying two positive</span>
+<span class="sd">    integers together, ordered by the first term. Then, return whether the sum</span>
+<span class="sd">    of the proper divisors of n is greater than n.</span>
+
+<span class="sd">    A proper divisor of n evenly divides n but is less than n.</span>
+
+<span class="sd">    &gt;&gt;&gt; abundant(12) # 1 + 2 + 3 + 4 + 6 is 16, which is larger than 12</span>
+<span class="sd">    1 * 12</span>
+<span class="sd">    2 * 6</span>
+<span class="sd">    3 * 4</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; abundant(14) # 1 + 2 + 7 is 10, which is not larger than 14</span>
+<span class="sd">    1 * 14</span>
+<span class="sd">    2 * 7</span>
+<span class="sd">    False</span>
+<span class="sd">    &gt;&gt;&gt; abundant(16)</span>
+<span class="sd">    1 * 16</span>
+<span class="sd">    2 * 8</span>
+<span class="sd">    4 * 4</span>
+<span class="sd">    False</span>
+<span class="sd">    &gt;&gt;&gt; abundant(20)</span>
+<span class="sd">    1 * 20</span>
+<span class="sd">    2 * 10</span>
+<span class="sd">    4 * 5</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; abundant(22)</span>
+<span class="sd">    1 * 22</span>
+<span class="sd">    2 * 11</span>
+<span class="sd">    False</span>
+<span class="sd">    &gt;&gt;&gt; r = abundant(24)</span>
+<span class="sd">    1 * 24</span>
+<span class="sd">    2 * 12</span>
+<span class="sd">    3 * 8</span>
+<span class="sd">    4 * 6</span>
+<span class="sd">    &gt;&gt;&gt; r</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; abundant(25)</span>
+<span class="sd">    1 * 25</span>
+<span class="sd">    5 * 5</span>
+<span class="sd">    False</span>
+<span class="sd">    &gt;&gt;&gt; abundant(156)</span>
+<span class="sd">    1 * 156</span>
+<span class="sd">    2 * 78</span>
+<span class="sd">    3 * 52</span>
+<span class="sd">    4 * 39</span>
+<span class="sd">    6 * 26</span>
+<span class="sd">    12 * 13</span>
+<span class="sd">    True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre>
+<div class="pytest-command" data-command="python3 -m pytest -k abundant"><pre><code>python3 -m pytest -k abundant</code></pre></div>
+<h2 id="submit">Submit</h2>
+<p>Run <strong>Provenance: Prepare Submission Bundle</strong> from
+the VS Code command palette to create your submission zip, and upload that zip
+<strong>to Gradescope</strong>. For a refresher on how to do this, refer to
+<a href="../../labs/lab00/#task-c-submit-the-assignment">Lab 00</a>.</p>
+{% endraw %}
