@@ -28,7 +28,7 @@ bottom edge of its own, and the announcement card's top corners squared.
       {%- endif %}
       <a href="{{ d.link | relative_url }}">{{ d.title | default: d.label }}</a>
       {%- if d.what %} {{ d.what }}{% endif -%}
-      {%- if d.note %} <span style="opacity: 0.8;">({{ d.note }})</span>{% endif %}
+      {%- if d.note %} ({{ d.note }}){% endif %}
     </li>
   {%- endfor %}
   </ul>
