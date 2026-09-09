@@ -64,10 +64,9 @@ You're not required to have the same partner for every project. Pair programming
 
 ### How do we submit/get grades as a pair?
 
-For non-project assignments, you should submit your work **individually**.
+You may complete projects with a partner. However, you both need to complete the project, each typing out all solutions (which are not very long). Each of you should turn in the project you typed out.
 
-If you're working on a **project** together with a partner, you can work on the same piece of code.
-**Only ONE** of you should needs to submit the assignment to Gradescope. You can add a partner to your Gradescope submission by clicking on **+ Add Group Member** under your name on the right hand side of your submission.
+Alternatively, if you and your partner work together to complete the project on one computer, switching off who types, then you both may submit the same Provenance zip from that one computer.
 
 ### What are the expectations of each partner in a pair?
 
