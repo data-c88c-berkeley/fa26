@@ -15,7 +15,7 @@ extra_days_col2:
     title: "Midterm 1 (in the CBTF)"
   - date: 2026-11-12
     label: exam
-    title: "Midterm 2"
+    title: "Midterm 2 (8pm-10pm)"
 
 # Days whose scheduled items are held on another date, e.g. a campus holiday
 # that falls on a lab day. Everything scheduled for `from` renders on the `to`

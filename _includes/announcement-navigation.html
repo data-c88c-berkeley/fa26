@@ -18,12 +18,7 @@
 
       <div class="announcement" data-date="{{ announcement_date }}" {% if post != most_recent %}style="display: none;"{% endif %}>
         <div class="announcement-inner">
-          <h2 id="{{ announcement_title | slugify }}" style="margin-top: 0; margin-bottom: 5px; color: var(--heading-color);">{{ announcement_title }}</h2>
-          
-          <div class="announcement-meta" style="color: var(--body-text-color); opacity: 0.9; font-size: 0.9em; margin-bottom: 20px;">
-            {% if post.date %}{{ post.date | date: '%b %e' }}  {% endif %}
-          </div>
-
+          <h2 id="{{ announcement_title | slugify }}" style="margin-top: 0; margin-bottom: 20px; color: var(--heading-color);">{{ announcement_title }}</h2>
           <div class="announcement-body" style="color: var(--body-text-color);">
             {{ post.content }}
           </div>
