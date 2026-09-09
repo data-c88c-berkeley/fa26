@@ -7,8 +7,6 @@ nav_exclude: true
 
 # Pair Programming
 
-~ title: Pair Programming
-
 Pair programming is a way to program collaboratively with a partner.
 It's a great approach when you're learning how to program,
 plus it's used by many companies in the tech industry.
