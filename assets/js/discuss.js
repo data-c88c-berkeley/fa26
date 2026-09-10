@@ -332,7 +332,7 @@
     '        doctest.DocTestRunner.report_unexpected_exception(',
     '            self, out, test, example, exc_info)',
     '',
-    'def _discuss_check(canonical, student, lib=""):',
+    'def _discuss_check(canonical, student, lib="", deps="[]"):',
     '    examples = _discuss_examples(canonical)',
     '    env = {}',
     '    try:',
@@ -341,6 +341,16 @@
     '        # use them, overridden by the student\'s own definitions.',
     '        if lib:',
     '            exec(lib, env)',
+    '        # The group\'s answers to the questions this one may call',
+    '        # (data-uses), since each editor is its own namespace. Each runs',
+    '        # on its own and forgivingly: a dependency still holding blanks',
+    '        # must not be reported as an error in this question\'s code, and',
+    '        # a definition here overrides it.',
+    '        for dep in json.loads(deps or "[]"):',
+    '            try:',
+    '                exec(dep, env)',
+    '            except BaseException:',
+    '                pass',
     '        exec(compile(student, "your code", "exec"), env)',
     '    except BaseException as e:',
     '        return json.dumps({"ok": False, "error": _discuss_error(e)})',
@@ -373,7 +383,7 @@
     '  ready.then(function (py) {',
     '    var check = py.globals.get("_discuss_check");',
     '    var out;',
-    '    try { out = check(data.canonical, data.student, data.lib); }',
+    '    try { out = check(data.canonical, data.student, data.lib, data.deps); }',
     '    finally { check.destroy(); }',
     '    postMessage(out);',
     '  }).catch(function () {',
@@ -405,7 +415,7 @@
     return workerReady;
   }
 
-  function runInWorker(canonical, student, lib) {
+  function runInWorker(canonical, student, lib, deps) {
     var run = runQueue.then(function () {
       return ensureWorker().then(function (w) {
         return new Promise(function (resolve) {
@@ -431,13 +441,29 @@
           };
           w.postMessage({
             canonical: clampCode(canonical), student: clampCode(student),
-            lib: lib || '',
+            lib: lib || '', deps: deps || '[]',
           });
         });
       });
     });
     runQueue = run.then(function () {}, function () {});
     return run;
+  }
+
+  // The code from the questions this one may call (data-uses), as JSON for
+  // the harness to run before the student's own. A member's pane shows their
+  // code rather than yours, so fall back to your own saved answer there.
+  function usedCode(q) {
+    var code = [];
+    (q.uses || []).forEach(function (name) {
+      var dep = questions[name];
+      if (!dep) return;
+      var text = showingMember(dep)
+        ? (answers[name] || {}).code || ''
+        : (api(dep) ? api(dep).getText() : '');
+      if (text) code.push(clampCode(text));
+    });
+    return JSON.stringify(code);
   }
 
   function runCheck(qid) {
@@ -447,7 +473,7 @@
     var cooldownMs = 0;  // set by a failed run
     button.disabled = true;
     button.textContent = workerReady ? 'Checking…' : 'Loading Python…';
-    runInWorker(api(q).original, api(q).getText(), q.lib).then(function (result) {
+    runInWorker(api(q).original, api(q).getText(), q.lib, usedCode(q)).then(function (result) {
       var status = result.ok ? 'green' : 'red';
       var marks = history(answers[qid]) + (result.ok ? PASS : FAIL);
       if (marks.length > MAX_HISTORY) { // invisible middle marks give way
@@ -630,6 +656,7 @@
     output.hidden = true;
     box.append(button, marks, output);
     q.lib = box.dataset.lib || '';
+    q.uses = (box.dataset.uses || '').split(/\s+/).filter(Boolean);
     q.check = button;
     q.marks = marks;
     q.output = output;
