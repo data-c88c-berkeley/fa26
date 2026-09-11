@@ -22,16 +22,22 @@ SKIPPED_RULES = [].freeze
 # e.g. <img data-a11y-errors="true" src="..." /> would pass even though it's missing alt text.
 EXCLUDED_ELEMENTS = [
   '[data-a11y-errors="true"]',
-  # Inside the Python Tutor embeds is a third-party document we cannot edit,
-  # and its code pane is a scrollable region with no keyboard access. Only
-  # that pane is excluded: the iframe elements we do write are still audited
-  # (they need a title), as is everything else Python Tutor renders.
-  { iframe: 'iframe[src*="pythontutor.com"]', selector: '#pyCodeOutputDiv' },
+  # The Python Tutor embeds render a third-party document we cannot edit: its
+  # code pane is a scrollable region with no keyboard access, its chrome sits
+  # outside any landmark, and its "Click to Start Visualization" text fails
+  # contrast. The whole embedded document is excluded; the iframe elements we
+  # write are still audited (they need a title).
+  { iframe: 'iframe[src*="pythontutor.com"]', selector: 'body' },
   # The Google Calendar embed renders a third-party document we cannot edit,
   # and its markup has contrast, landmark, and keyboard-access violations. The
   # whole embedded document is excluded; the iframe element we write is still
   # audited (it needs a title).
-  { iframe: 'iframe[src*="calendar.google.com"]', selector: 'body' }
+  { iframe: 'iframe[src*="calendar.google.com"]', selector: 'body' },
+  # The YouTube player embed is a third-party document we cannot edit, and its
+  # markup uses ARIA attributes axe rejects (aria-level on a link, aria-label
+  # on a role-less div). The whole embedded document is excluded; the iframe
+  # element we write is still audited (it needs a title).
+  { iframe: 'iframe[src*="youtube.com"]', selector: 'body' }
 ].freeze
 
 # Add pages here that do not need to have a11y tests run.
