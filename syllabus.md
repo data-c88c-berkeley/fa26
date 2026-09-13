@@ -236,11 +236,11 @@ Exam Study Guides:
 
 ### Excused Exams & Incompletes
 
-Student who are unable to take a midterm exam for an approved reason may be *excused* from the exam. If you are unable to take a midterm, please email c88c@berkeley.edu **before the exam** to describe your situation.  Reasons that may be approved include: illness, medical complications, travel, and course conflicts.
+Student who are unable to take a midterm exam for an approved reason may be *excused* from the exam. If you are unable to take a midterm, please email cs88@berkeley.edu **before the exam** to describe your situation.  Reasons that may be approved include: illness, medical complications, travel, and course conflicts.
 
 If a student is excused from a midterm exam, their exam score will be estimated via regression at the end of the course from their final exam score in a way that does not help or hurt their final grade on average. This method, which assigns them the average score on the missed exam among people who received the same or very similar scores on the final, takes into account variability in exam difficulty.
 
-Typically, students will not be excused from the final exam. However, students who cannot take the final exam for an approved reason **and** who have completed the assignments for the course may request an incomplete by emailing c88c@berkeley.edu. Students who receive an incomplete grade can complete the course by taking the final exam of a future offering of Data C88C.
+Typically, students will not be excused from the final exam. However, students who cannot take the final exam for an approved reason **and** who have completed the assignments for the course may request an incomplete by emailing cs88@berkeley.edu. Students who receive an incomplete grade can complete the course by taking the final exam of a future offering of Data C88C.
 
 ## Accommodations (DSP and Otherwise)
 

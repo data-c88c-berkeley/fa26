@@ -27,7 +27,7 @@ url: 'https://c88c.org' # the hostname & protocol for your site, e.g. http://exa
 # Course variables
 # Course variables can appear in various places around the website, if something isn't used leave it blank.
 course: Data C88C
-course_email: c88c@berkeley.edu
+course_email: cs88@berkeley.edu
 gradescope_course_id: # you can find this in the Gradescope URL after /courses
 bcourses_course_id: # Same as above, but for bCourses. Leave blank if not in use...
 ed_course_id: # Again, same as above.
