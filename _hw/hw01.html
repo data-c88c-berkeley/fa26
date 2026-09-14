@@ -26,7 +26,7 @@ evalutes to 5, just like the expression <code>2 + 3</code>.</p>
 <p>Fill in the blanks in the following function to add <code>a</code> to the
 absolute value of <code>b</code>, without calling the <code>abs</code> function. You may <strong>not</strong> modify any
 of the provided code other than the two blanks.</p>
-<pre class="highlight language-python"><code><span class="k">def</span><span class="w"> </span><span class="nf">a_plus_abs_b</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">a_plus_abs_b</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a+abs(b), but without calling abs.</span>
 
 <span class="sd">    &gt;&gt;&gt; a_plus_abs_b(2, 3)</span>
@@ -43,13 +43,13 @@ of the provided code other than the two blanks.</p>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">_____</span>
     <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-</code></pre>
+</code></pre></div></div>
 <div class="pytest-command" data-command="python3 -m pytest -k a_plus_abs_b"><pre><code>python3 -m pytest -k a_plus_abs_b</code></pre></div>
 <h2 id="q2-two-of-three">Q2: Two of Three</h2>
 <p>Write a function that takes three <em>positive</em> numbers as arguments and returns
 the sum of the squares of the two smallest numbers. <strong>Use only a single line
 for the body of the function.</strong></p>
-<pre class="highlight language-python"><code><span class="k">def</span><span class="w"> </span><span class="nf">two_of_three</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">two_of_three</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return m*m + n*n, where m and n are the two smallest members of the</span>
 <span class="sd">    positive numbers i, j, and k.</span>
 
@@ -63,14 +63,14 @@ for the body of the function.</strong></p>
 <span class="sd">    50</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_____</span>
-</code></pre>
+</code></pre></div></div>
 <blockquote>
 <p><strong>Hint:</strong> Consider using the <code>max</code> or <code>min</code> function:</p>
-<pre><code>&gt;&gt;&gt; max(1, 2, 3)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; max(1, 2, 3)
 3
 &gt;&gt;&gt; min(-1, -2, -3)
 -3
-</code></pre>
+</code></pre></div></div>
 </blockquote>
 <div class="pytest-command" data-command="python3 -m pytest -k two_of_three"><pre><code>python3 -m pytest -k two_of_three</code></pre></div>
 <h2 id="q3-move-to-the-end">Q3: Move to the End</h2>
@@ -83,7 +83,7 @@ zero is added to the end instead.</p>
 <p>The body of <code>move_to_end</code> must be a single return statement.</p>
 <p>Reimplement <code>pick_digit</code> from Lab 1 and <code>cut</code> from Discussion 1, then call them in
 your implementation of <code>move_to_end</code>.</p>
-<pre class="highlight language-python"><code><span class="k">def</span><span class="w"> </span><span class="nf">move_to_end</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">move_to_end</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return n with the digit at position k moved to the end.</span>
 
 <span class="sd">    &gt;&gt;&gt; move_to_end(97531, 2)</span>
@@ -122,7 +122,7 @@ your implementation of <code>move_to_end</code>.</p>
 <span class="sd">    3579</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">____</span>
-</code></pre>
+</code></pre></div></div>
 <p>Check each function separately:</p>
 <div class="pytest-command" data-command="python3 -m pytest -k pick_digit"><pre><code>python3 -m pytest -k pick_digit</code></pre></div>
 <div class="pytest-command" data-command="python3 -m pytest -k cut"><pre><code>python3 -m pytest -k cut</code></pre></div>
@@ -132,7 +132,7 @@ your implementation of <code>move_to_end</code>.</p>
 prints the smaller of the two numbers and returns the larger one.</p>
 <p>Before writing any code, study the doctest below to understand why these four
 lines are printed in this order.</p>
-<pre class="highlight language-python"><code><span class="k">def</span><span class="w"> </span><span class="nf">print_smaller</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">print_smaller</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Print the smaller of x and y and return the larger.</span>
 
 <span class="sd">    &gt;&gt;&gt; print_smaller(print_smaller(5, 3), print_smaller(4, 6))</span>
@@ -142,7 +142,7 @@ lines are printed in this order.</p>
 <span class="sd">    6</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
-</code></pre>
+</code></pre></div></div>
 <div class="pytest-command" data-command="python3 -m pytest -k print_smaller"><pre><code>python3 -m pytest -k print_smaller</code></pre></div>
 <h2 id="submit">Submit</h2>
 <p>Run <strong>Provenance: Prepare Submission Bundle</strong> from

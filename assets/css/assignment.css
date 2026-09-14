@@ -256,7 +256,7 @@ details.unlock-examples[open] > summary::before {
   content: "\25BE  ";
 }
 
-details.unlock-examples > pre.wwpd {
+details.unlock-examples > .highlighter-rouge {
   margin-top: 0.75rem;
 }
 

@@ -29,8 +29,8 @@ not received an invitation, please post on Ed and we will send you the invite.</
 <p>Using no command-line options will run the code in the file you provide and
 return you to the command line. If your file just contains function
 definitions, you'll see no output unless there is a syntax error.</p>
-<pre><code> python3 lab00.py
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> python3 lab00.py
+</code></pre></div></div>
 </li>
 <li>
 <p><strong><code>-i</code></strong>: The <code>-i</code> option runs the code in the file you provide, then opens
@@ -43,8 +43,8 @@ machines or <code>Ctrl-Z  Enter</code> on Windows.</p>
 <p>If you edit the Python file while running it interactively, you will need to
 exit and restart the interpreter in order for those changes to take effect.</p>
 <p>Here's how we can run <code>lab00.py</code> interactively:</p>
-<pre><code>    python3 -i lab00.py
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    python3 -i lab00.py
+</code></pre></div></div>
 <p>If the <code>python3</code> command doesn't work, please try using <code>python</code> or <code>py</code>. You
 can switch all of the copy/paste commands on this page from <code>python3</code> to
 <code>python</code> or <code>py</code> using the toggle at the top right.</p>
@@ -52,29 +52,29 @@ can switch all of the copy/paste commands on this page from <code>python3</code>
 <details class="hint"><summary>Division, Floor Div, and Modulo</summary><div>
 <p>Here are examples of the three division-related operators in Python 3.</p>
 <p><strong>True division: <code>/</code></strong> (decimal division)</p>
-<pre><code>&gt;&gt;&gt; 1 / 5
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; 1 / 5
 0.2
 &gt;&gt;&gt; 25 / 4
 6.25
 &gt;&gt;&gt; 4 / 2
 2.0
-</code></pre>
+</code></pre></div></div>
 <p><strong>Floor division: <code>//</code></strong> (integer division; discards the remainder)</p>
-<pre><code>&gt;&gt;&gt; 1 // 5
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; 1 // 5
 0
 &gt;&gt;&gt; 25 // 4
 6
 &gt;&gt;&gt; 4 // 2
 2
-</code></pre>
+</code></pre></div></div>
 <p><strong>Modulo: <code>%</code></strong> (the remainder after dividing)</p>
-<pre><code>&gt;&gt;&gt; 1 % 5
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; 1 % 5
 1
 &gt;&gt;&gt; 25 % 4
 1
 &gt;&gt;&gt; 4 % 2
 0
-</code></pre>
+</code></pre></div></div>
 <p>A <code>ZeroDivisionError</code> occurs when dividing by 0 with any of these operators.</p>
 <p>The remainder when dividing integer <code>n</code> by integer <code>k</code> is the smallest <code>r</code> such that <code>k*d + r</code> equals <code>n</code> for some integer <code>d</code>. The remainder when dividing <code>n</code>...</p>
 <ul>
@@ -84,8 +84,8 @@ can switch all of the copy/paste commands on this page from <code>python3</code>
 </ul>
 <p>One useful technique involving the <code>%</code> operator is to check
 whether a number <code>x</code> is divisible by another number <code>y</code>:</p>
-<pre><code>x % y == 0
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>x % y == 0
+</code></pre></div></div>
 <p>For example, in order to check if <code>x</code> is an even number: <code>x % 2 == 0</code></p>
 </div></details>
 <details class="hint"><summary>Return and Print</summary><div>
@@ -97,15 +97,15 @@ immediately.  If Python reaches the end of the function body without executing a
 <p>In contrast, the <code>print</code> function is used to display values. Unlike a <code>return</code>
 statement, when Python evaluates a call to <code>print</code>, the function containing that <code>print</code> call does <em>not</em>
 terminate immediately.</p>
-<pre><code>def what_prints():
-    print('Hello World!')
-    return 'Goodbye.'
-    print('What about me?')
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>def what_prints():
+    print(&#x27;Hello World!&#x27;)
+    return &#x27;Goodbye.&#x27;
+    print(&#x27;What about me?&#x27;)
 
 &gt;&gt;&gt; what_prints()
 Hello World!
-'Goodbye.'
-</code></pre>
+&#x27;Goodbye.&#x27;
+</code></pre></div></div>
 <blockquote>
 <p>Notice also that <code>print</code> displays just the text within the quotes, while
 the return value quotes are displayed as well.</p>
@@ -113,13 +113,13 @@ the return value quotes are displayed as well.</p>
 <p>Only the returned value, not the printed one, is the value of the call
 expression. Printed values are always displayed right away, but whether or when
 return values are displayed depends on the rest of the code.</p>
-<pre><code>&gt;&gt;&gt; result = what_prints()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; result = what_prints()
 Hello World!
 &gt;&gt;&gt; 2 + 2
 4
 &gt;&gt;&gt; result
-'Goodbye.'
-</code></pre>
+&#x27;Goodbye.&#x27;
+</code></pre></div></div>
 </div></details>
 <h2 id="what-would-python-display-wwpd">What Would Python Display? (WWPD)</h2>
 <h3 id="q1-return-and-print">Q1: Return and Print</h3>
@@ -127,7 +127,7 @@ Hello World!
 <div class="pytest-command" data-command="python3 -m pytest -k return_and_print --unlock"><pre><code>python3 -m pytest -k return_and_print --unlock</code></pre></div>
 <details class="unlock-examples" open>
 <summary>Unlocking Examples</summary>
-<pre class="wwpd"><code>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
 &gt;&gt;&gt; def welcome():
 ...     print(&#x27;Go&#x27;)
 ...     return &#x27;hello&#x27;
@@ -141,7 +141,7 @@ Hello World!
 <span class="wwpd-blank">______</span>
 <span class="wwpd-blank">______</span>
 <span class="wwpd-blank">______</span>
-</code></pre>
+</code></pre></div></div>
 </details>
 <h2 id="defining-functions">Defining Functions</h2>
 <h3 id="q2-pick-a-digit">Q2: Pick a Digit</h3>
@@ -154,7 +154,7 @@ that is <code>k</code> positions to the left of the rightmost digit, return 0.</
 <p><strong>Hint:</strong> Use <code>//</code> and <code>%</code> and the built-in <code>pow</code> function to isolate a
 particular digit of <code>n</code>.</p>
 </blockquote>
-<pre class="highlight language-python"><code><span class="k">def</span><span class="w"> </span><span class="nf">pick_digit</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">pick_digit</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the k-th digit from the right of n.</span>
 
 <span class="sd">    &gt;&gt;&gt; pick_digit(3579, 2)</span>
@@ -165,7 +165,7 @@ particular digit of <code>n</code>.</p>
 <span class="sd">    0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">____</span>
-</code></pre>
+</code></pre></div></div>
 <div class="pytest-command" data-command="python3 -m pytest -k pick_digit"><pre><code>python3 -m pytest -k pick_digit</code></pre></div>
 <h3 id="q3-middle-number">Q3: Middle Number</h3>
 <p>Implement <code>middle</code> by writing a single return expression that evaluates to the
@@ -174,13 +174,13 @@ value that is neither the largest or smallest among three different integers
 <blockquote>
 <p><strong>Hint:</strong> Try combining all the numbers and then taking away the ones you
 don't want to return by using the built-in <code>min</code> and <code>max</code> functions:</p>
-<pre><code>&gt;&gt;&gt; max(1, 2, 3)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; max(1, 2, 3)
 3
 &gt;&gt;&gt; min(-1, -2, -3)
 -3
-</code></pre>
+</code></pre></div></div>
 </blockquote>
-<pre class="highlight language-python"><code><span class="k">def</span><span class="w"> </span><span class="nf">middle</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">middle</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the number among a, b, and c that is not the smallest or largest.</span>
 <span class="sd">    Assume a, b, and c are all different numbers.</span>
 
@@ -194,7 +194,7 @@ don't want to return by using the built-in <code>min</code> and <code>max</code>
 <span class="sd">    30</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">____</span>
-</code></pre>
+</code></pre></div></div>
 <div class="pytest-command" data-command="python3 -m pytest -k middle"><pre><code>python3 -m pytest -k middle</code></pre></div>
 <h2 id="syllabus-quiz">Syllabus Quiz</h2>
 <h3 id="q4-syllabus-quiz">Q4: Syllabus Quiz</h3>

@@ -30,7 +30,7 @@ from 1 to <code>n</code>. For each <code>i</code>:</p>
 </ul>
 <p>Try to make your implementation of <code>fizzbuzz</code> concise.</p>
 <div class="code-editor" data-language="python" data-question="fizzbuzz">
-<pre class="highlight language-python"><code><span class="k">def</span><span class="w"> </span><span class="nf">fizzbuzz</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">fizzbuzz</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    &gt;&gt;&gt; result = fizzbuzz(16)</span>
 <span class="sd">    1</span>
@@ -53,7 +53,7 @@ from 1 to <code>n</code>. For each <code>i</code>:</p>
 <span class="sd">    None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
-</code></pre>
+</code></pre></div></div>
 </div>
 <div class="discuss-check" data-question="fizzbuzz"></div>
 <h2 id="problem-solving">Problem Solving</h2>
@@ -93,7 +93,7 @@ number and <code>False</code> otherwise.</p>
 <li>Check that <code>is_prime(3)</code> will return <code>True</code> and <code>is_prime(1)</code> will return <code>False</code>.</li>
 </ol>
 <div class="code-editor" data-language="python" data-question="is_prime">
-<pre class="highlight language-python"><code><span class="k">def</span><span class="w"> </span><span class="nf">is_prime</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">is_prime</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    &gt;&gt;&gt; is_prime(10)</span>
 <span class="sd">    False</span>
@@ -103,15 +103,15 @@ number and <code>False</code> otherwise.</p>
 <span class="sd">    False</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
-</code></pre>
+</code></pre></div></div>
 </div>
 <details class="hint"><summary>Hint</summary><div>
 <p>Here's a <code>while</code> statement that goes through all numbers above 1 and below <code>n</code>:</p>
-<pre><code>i = 2
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>i = 2
 while i &lt; n:
     ...
     i = i + 1
-</code></pre>
+</code></pre></div></div>
 <p>You can use <code>n % i == 0</code> to check whether <code>i</code> is a factor of <code>n</code>. If it is,
 <code>return False</code>.</p>
 </div></details>
@@ -131,7 +131,7 @@ whether <code>n</code> is a repeating sequence of some <code>t</code>-digit inte
 <p><strong>Tip:</strong> You can use <code>//</code> and <code>%</code> to separate a positive integer into its last few digits and all the ones before those.</p>
 </blockquote>
 <div class="code-editor" data-language="python" data-question="repeating">
-<pre class="highlight language-python"><code><span class="k">def</span><span class="w"> </span><span class="nf">repeating</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">repeating</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return whether t digits repeat to form positive integer n.</span>
 
 <span class="sd">    &gt;&gt;&gt; repeating(1, 6161)</span>
@@ -153,7 +153,7 @@ whether <code>n</code> is a repeating sequence of some <code>t</code>-digit inte
            <span class="k">return</span> <span class="n">_____</span>
         <span class="n">_____</span>
     <span class="k">return</span> <span class="kc">True</span>
-</code></pre>
+</code></pre></div></div>
 </div>
 <details class="hint"><summary>Hint</summary><div>
 <p>The iterative process needed to implement this function is to repeatedly check
@@ -169,7 +169,7 @@ implementation of <code>unique_digits</code>.</p>
 <p><strong>Tip:</strong> You can use <code>// 10</code> and <code>% 10</code> to separate a positive integer into its one's digit and the rest of its digits.</p>
 </blockquote>
 <div class="code-editor" data-language="python" data-question="unique_digits">
-<pre class="highlight language-python"><code><span class="k">def</span><span class="w"> </span><span class="nf">unique_digits</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">unique_digits</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the number of unique digits in positive integer n.</span>
 
 <span class="sd">    &gt;&gt;&gt; unique_digits(8675309) # All are unique</span>
@@ -191,7 +191,7 @@ implementation of <code>unique_digits</code>.</p>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="n">k</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="mi">10</span>
     <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
-</code></pre>
+</code></pre></div></div>
 </div>
 <details class="hint"><summary>Hint</summary><div>
 <p>One approach is to loop through every digit from 0 to 9 and check whether <code>n</code>

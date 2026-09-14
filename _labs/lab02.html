@@ -21,7 +21,7 @@ due: "Friday 09/11"
 <div class="pytest-command" data-command="python3 -m pytest -k if_statements --unlock"><pre><code>python3 -m pytest -k if_statements --unlock</code></pre></div>
 <details class="unlock-examples" open>
 <summary>Unlocking Examples</summary>
-<pre class="wwpd"><code>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
 &gt;&gt;&gt; def ab(c, d):
 ...     if c &gt; 5:
 ...         print(c)
@@ -49,7 +49,7 @@ due: "Friday 09/11"
 <span class="wwpd-blank">______</span>
 &gt;&gt;&gt; bake(2, 3)
 <span class="wwpd-blank">______</span>
-</code></pre>
+</code></pre></div></div>
 </details>
 <h2 id="write-code">Write Code</h2>
 <h3 id="q2-falling-factorial">Q2: Falling Factorial</h3>
@@ -57,7 +57,7 @@ due: "Friday 09/11"
 that takes two arguments, <code>n</code> and <code>k</code>, and returns the product of <code>k</code>
 consecutive numbers, starting from <code>n</code> and working downwards.
 When <code>k</code> is 0, the function should return 1.</p>
-<pre class="highlight language-python"><code><span class="k">def</span><span class="w"> </span><span class="nf">falling</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">falling</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the falling factorial of n to depth k.</span>
 
 <span class="sd">    &gt;&gt;&gt; falling(6, 3)  # 6 * 5 * 4</span>
@@ -70,14 +70,14 @@ When <code>k</code> is 0, the function should return 1.</p>
 <span class="sd">    1</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
-</code></pre>
+</code></pre></div></div>
 <div class="pytest-command" data-command="python3 -m pytest -k falling"><pre><code>python3 -m pytest -k falling</code></pre></div>
 <h3 id="q3-divisible-by-k">Q3: Divisible By k</h3>
 <p>Write a function <code>divisible_by_k</code> that takes positive integers <code>n</code> and <code>k</code>.
 It prints all positive integers less than or equal to <code>n</code> that are divisible
 by <code>k</code> from smallest to largest. Then, it returns how many numbers were
 printed.</p>
-<pre class="highlight language-python"><code><span class="k">def</span><span class="w"> </span><span class="nf">divisible_by_k</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">divisible_by_k</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Print all positive integers up to n that are divisible by k from smallest</span>
 <span class="sd">    to largest, then return how many numbers were printed.</span>
 
@@ -100,12 +100,12 @@ printed.</p>
 <span class="sd">    0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
-</code></pre>
+</code></pre></div></div>
 <div class="pytest-command" data-command="python3 -m pytest -k divisible_by_k"><pre><code>python3 -m pytest -k divisible_by_k</code></pre></div>
 <h3 id="q4-double-eights">Q4: Double Eights</h3>
 <p>Write a function that takes in a number and determines if the digits contain
 two adjacent 8s.</p>
-<pre class="highlight language-python"><code><span class="k">def</span><span class="w"> </span><span class="nf">double_eights</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">double_eights</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return true if n has two eights in a row.</span>
 <span class="sd">    &gt;&gt;&gt; double_eights(8)</span>
 <span class="sd">    False</span>
@@ -121,7 +121,7 @@ two adjacent 8s.</p>
 <span class="sd">    False</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
-</code></pre>
+</code></pre></div></div>
 <div class="pytest-command" data-command="python3 -m pytest -k double_eights"><pre><code>python3 -m pytest -k double_eights</code></pre></div>
 <h1 id="submit-assignment">Submit Assignment</h1>
 <p>Submit this assignment by running
@@ -141,7 +141,7 @@ anyway!</p>
 <h2 id="q5-sum-digits">Q5: Sum Digits</h2>
 <p>Write a function that takes in a nonnegative integer and sums its digits.
 (Using floor division and modulo might be helpful here!)</p>
-<pre class="highlight language-python"><code><span class="k">def</span><span class="w"> </span><span class="nf">sum_digits</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">sum_digits</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Sum all the digits of y.</span>
 
 <span class="sd">    &gt;&gt;&gt; sum_digits(10) # 1 + 0 = 1</span>
@@ -155,6 +155,6 @@ anyway!</p>
 <span class="sd">    6</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
-</code></pre>
+</code></pre></div></div>
 <div class="pytest-command" data-command="python3 -m pytest -k sum_digits"><pre><code>python3 -m pytest -k sum_digits</code></pre></div>
 {% endraw %}
