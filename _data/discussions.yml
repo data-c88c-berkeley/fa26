@@ -9,7 +9,8 @@ discussions:
 - slug: disc02
   title: Control
 - skip: true
-- title: Higher-Order Functions
+- slug: disc03
+  title: Environment Diagrams, Higher-Order Functions
 - skip: true
 - title: Recursion
 - skip: true
