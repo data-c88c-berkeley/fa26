@@ -63,7 +63,7 @@ aux_links:
   Extensions:
     - 'https://go.c88c.org/extensions'
   Python Tutor:
-    - 'https://tutor.cs61a.org'
+    - 'https://tutor.c88c.org'
 
 berkeley_theme_options:
   show_logo_in_sidebar: true
