@@ -31,3 +31,9 @@ deadlines:
   label: Homework 2
   title: Control
   link: /hw/hw02/
+- when: Fri 9/18
+  day: '2026-09-18'
+  kind: lab
+  label: Lab 3
+  title: Higher-Order Functions
+  link: /labs/lab03/
