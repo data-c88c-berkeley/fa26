@@ -54,7 +54,14 @@ lectures:
         link: https://composingprograms.com/3ed/recursive-functions/#tree-recursion
   # Week 6
   - title: "Sequences"          # Mon 09/28
+    slug: sequences
+    readings:
+      - title: "2.1"
+        link: https://composingprograms.com/3ed/data/
+      - title: "2.2"
+        link: https://composingprograms.com/3ed/sequences/
   - title: "Containers"         # Wed 09/30
+    slug: containers
   # Week 7
   - title: "Objects"      # Mon 10/05
   - title: "Linked Lists" # Wed 10/07
