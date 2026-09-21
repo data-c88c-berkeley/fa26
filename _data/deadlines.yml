@@ -43,3 +43,9 @@ deadlines:
   label: Homework 3
   title: Higher-Order Functions
   link: /hw/hw03/
+- when: Fri 9/25
+  day: '2026-09-25'
+  kind: lab
+  label: Lab 4
+  title: Recursion
+  link: /labs/lab04/

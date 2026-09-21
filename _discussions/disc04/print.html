@@ -1,0 +1,157 @@
+---
+title: "Discussion 4: Recursion"
+layout: print
+nav_exclude: true
+excerpt_separator: ""
+permalink: /:collection/:path:output_ext
+---
+
+{% raw %}
+<header class="assignment-header"><h1>Discussion 4: Recursion</h1></header>
+<h3 id="q1-warm-up">Q1: Warm Up</h3>
+<p>What is the value of <code>result</code> after executing
+<code>result = (lambda x: 2 * (lambda x: 3)(4) * x)(5)</code>? Talk about it with your
+whole group and make sure you all agree before anybody checks the answer.</p>
+<h3 id="recursion">Recursion</h3>
+<h4 id="q2-swipe">Q2: Swipe</h4>
+<p>Implement <code>swipe</code>, which prints the digits of argument <code>n</code>, one per line,
+<strong>first backward then forward</strong>. The left-most digit is printed only once. <strong>Do
+not use</strong> <code>while</code> or <code>for</code> or <code>str</code>. (Use recursion, of course!)</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">swipe</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Print the digits of n, one per line, first backward then forward.</span>
+
+<span class="sd">    &gt;&gt;&gt; swipe(2837)</span>
+<span class="sd">    7</span>
+<span class="sd">    3</span>
+<span class="sd">    8</span>
+<span class="sd">    2</span>
+<span class="sd">    8</span>
+<span class="sd">    3</span>
+<span class="sd">    7</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+<span class="write-space" style="--lines: 4"></span>
+</code></pre></div></div>
+<p class="hint-ref"><a href="#hint-1">Hint 1</a> (at the end)</p>
+<h4 id="q3-is-prime">Q3: Is Prime</h4>
+<p>Implement <code>is_prime</code> that takes an integer <code>n</code> greater than 1. It returns <code>True</code>
+if <code>n</code> is a prime number and <code>False</code> otherwise. Try following the approach
+below, but implement it recursively without using a <code>while</code> (or <code>for</code>)
+statement.</p>
+<p>You will need to define another &quot;helper&quot; function (a function that exists just
+to help implement this one). Does it matter whether you define it within
+<code>is_prime</code> or  as a separate function in the global frame? Try to define it to
+take as few arguments as possible.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">is_prime</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns True if n is a prime number and False otherwise.</span>
+<span class="sd">    &gt;&gt;&gt; is_prime(2)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; is_prime(16)</span>
+<span class="sd">    False</span>
+<span class="sd">    &gt;&gt;&gt; is_prime(521)</span>
+<span class="sd">    True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<span class="write-space" style="--lines: 12"></span>
+</code></pre></div></div>
+<p class="hint-ref"><a href="#hint-2">Hint 2</a> (at the end)</p>
+<h3 id="recommended-but-more-challenging-if-theres-time">Recommended, but more challenging (if there's time)</h3>
+<h4 id="q4-sevens">Q4: Sevens</h4>
+<p><strong>The Game of Sevens</strong>: Players in a circle count up from 1 in the clockwise
+direction. (The starting player says 1, the player to their left says 2, etc.) If a
+number is divisible by 7 or contains a 7 (or both), switch directions. Numbers
+must be said on the beat at <a href="https://www.youtube.com/watch?v=ymJIXzvDvj4">60 beats per
+minute</a>. If someone says a number
+when it's not their turn or someone misses the beat on their turn, the game
+ends.</p>
+<p>For example, 5 people would count to 20 like this:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Player 1 says 1
+Player 2 says 2
+Player 3 says 3
+Player 4 says 4
+Player 5 says 5
+Player 1 says 6  # All the way around the circle
+Player 2 says 7  # Switch to counterclockwise
+Player 1 says 8
+Player 5 says 9  # Back around the circle counterclockwise
+Player 4 says 10
+Player 3 says 11
+Player 2 says 12
+Player 1 says 13
+Player 5 says 14 # Switch back to clockwise
+Player 1 says 15
+Player 2 says 16
+Player 3 says 17 # Switch back to counterclockwise
+Player 2 says 18
+Player 1 says 19
+Player 5 says 20
+</code></pre></div></div>
+<p>Play a few games with your group.</p>
+<p>Then, implement <code>sevens</code> which takes a positive integer <code>n</code> and a number of
+players <code>k</code>. It returns which of the <code>k</code> players says <code>n</code>. You may call
+<code>has_seven</code>.</p>
+<p>An effective approach to this problem is to simulate the game, stopping on turn
+<code>n</code>. The implementation must keep track of the final number <code>n</code>, the current
+number <code>i</code>, the player <code>who</code> will say <code>i</code>, and the current <code>direction</code> that
+determines the next player (either increasing or decreasing). It works well to
+use integers to represent all of these, with <code>direction</code> switching between <code>1</code>
+(increase) and <code>-1</code> (decreasing).</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">sevens</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the (clockwise) position of who says n among k players.</span>
+
+<span class="sd">    &gt;&gt;&gt; sevens(2, 5)</span>
+<span class="sd">    2</span>
+<span class="sd">    &gt;&gt;&gt; sevens(6, 5)</span>
+<span class="sd">    1</span>
+<span class="sd">    &gt;&gt;&gt; sevens(7, 5)</span>
+<span class="sd">    2</span>
+<span class="sd">    &gt;&gt;&gt; sevens(8, 5)</span>
+<span class="sd">    1</span>
+<span class="sd">    &gt;&gt;&gt; sevens(9, 5)</span>
+<span class="sd">    5</span>
+<span class="sd">    &gt;&gt;&gt; sevens(18, 5)</span>
+<span class="sd">    2</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">f</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">who</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">n</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">who</span>
+<span class="write-space" style="--lines: 12"></span>
+    <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">has_seven</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">elif</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">7</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">has_seven</span><span class="p">(</span><span class="n">n</span> <span class="o">//</span> <span class="mi">10</span><span class="p">)</span>
+</code></pre></div></div>
+<p class="hint-ref"><a href="#hint-3">Hint 3</a> (at the end)</p>
+<section class="hints">
+<h2>Hints</h2>
+<div class="hint-note" id="hint-1"><h3>Hint 1</h3>
+<p>First <code>print</code> the first line of the output, then make a recursive call, then
+<code>print</code> the last line of the output.</p>
+</div>
+<div class="hint-note" id="hint-2"><h3>Hint 2</h3>
+<p>Define an inner function that checks whether some integer between <code>i</code> and <code>n</code>
+evenly divides <code>n</code>. Then you can call it starting with <code>i=2</code>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>def is_prime(n):
+    def f(i):
+        if i == n:
+            return ____
+        elif ____:
+            return ____
+        else:
+            return f(____)
+    return f(2)
+</code></pre></div></div>
+</div>
+<div class="hint-note" id="hint-3"><h3>Hint 3</h3>
+<p>First check if <code>i</code> is a multiple of 7 or contains a 7, and if so, switch
+directions. Then, add the direction to <code>who</code> and ensure that <code>who</code> has not
+become smaller than 1 or greater than <code>k</code>.</p>
+</div>
+</section>
+{% endraw %}

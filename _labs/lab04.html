@@ -1,0 +1,230 @@
+---
+title: "Lab 4: Recursion"
+layout: assignment
+nav_exclude: true
+excerpt_separator: ""
+due: "Friday 09/25"
+---
+
+{% raw %}
+<header class="assignment-header"><h1>Lab 4: Recursion</h1><ul class="assignment-facts"><li><strong>Due:</strong> Friday 09/25 @ 11:59pm</li><li><strong>Points:</strong> 1</li><li><strong>Download:</strong> <a href="lab04.zip">lab04.zip</a></li></ul></header>
+<h1 id="attendance">Attendance</h1>
+<p>You need to submit the lab problems in addition to attending to get credit for lab. Students in mega lab only need to submit the lab problems. Preceptor interviews are highly recommended but <strong>not required</strong> for lab submissions.</p>
+<p>If you are in regular lab, your TA will come around during lab to check you in. If you didn't attend for a good reason (such as being sick), fill out this form (within 2 weeks of your lab): <a href="https://forms.gle/QsRLAvLnn5xoJgdv9">attendance form</a>.</p>
+<h1 id="required-questions">Required Questions</h1>
+<h2 id="review">Review</h2>
+<details class="hint"><summary>Lambda Expressions</summary><div>
+<p>Lambda expressions are expressions that evaluate to functions by specifying two
+things: the parameters and a return expression.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>lambda &lt;parameters&gt;: &lt;return expression&gt;
+</code></pre></div></div>
+<p>While both <code>lambda</code> expressions and <code>def</code> statements create function objects,
+there are some notable differences. <code>lambda</code> expressions work like other
+expressions; much like a mathematical expression just evaluates to a number and
+does not alter the current environment, a <code>lambda</code> expression
+evaluates to a function without changing the current environment.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><code>lambda</code></th>
+<th><code>def</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Type</strong></td>
+<td>An <em>expression</em> that evaluates to a value.</td>
+<td>A <em>statement</em> that alters the environment.</td>
+</tr>
+<tr>
+<td><strong>Result of execution</strong></td>
+<td>Creates an anonymous lambda function with no intrinsic name.</td>
+<td>Creates a function with an intrinsic name and binds it to that name in the current environment.</td>
+</tr>
+<tr>
+<td><strong>Effect on the environment</strong></td>
+<td>Evaluating a <code>lambda</code> expression does <em>not</em> create or modify any variables.</td>
+<td>Executing a <code>def</code> statement both creates a new function object <em>and</em> binds it to a name in the current environment.</td>
+</tr>
+<tr>
+<td><strong>Usage</strong></td>
+<td>A <code>lambda</code> expression can be used anywhere that expects an expression, such as in an assignment statement or as the operator or operand of a call expression.</td>
+<td>After executing a <code>def</code> statement, use the function's bound name anywhere that expects an expression.</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>lambda</code> examples</strong></p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># A lambda expression by itself does not alter</span>
+<span class="c1"># the environment</span>
+<span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span>
+
+<span class="c1"># We can assign lambda functions to a name</span>
+<span class="c1"># with an assignment statement</span>
+<span class="n">square</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span>
+<span class="n">square</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="c1"># Lambda expressions can be used as an operator</span>
+<span class="c1"># or operand</span>
+<span class="n">negate</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">f</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="o">-</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">negate</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</code></pre></div></div>
+<p><strong><code>def</code> example</strong></p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">square</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span>
+
+<span class="c1"># A function created by a def statement</span>
+<span class="c1"># can be referred to by its intrinsic name</span>
+<span class="n">square</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</code></pre></div></div>
+</div></details>
+<h2 id="what-would-python-display-wwpd">What Would Python Display? (WWPD)</h2>
+<h3 id="q1-wwpd-lambda">Q1: WWPD: Lambda</h3>
+<p>Predict what Python will display when the following lines are entered into an
+interactive session, then unlock the test to check your answers:</p>
+<blockquote>
+<p><strong>Important:</strong> Type <code>FUNCTION</code> if you believe the answer is a function
+value. As a reminder, the following two lines of code will not display any
+output in the interactive Python interpreter when executed:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; x = None
+&gt;&gt;&gt; x
+&gt;&gt;&gt;
+</code></pre></div></div>
+</blockquote>
+<div class="pytest-command" data-command="python3 -m pytest -k lambda_wwpd --unlock"><pre><code>python3 -m pytest -k lambda_wwpd --unlock</code></pre></div>
+<details class="unlock-examples" open>
+<summary>Unlocking Examples</summary>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; lambda x: x  # A lambda expression with one parameter x
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; a = lambda x: x  # Assigning the lambda function to the name a
+&gt;&gt;&gt; a(5)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; (lambda: 3)()  # Using a lambda expression as an operator in a call expression
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; b = lambda x, y: lambda: x + y  # Lambdas can return other lambdas!
+&gt;&gt;&gt; c = b(8, 4)
+&gt;&gt;&gt; c
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; c()
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; d = lambda f: f(4)  # They can have functions as arguments as well
+&gt;&gt;&gt; def square(x):
+...     return x * x
+&gt;&gt;&gt; d(square)
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; higher_order_lambda = lambda f: lambda x: f(x)
+&gt;&gt;&gt; g = lambda x: x * x
+&gt;&gt;&gt; higher_order_lambda(g)(2)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; call_thrice = lambda f: lambda x: f(f(f(x)))
+&gt;&gt;&gt; call_thrice(lambda y: y + 2)(5)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; print_lambda = lambda z: print(z)  # When is the return expression of a lambda expression executed?
+&gt;&gt;&gt; print_lambda
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; one_thousand = print_lambda(1000)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; print(one_thousand)  # What did the call to print_lambda return?
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+</details>
+<h2 id="recursion">Recursion</h2>
+<h3 id="q2-skip-factorial">Q2: Skip Factorial</h3>
+<p>Define the the <code>skip_factorial</code> function, which returns the
+product of <strong>every other positive</strong> integer, starting with <code>n</code>.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">skip_factorial</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the product of positive integers n * (n - 2) * (n - 4) * ...</span>
+
+<span class="sd">    &gt;&gt;&gt; skip_factorial(5) # 5 * 3 * 1</span>
+<span class="sd">    15</span>
+<span class="sd">    &gt;&gt;&gt; skip_factorial(8) # 8 * 6 * 4 * 2</span>
+<span class="sd">    384</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">___</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">___</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">___</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k skip_factorial"><pre><code>python3 -m pytest -k skip_factorial</code></pre></div>
+<details class="hint"><summary>Hint</summary><div>
+<p>If <code>n</code> is even, then the base case will be 2. If <code>n</code> is odd, then the base case
+will be 1. Try to write a condition that handles both possibilities.</p>
+</div></details>
+<h3 id="q3-recursive-hailstone">Q3: Recursive Hailstone</h3>
+<p>Recall the <code>hailstone</code> function from <a href="../../hw/hw01/">Homework 1</a>.
+First, pick a positive integer <code>n</code> as the start. If <code>n</code> is even, divide it by 2.
+If <code>n</code> is odd, multiply it by 3 and add 1. Repeat this process until <code>n</code> is 1.
+Complete this recursive version of <code>hailstone</code> that prints out the values of the
+sequence and returns the number of steps.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">hailstone</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Print out the hailstone sequence starting at n,</span>
+<span class="sd">    and return the number of elements in the sequence.</span>
+<span class="sd">    &gt;&gt;&gt; a = hailstone(10)</span>
+<span class="sd">    10</span>
+<span class="sd">    5</span>
+<span class="sd">    16</span>
+<span class="sd">    8</span>
+<span class="sd">    4</span>
+<span class="sd">    2</span>
+<span class="sd">    1</span>
+<span class="sd">    &gt;&gt;&gt; a</span>
+<span class="sd">    7</span>
+<span class="sd">    &gt;&gt;&gt; b = hailstone(1)</span>
+<span class="sd">    1</span>
+<span class="sd">    &gt;&gt;&gt; b</span>
+<span class="sd">    1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">even</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">odd</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">even</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">____</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">odd</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k recursive_hailstone"><pre><code>python3 -m pytest -k recursive_hailstone</code></pre></div>
+<details class="hint"><summary>Hint</summary><div>
+<p>An even number is never a base case, so <code>even</code> always makes a recursive call to
+<code>hailstone</code> and returns one more than the length of the rest of the hailstone
+sequence.</p>
+<p>An odd number might be 1 (the base case) or greater than one (the recursive
+case). Only the recursive case should call <code>hailstone</code>.</p>
+</div></details>
+<h1 id="optional-questions">Optional Questions</h1>
+<blockquote>
+<p>These questions are optional. If you don't complete them, you will
+still receive credit for this assignment. They are great practice, so do them
+anyway!</p>
+</blockquote>
+<h2 id="q4-function-repeater">Q4: Function Repeater</h2>
+<p>Define <code>make_func_repeater</code>, which takes a one-argument function <code>f</code> and a value
+<code>x</code>. It returns another function that takes one argument, a non-negative
+integer, and returns the result of applying <code>f</code> to <code>x</code> that many times.</p>
+<p>Use recursion in your solution.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">make_func_repeater</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a function that applies f to x a given number of times.</span>
+
+<span class="sd">    &gt;&gt;&gt; increment_repeater = make_func_repeater(lambda x: x + 1, 1)</span>
+<span class="sd">    &gt;&gt;&gt; increment_repeater(2)  # same as f(f(x))</span>
+<span class="sd">    3</span>
+<span class="sd">    &gt;&gt;&gt; increment_repeater(5)</span>
+<span class="sd">    6</span>
+<span class="sd">    &gt;&gt;&gt; increment_repeater(0)</span>
+<span class="sd">    1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">repeat</span><span class="p">(</span><span class="n">____</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">____</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">____</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">____</span>
+    <span class="k">return</span> <span class="n">____</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k make_func_repeater"><pre><code>python3 -m pytest -k make_func_repeater</code></pre></div>
+{% endraw %}

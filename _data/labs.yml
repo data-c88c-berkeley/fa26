@@ -12,7 +12,8 @@ labs:
 - slug: lab03
   title: Higher-Order Functions (due Fri 9/18)
 - skip: true
-- title: Recursion (due Fri 9/25)
+- slug: lab04
+  title: Recursion (due Fri 9/25)
 - skip: true
 - title: Sequences (due Fri 10/2)
 - skip: true

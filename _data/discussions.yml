@@ -12,7 +12,8 @@ discussions:
 - slug: disc03
   title: Environment Diagrams, Higher-Order Functions
 - skip: true
-- title: Recursion
+- slug: disc04
+  title: Recursion
 - skip: true
 - title: Sequences
 - skip: true
