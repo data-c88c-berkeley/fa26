@@ -16,7 +16,9 @@
 //   * Saved answers: edits, outcomes, and the verify history are kept in
 //     localStorage per page and restored on the next visit. The server
 //     never stores answers.
-//   * Groups: join with a name and group number, and each code pane grows a
+//   * Groups: join with a name, a @berkeley.edu email address (the server
+//     logs it with the group so staff can tell who sat where), and
+//     a group number, and each code pane grows a
 //     column of tabs — "You" plus one per other member, showing their name
 //     and verify history. A member's tab shows their code in that one pane,
 //     read-only and unselectable, with their Verify state (disabled: only
@@ -670,6 +672,9 @@
 
   var group = null;          // the group's name (trimmed) while joined
   var name = stored('discuss-name') || '';
+  var email = stored('discuss-email') || '';
+  // A Berkeley address (any case); the server does not check it again.
+  var EMAIL = /^[^\s@]+@berkeley\.edu$/i;
   var members = {};          // client id -> {name, answers}
   var memberOrder = [];      // client ids in the server's join order
   var dirty = true;          // answers not yet pushed to the group
@@ -708,6 +713,13 @@
     nameInput.maxLength = 32;
     nameInput.value = name;
     nameInput.setAttribute('aria-label', 'Name');
+    var emailInput = document.createElement('input');
+    emailInput.type = 'email';
+    emailInput.placeholder = '@berkeley.edu email address';
+    emailInput.autocomplete = 'email';
+    emailInput.maxLength = 254;
+    emailInput.value = email;
+    emailInput.setAttribute('aria-label', '@berkeley.edu email address');
     var groupInput = document.createElement('input');
     groupInput.type = 'text';  // any name: 3, 3a, "back table"…
     groupInput.maxLength = 64;
@@ -718,27 +730,32 @@
     join.textContent = 'Join Group';
     join.disabled = true;
     function validate() {
-      join.disabled = !(nameInput.value.trim() && groupInput.value.trim());
+      join.disabled = !(nameInput.value.trim() && groupInput.value.trim()
+                        && EMAIL.test(emailInput.value.trim()));
     }
     nameInput.addEventListener('input', validate);
+    emailInput.addEventListener('input', validate);
     groupInput.addEventListener('input', validate);
     form.addEventListener('submit', function (event) {
       event.preventDefault();
-      joinGroup(nameInput.value.trim(), groupInput.value.trim());
+      joinGroup(nameInput.value.trim(), emailInput.value.trim(),
+                groupInput.value.trim());
     });
     var label = document.createElement('span');
     label.className = 'discuss-bar-label';
     label.textContent = 'Discuss with your group:';
-    form.append(label, nameInput, groupInput, join);
+    form.append(label, nameInput, emailInput, groupInput, join);
     joined.hidden = true;
     bar.append(form, joined, hint);
     assignment.insertBefore(bar, assignment.firstChild);
 
     var saved = stored('discuss-group');
-    if (name && saved && saved.trim()) {
+    if (saved && saved.trim()) {
       groupInput.value = saved.trim();
       validate();              // setting .value fires no input event
-      joinGroup(name, saved.trim()); // auto-rejoin is idempotent
+      // Auto-rejoin is idempotent. A browser whose saved name and group
+      // predate the email field gets the form once, prefilled.
+      if (name && EMAIL.test(email)) joinGroup(name, email, saved.trim());
     }
   }
 
@@ -770,10 +787,12 @@
     joined.append(who, text, link);
   }
 
-  function joinGroup(newName, newGroup) {
+  function joinGroup(newName, newEmail, newGroup) {
     name = newName;
+    email = newEmail;
     group = newGroup;
     store('discuss-name', name);
+    store('discuss-email', email);
     store('discuss-group', group);
     dirty = true;
     showJoined();
@@ -799,7 +818,8 @@
   window.addEventListener('pagehide', function () {
     if (group === null || !navigator.sendBeacon) return;
     navigator.sendBeacon(SERVER + '/sync', JSON.stringify({
-      client: clientId, name: name, page: PAGE_URL, group: group, leave: true,
+      client: clientId, name: name, email: email, page: PAGE_URL,
+      group: group, leave: true,
     }));
   });
 
@@ -807,7 +827,7 @@
 
   function payload(leave) {
     var body = {
-      client: clientId, name: name, page: PAGE_URL, group: group,
+      client: clientId, name: name, email: email, page: PAGE_URL, group: group,
     };
     if (leave) {
       body.leave = true;

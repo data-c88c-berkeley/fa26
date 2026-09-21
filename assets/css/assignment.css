@@ -419,6 +419,11 @@ pre.wwpd .wwpd-answer {
   width: 11em;
 }
 
+.discuss-bar input[type="email"] {
+  /* Wide enough for the "@berkeley.edu email address" placeholder. */
+  width: 18em;
+}
+
 .discuss-bar button {
   font: inherit;
   padding: 0.25em 0.9em;
