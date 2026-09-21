@@ -52,8 +52,6 @@ favicon_ico: "/favicon.png"
 # '#' is a placeholder that links nowhere; fill in destinations as they
 # become available.
 aux_links:
-  Lecture Zoom:
-    - https://berkeley.zoom.us/j/95756407792
   Lecture Recordings:
     - 'https://bcourses.berkeley.edu/courses/1557897/external_tools/90481'
   Ed:
