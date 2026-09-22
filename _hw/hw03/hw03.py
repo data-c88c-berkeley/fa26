@@ -105,6 +105,9 @@ def composite_identity(f, g):
     True
     >>> b1(4)                            # (4 + 1) ** 2 != 4 ** 2 + 1
     False
+    >>> l = b1(0)
+    >>> l
+    True
     """
     "*** YOUR CODE HERE ***"
 
