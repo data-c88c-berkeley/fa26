@@ -1,0 +1,384 @@
+---
+title: "Homework 4: Recursion"
+layout: assignment
+nav_exclude: true
+excerpt_separator: ""
+due: "Tuesday 10/06"
+---
+
+{% raw %}
+<header class="assignment-header"><h1>Homework 4: Recursion</h1><ul class="assignment-facts"><li><strong>Due:</strong> Tuesday 10/06 @ 11:59pm</li><li><strong>Points:</strong> 1</li><li><strong>Download:</strong> <a href="hw04.zip">hw04.zip</a></li></ul></header>
+<p class="assignment-intro">To receive credit, you must solve each problem and then complete a short checkoff interview about your solution. You may use Preceptor for the interview or come to office hours to be interviewed by a member of the course staff. <strong>Staff will be doing in-person checkoffs for up to 3 business days after the assignment deadline (including any approved extension)</strong>. If a checkoff happens more than 3 business days after the regular deadline, staff may ask to confirm your extended deadline via Flextensions. You will submit a Provenance bundle that includes a record of how you used VS Code, including interactions with Preceptor. Please do not use AI tools other than Preceptor for this assignment.</p>
+<p><strong>Readings:</strong> This homework relies on the following readings from
+<a href="https://composingprograms.com">Composing Programs</a>:</p>
+<ul>
+<li><a href="https://composingprograms.com/3ed/recursive-functions">1.7: Recursive Functions</a></li>
+</ul>
+<p><strong>Getting Started Videos:</strong></p>
+<p>If you feel stuck, try watching some <a href="https://www.youtube.com/playlist?list=PLNnP2sX3mtCw">walkthrough videos</a>. (@berkeley.edu login to YouTube required).</p>
+<h1 id="required-questions">Required Questions</h1>
+<h2 id="recursion">Recursion</h2>
+<h3 id="q1-num-eights">Q1: Num Eights</h3>
+<p>Write a recursive function <code>num_eights</code> that takes a positive integer <code>n</code> and
+returns the number of times the digit 8 appears in <code>n</code>.</p>
+<p><strong>Important:</strong>
+Use recursion; the tests will fail if you use any assignment statements or loops.
+(You can define new functions, but don't put assignment statements there either.)</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">num_eights</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the number of times 8 appears as a digit of n.</span>
+
+<span class="sd">    &gt;&gt;&gt; num_eights(3)</span>
+<span class="sd">    0</span>
+<span class="sd">    &gt;&gt;&gt; num_eights(8)</span>
+<span class="sd">    1</span>
+<span class="sd">    &gt;&gt;&gt; num_eights(88888888)</span>
+<span class="sd">    8</span>
+<span class="sd">    &gt;&gt;&gt; num_eights(2638)</span>
+<span class="sd">    1</span>
+<span class="sd">    &gt;&gt;&gt; num_eights(86380)</span>
+<span class="sd">    2</span>
+<span class="sd">    &gt;&gt;&gt; num_eights(12345)</span>
+<span class="sd">    0</span>
+<span class="sd">    &gt;&gt;&gt; num_eights(8782089)</span>
+<span class="sd">    3</span>
+<span class="sd">    &gt;&gt;&gt; # This test checks that you used no assignment statements or loops.</span>
+<span class="sd">    &gt;&gt;&gt; import inspect, ast</span>
+<span class="sd">    &gt;&gt;&gt; banned = [&#39;Assign&#39;, &#39;AnnAssign&#39;, &#39;AugAssign&#39;, &#39;NamedExpr&#39;, &#39;For&#39;, &#39;While&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; tree = ast.parse(inspect.getsource(num_eights))</span>
+<span class="sd">    &gt;&gt;&gt; [type(x).__name__ for x in ast.walk(tree) if type(x).__name__ in banned]</span>
+<span class="sd">    []</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k num_eights"><pre><code>python3 -m pytest -k num_eights</code></pre></div>
+<h3 id="q2-digit-distance">Q2: Digit Distance</h3>
+<p>For a given integer, the <em>digit distance</em> is the sum of the absolute differences between
+consecutive digits. For example:</p>
+<ul>
+<li>The digit distance of <code>61</code> is <code>5</code>, as the absolute value of <code>6 - 1</code> is <code>5</code>.</li>
+<li>The digit distance of <code>71253</code> is <code>12</code> (<code>abs(7-1) + abs(1-2) + abs(2-5) + abs(5-3)</code> = <code>6 + 1 + 3 + 2</code>).</li>
+<li>The digit distance of <code>6</code> is <code>0</code> because there are no pairs of consecutive digits.</li>
+</ul>
+<p>Write a function that determines the digit distance of a positive integer.
+You must use recursion or the tests will fail.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">digit_distance</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Determines the digit distance of n.</span>
+
+<span class="sd">    &gt;&gt;&gt; digit_distance(3)</span>
+<span class="sd">    0</span>
+<span class="sd">    &gt;&gt;&gt; digit_distance(777) # 0 + 0</span>
+<span class="sd">    0</span>
+<span class="sd">    &gt;&gt;&gt; digit_distance(314) # 2 + 3</span>
+<span class="sd">    5</span>
+<span class="sd">    &gt;&gt;&gt; digit_distance(31415926535) # 2 + 3 + 3 + 4 + ... + 2</span>
+<span class="sd">    32</span>
+<span class="sd">    &gt;&gt;&gt; digit_distance(3464660003)  # 1 + 2 + 2 + 2 + ... + 3</span>
+<span class="sd">    16</span>
+<span class="sd">    &gt;&gt;&gt; # This test checks that you used no loops.</span>
+<span class="sd">    &gt;&gt;&gt; import inspect, ast</span>
+<span class="sd">    &gt;&gt;&gt; tree = ast.parse(inspect.getsource(digit_distance))</span>
+<span class="sd">    &gt;&gt;&gt; [type(x).__name__ for x in ast.walk(tree) if type(x).__name__ in (&#39;For&#39;, &#39;While&#39;)]</span>
+<span class="sd">    []</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k digit_distance"><pre><code>python3 -m pytest -k digit_distance</code></pre></div>
+<h3 id="q3-interleaved-sum">Q3: Interleaved Sum</h3>
+<p>Write a function <code>interleaved_sum</code>, which takes in a number <code>n</code> and
+two one-argument functions: <code>f_odd</code> and <code>f_even</code>. It returns the sum of applying <code>f_odd</code>
+to every odd number and <code>f_even</code> to every even number from 1 to <code>n</code> <em>inclusive</em>.</p>
+<p>For example, executing <code>interleaved_sum(5, lambda x: x, lambda x: x * x)</code>
+returns <code>1 + 2*2 + 3 + 4*4 + 5 = 29</code>.</p>
+<blockquote>
+<p><strong>Important:</strong> Implement this function without using any loops or directly testing if a number
+is odd or even (no using <code>%</code> or <code>//</code> combined with <code>*</code>). Instead of directly checking whether a number
+is even or odd, start with 1, which you know is an odd number.</p>
+</blockquote>
+<blockquote>
+<p><strong>Hint:</strong> Introduce an inner helper function that takes an odd number <code>k</code> and
+computes an interleaved sum from <code>k</code> to <code>n</code> (including <code>n</code>). Alternatively, you can use mutual recursion.</p>
+</blockquote>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">interleaved_sum</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">f_odd</span><span class="p">,</span> <span class="n">f_even</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the sum f_odd(1) + f_even(2) + f_odd(3) + ..., up</span>
+<span class="sd">    to n.</span>
+
+<span class="sd">    &gt;&gt;&gt; identity = lambda x: x</span>
+<span class="sd">    &gt;&gt;&gt; square = lambda x: x * x</span>
+<span class="sd">    &gt;&gt;&gt; triple = lambda x: x * 3</span>
+<span class="sd">    &gt;&gt;&gt; interleaved_sum(5, identity, square) # 1   + 2*2 + 3   + 4*4 + 5</span>
+<span class="sd">    29</span>
+<span class="sd">    &gt;&gt;&gt; interleaved_sum(5, square, identity) # 1*1 + 2   + 3*3 + 4   + 5*5</span>
+<span class="sd">    41</span>
+<span class="sd">    &gt;&gt;&gt; interleaved_sum(4, triple, square)   # 1*3 + 2*2 + 3*3 + 4*4</span>
+<span class="sd">    32</span>
+<span class="sd">    &gt;&gt;&gt; interleaved_sum(4, square, triple)   # 1*1 + 2*3 + 3*3 + 4*3</span>
+<span class="sd">    28</span>
+<span class="sd">    &gt;&gt;&gt; # This test checks that you used no loops, no % (or equivalent workarounds), and</span>
+<span class="sd">    &gt;&gt;&gt; # no bitwise operators (&amp;, |, ^); don&#39;t worry if you don&#39;t know what those are.</span>
+<span class="sd">    &gt;&gt;&gt; import inspect, ast</span>
+<span class="sd">    &gt;&gt;&gt; banned = [&#39;For&#39;, &#39;While&#39;, &#39;Mod&#39;, &#39;BitAnd&#39;, &#39;BitOr&#39;, &#39;BitXor&#39;, &#39;FloorDiv&#39;, &#39;Mult&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; tree = ast.parse(inspect.getsource(interleaved_sum))</span>
+<span class="sd">    &gt;&gt;&gt; [type(x).__name__ for x in ast.walk(tree) if type(x).__name__ in banned]</span>
+<span class="sd">    []</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k interleaved_sum"><pre><code>python3 -m pytest -k interleaved_sum</code></pre></div>
+<h2 id="tree-recursion">Tree Recursion</h2>
+<h3 id="q4-count-coins">Q4: Count Coins</h3>
+<p>Given a positive integer <code>total</code>, a set of coins makes change for <code>total</code> if
+the sum of the values of the coins is <code>total</code>.
+Here we will use standard US coin values: 1, 5, 10, and 25.
+For example, the following sets make change for <code>15</code>:</p>
+<ul>
+<li>15 1-cent coins</li>
+<li>10 1-cent, 1 5-cent coins</li>
+<li>5 1-cent, 2 5-cent coins</li>
+<li>5 1-cent, 1 10-cent coins</li>
+<li>3 5-cent coins</li>
+<li>1 5-cent, 1 10-cent coins</li>
+</ul>
+<p>Thus, there are 6 ways to make change for <code>15</code>.  Write a <strong>recursive</strong> function
+<code>count_coins</code> that takes a positive integer <code>total</code> and returns the number of
+ways to make change for <code>total</code> using 1, 5, 10, and 25 cent coins.</p>
+<p>Use <code>next_smaller_coin</code> in your solution:
+<code>next_smaller_coin</code> will return the next smaller coin value from the
+input (e.g. <code>next_smaller_coin(5)</code> is <code>1</code>).
+<em>The function will return <code>None</code> if the next coin value does not exist.</em></p>
+<blockquote>
+<p><strong>Important:</strong> Use recursion; the tests will fail if you use loops.</p>
+</blockquote>
+<blockquote>
+<p><strong>Hint:</strong>
+Refer to the <a href="https://composingprograms.com/3ed/recursive-functions#example-partitions">implementation</a> of <code>count_partitions</code> for an example
+of how to count the ways to sum up to a final value with smaller parts.
+If you need to keep track of more than one value across recursive calls,
+consider writing a helper function.</p>
+</blockquote>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">next_smaller_coin</span><span class="p">(</span><span class="n">coin</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the next smaller coin in order.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">coin</span> <span class="o">==</span> <span class="mi">25</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">10</span>
+    <span class="k">elif</span> <span class="n">coin</span> <span class="o">==</span> <span class="mi">10</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">5</span>
+    <span class="k">elif</span> <span class="n">coin</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">count_coins</span><span class="p">(</span><span class="n">total</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the number of ways to make change.</span>
+
+<span class="sd">    &gt;&gt;&gt; count_coins(15)  # 15 1-cent coins, 10 1-cent &amp; 1 5-cent coins, ... 1 5-cent &amp; 1 10-cent coins</span>
+<span class="sd">    6</span>
+<span class="sd">    &gt;&gt;&gt; count_coins(10)  # 10 1-cent coins, 5 1-cent &amp; 1 5-cent coins, 2 5-cent coins, 1 10-cent coin</span>
+<span class="sd">    4</span>
+<span class="sd">    &gt;&gt;&gt; count_coins(20)  # 20 1-cent coins, 15 1-cent &amp; 1 5-cent coins, ... 2 10-cent coins</span>
+<span class="sd">    9</span>
+<span class="sd">    &gt;&gt;&gt; count_coins(45)  # How many ways to make change for 45 cents?</span>
+<span class="sd">    39</span>
+<span class="sd">    &gt;&gt;&gt; count_coins(100) # How many ways to make change for 100 cents?</span>
+<span class="sd">    242</span>
+<span class="sd">    &gt;&gt;&gt; count_coins(200) # How many ways to make change for 200 cents?</span>
+<span class="sd">    1463</span>
+<span class="sd">    &gt;&gt;&gt; # This test checks that you used no loops.</span>
+<span class="sd">    &gt;&gt;&gt; import inspect, ast</span>
+<span class="sd">    &gt;&gt;&gt; tree = ast.parse(inspect.getsource(count_coins))</span>
+<span class="sd">    &gt;&gt;&gt; [type(x).__name__ for x in ast.walk(tree) if type(x).__name__ in (&#39;For&#39;, &#39;While&#39;)]</span>
+<span class="sd">    []</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k count_coins"><pre><code>python3 -m pytest -k count_coins</code></pre></div>
+<h3 id="q5-maximum-subsequence">Q5: Maximum Subsequence</h3>
+<p>A <em>subsequence</em> of a number is a series of digits from the number, not
+necessarily contiguous. For example, 12345 has subsequences like 123, 234, 124,
+and 245. Implement <code>max_subseq</code>, which returns the <strong>largest subsequence</strong> of
+<code>n</code> that has at most <code>t</code> digits. You must use recursion or the tests will fail.</p>
+<blockquote>
+<p><strong>Hint:</strong> To add a digit <code>d</code> to the end of an existing number <code>n</code>, compute
+<code>n * 10 + d</code>. For instance, to add <code>8</code> to <code>15</code> to get <code>158</code>, compute
+<code>15 * 10 + 8</code>.</p>
+</blockquote>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">max_subseq</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the largest subsequence of at most t digits found in n.</span>
+
+<span class="sd">    For example, for n = 2012 and t = 2 the subsequences are 2, 0, 1, 2, 20,</span>
+<span class="sd">    21, 22, 01, 02, and 12; the largest is 22.</span>
+
+<span class="sd">    &gt;&gt;&gt; max_subseq(2012, 2)</span>
+<span class="sd">    22</span>
+<span class="sd">    &gt;&gt;&gt; max_subseq(20125, 3)</span>
+<span class="sd">    225</span>
+<span class="sd">    &gt;&gt;&gt; max_subseq(20125, 5)</span>
+<span class="sd">    20125</span>
+<span class="sd">    &gt;&gt;&gt; max_subseq(20125, 6)  # note that 20125 == 020125</span>
+<span class="sd">    20125</span>
+<span class="sd">    &gt;&gt;&gt; max_subseq(12345, 3)</span>
+<span class="sd">    345</span>
+<span class="sd">    &gt;&gt;&gt; max_subseq(12345, 0)  # 0 is of length 0</span>
+<span class="sd">    0</span>
+<span class="sd">    &gt;&gt;&gt; max_subseq(12345, 1)</span>
+<span class="sd">    5</span>
+<span class="sd">    &gt;&gt;&gt; # This test checks that you used no loops.</span>
+<span class="sd">    &gt;&gt;&gt; import inspect, ast</span>
+<span class="sd">    &gt;&gt;&gt; tree = ast.parse(inspect.getsource(max_subseq))</span>
+<span class="sd">    &gt;&gt;&gt; [type(x).__name__ for x in ast.walk(tree) if type(x).__name__ in (&#39;For&#39;, &#39;While&#39;)]</span>
+<span class="sd">    []</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k max_subseq"><pre><code>python3 -m pytest -k max_subseq</code></pre></div>
+<details class="hint"><summary>Two cases</summary><div>
+<p>Split into the case where the ones digit of <code>n</code> is used and the case where it
+is not. When it is used, <code>t</code> decreases by one because a digit was spent; when it
+isn't, <code>t</code> stays the same. The answer is the larger of the two.</p>
+</div></details>
+<h2 id="submit">Submit</h2>
+<p>Run <strong>Provenance: Prepare Submission Bundle</strong> from
+the VS Code command palette to create your submission zip, and upload that zip
+<strong>to Gradescope</strong>. For a refresher on how to do this, refer to
+<a href="../../labs/lab00/#task-c-submit-the-assignment">Lab 00</a>.</p>
+<h1 id="exam-practice">Exam Practice</h1>
+<p>Homework assignments will also contain prior exam-level questions for you to take a look at.
+These questions have no submission component; feel free to attempt them if you'd like a challenge!</p>
+<ol>
+<li>Fall 2017 MT1 Q4a: <a href="https://inst.eecs.berkeley.edu/~cs61a/fa21/exam/fa17/mt1/61a-fa17-mt1.pdf#page=5">Digital</a></li>
+<li>Fall 2019 Final Q6b: <a href="https://inst.eecs.berkeley.edu/~cs61a/sp21/exam/fa19/final/61a-fa19-final.pdf#page=6">Palindromes</a></li>
+</ol>
+<h1 id="just-for-fun-questions">Just For Fun Questions</h1>
+<p>The questions below are out of scope for 61A. You can try them if you want an
+extra challenge, but they're just puzzles that are not required for the course.
+Almost all students will skip them, and that's fine. We will <strong>not</strong> be
+prioritizing support for these questions on Ed or during Office Hours.</p>
+<h2 id="q6-towers-of-hanoi">Q6: Towers of Hanoi</h2>
+<p>A classic puzzle called the Towers of Hanoi is a game that consists of three
+rods, and a number of disks of different sizes which can slide onto any rod.
+The puzzle starts with <code>n</code> disks in a neat stack in ascending order of size on
+a <code>start</code> rod, the smallest at the top, forming a conical shape.</p>
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/0/07/Tower_of_Hanoi.jpeg" alt="Towers of Hanoi" /></p>
+<p>The objective of the puzzle is to move the entire stack to an <code>end</code> rod,
+obeying the following rules:</p>
+<ul>
+<li>Only one disk may be moved at a time.</li>
+<li>Each move consists of taking the top (smallest) disk from one of the rods and
+sliding it onto another rod, on top of the other disks that may already be
+present on that rod.</li>
+<li>No disk may be placed on top of a smaller disk.</li>
+</ul>
+<p>Complete the definition of <code>move_stack</code>, which prints out the steps required to
+move <code>n</code> disks from the <code>start</code> rod to the <code>end</code> rod without violating the
+rules. The provided <code>print_move</code> function will print out the step to move a
+single disk from the given <code>origin</code> to the given <code>destination</code>.</p>
+<blockquote>
+<p><strong>Hint:</strong>
+Draw out a few games with various <code>n</code> on a piece of paper and try to
+find a pattern of disk movements that applies to any <code>n</code>. In your solution,
+take the recursive leap of faith whenever you need to move any amount of
+disks less than <code>n</code> from one rod to another. If you need more help, see
+the following hints.</p>
+</blockquote>
+<details class="hint"><summary>Hint 1</summary><div>
+<p>See the following animation of the Towers of Hanoi, found on
+<a href="https://commons.wikimedia.org/wiki/File:Iterative_algorithm_solving_a_6_disks_Tower_of_Hanoi.gif">Wikimedia</a>
+by user <a href="https://commons.wikimedia.org/wiki/User:Trixx">Trixx</a>.</p>
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/8/8d/Iterative_algorithm_solving_a_6_disks_Tower_of_Hanoi.gif" alt="Towers of Hanoi animation" /></p>
+</div></details>
+<details class="hint"><summary>Hint 2</summary><div>
+<p>The strategy used in Towers of Hanoi is to move all but the bottom disc to the
+second peg, then moving the bottom disc to the third peg, then moving all but
+the second disc from the second to the third peg.</p>
+</div></details>
+<details class="hint"><summary>Hint 3</summary><div>
+<p>One thing you don't need to worry about is collecting all the steps.
+<code>print</code> effectively &quot;collects&quot; all the results in the terminal as long as you
+make sure that the moves are printed in order.</p>
+</div></details>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">print_move</span><span class="p">(</span><span class="n">origin</span><span class="p">,</span> <span class="n">destination</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Print instructions to move a disk.&quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Move the top disk from rod&quot;</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="s2">&quot;to rod&quot;</span><span class="p">,</span> <span class="n">destination</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">move_stack</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Print the moves required to move n disks on the start pole to the end</span>
+<span class="sd">    pole without violating the rules of Towers of Hanoi.</span>
+
+<span class="sd">    n -- number of disks</span>
+<span class="sd">    start -- a pole position, either 1, 2, or 3</span>
+<span class="sd">    end -- a pole position, either 1, 2, or 3</span>
+
+<span class="sd">    There are exactly three poles, and start and end must be different. Assume</span>
+<span class="sd">    that the start pole has at least n disks of increasing size, and the end</span>
+<span class="sd">    pole is either empty or has a top disk larger than the top n start disks.</span>
+
+<span class="sd">    &gt;&gt;&gt; move_stack(1, 1, 3)</span>
+<span class="sd">    Move the top disk from rod 1 to rod 3</span>
+<span class="sd">    &gt;&gt;&gt; move_stack(2, 1, 3)</span>
+<span class="sd">    Move the top disk from rod 1 to rod 2</span>
+<span class="sd">    Move the top disk from rod 1 to rod 3</span>
+<span class="sd">    Move the top disk from rod 2 to rod 3</span>
+<span class="sd">    &gt;&gt;&gt; move_stack(3, 1, 3)</span>
+<span class="sd">    Move the top disk from rod 1 to rod 3</span>
+<span class="sd">    Move the top disk from rod 1 to rod 2</span>
+<span class="sd">    Move the top disk from rod 3 to rod 2</span>
+<span class="sd">    Move the top disk from rod 1 to rod 3</span>
+<span class="sd">    Move the top disk from rod 2 to rod 1</span>
+<span class="sd">    Move the top disk from rod 2 to rod 3</span>
+<span class="sd">    Move the top disk from rod 1 to rod 3</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">start</span> <span class="o">&lt;=</span> <span class="mi">3</span> <span class="ow">and</span> <span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">end</span> <span class="o">&lt;=</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">start</span> <span class="o">!=</span> <span class="n">end</span><span class="p">,</span> <span class="s2">&quot;Bad start/end&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k move_stack"><pre><code>python3 -m pytest -k move_stack</code></pre></div>
+<h2 id="q7-anonymous-factorial">Q7: Anonymous Factorial</h2>
+<blockquote>
+<p>This question demonstrates that it's possible to write recursive functions
+without assigning them a name in the global frame.</p>
+</blockquote>
+<p>The recursive factorial function can be written as a single expression
+by using a
+<a href="http://docs.python.org/py3k/reference/expressions.html#conditional-expressions">conditional expression</a>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; fact = lambda n: 1 if n == 1 else mul(n, fact(sub(n, 1)))
+&gt;&gt;&gt; fact(5)
+120
+</code></pre></div></div>
+<p>However, this implementation relies on the fact (no pun intended) that
+<code>fact</code> has a name, to which we refer in the body of <code>fact</code>. To write a
+recursive function, we have always given it a name using a <code>def</code> or
+assignment statement so that we can refer to the function within its
+own body. In this question, your job is to define <code>fact</code> recursively
+without using a <code>def</code> or assignment statement to give it a name.</p>
+<p>Write an expression that computes <code>n</code> factorial using only call
+expressions, conditional expressions, and <code>lambda</code> expressions (no
+assignment or <code>def</code> statements).</p>
+<blockquote>
+<p><strong>Note:</strong>
+You are not allowed to use <code>make_anonymous_factorial</code> in your return
+expression.</p>
+</blockquote>
+<p>The <code>sub</code> and <code>mul</code> functions from the <code>operator</code> module are the only
+built-in functions required to solve this problem.</p>
+<blockquote>
+<p><strong>Hint:</strong>
+In order to recursively compute the factorial, you need a name
+to use in the recursive calls.  What other ways have we learned
+to give something a name, besides assignment statements and <code>def</code>
+statements?</p>
+</blockquote>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span><span class="w"> </span><span class="nn">operator</span><span class="w"> </span><span class="kn">import</span> <span class="n">sub</span><span class="p">,</span> <span class="n">mul</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">make_anonymous_factorial</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the value of an expression that computes factorial.</span>
+
+<span class="sd">    &gt;&gt;&gt; make_anonymous_factorial()(5)</span>
+<span class="sd">    120</span>
+<span class="sd">    &gt;&gt;&gt; # This test checks that the body is just a return statement that</span>
+<span class="sd">    &gt;&gt;&gt; # doesn&#39;t refer to make_anonymous_factorial.</span>
+<span class="sd">    &gt;&gt;&gt; import inspect, ast</span>
+<span class="sd">    &gt;&gt;&gt; body = ast.parse(inspect.getsource(make_anonymous_factorial)).body[0].body</span>
+<span class="sd">    &gt;&gt;&gt; [type(x).__name__ for x in body]</span>
+<span class="sd">    [&#39;Expr&#39;, &#39;Return&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; &#39;make_anonymous_factorial&#39; in ast.dump(body[-1])</span>
+<span class="sd">    False</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s1">&#39;YOUR_EXPRESSION_HERE&#39;</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k make_anonymous_factorial"><pre><code>python3 -m pytest -k make_anonymous_factorial</code></pre></div>
+{% endraw %}

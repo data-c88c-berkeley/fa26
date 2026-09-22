@@ -12,7 +12,8 @@ homework:
 - slug: hw03
   title: Higher-Order Functions (due Tue 9/22)
 - skip: true
-- title: Recursion (due Tue 9/29)
+- slug: hw04
+  title: Recursion (due Tue 10/6)
 - skip: true
 - skip: true
 - skip: true
