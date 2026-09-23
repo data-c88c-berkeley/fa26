@@ -64,6 +64,10 @@ lectures:
     slug: containers
   # Week 7
   - title: "Objects"      # Mon 10/05
+    slug: objects
+    readings:
+      - title: "2.3"
+        link: https://composingprograms.com/3ed/compound-data/
   - title: "Linked Lists" # Wed 10/07
   # Week 8
   - title: "Trees"              # Mon 10/12
