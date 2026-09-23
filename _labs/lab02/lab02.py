@@ -55,6 +55,8 @@ def double_eights(n):
     False
     >>> double_eights(80808080)
     False
+    >>> double_eights(1077)
+    False
     """
     "*** YOUR CODE HERE ***"
 
