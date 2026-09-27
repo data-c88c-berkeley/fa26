@@ -77,6 +77,9 @@ lectures:
   - title: "Debugging"          # Wed 10/21
   # Week 10
   - title: "Mutation"           # Mon 10/26
+    readings:
+      - title: "2.4"
+        link: https://composingprograms.com/3ed/mutable-data/
   - title: "Classes"            # Wed 10/28
   # Week 11
   - title: "Inheritance"        # Mon 11/02
