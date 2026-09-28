@@ -28,3 +28,14 @@ $cs61a-blue: #026ebb;
 .site-header .site-button {
   color: #fff;
 }
+
+// Resources page: three problems per row in each Exam Questions by Topic table.
+.exam-topic table {
+  width: 100%;
+  table-layout: fixed;
+
+  td {
+    width: 33.333%;
+    overflow-wrap: anywhere;
+  }
+}
