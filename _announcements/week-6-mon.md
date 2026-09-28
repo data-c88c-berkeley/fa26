@@ -6,7 +6,7 @@ date: 2026-09-28
 - There is no quiz this week.  There is a quiz **next week** about Homework
   4's `count_coins` function during
   lab. We released the quiz as a practice quiz that you can do as many times as
-  you like on [PrairieLearn].
+  you like on [PrairieLearn](https://us.prairielearn.com/pl/course_instance/230628/assessment/2734971).
 - Cats project is due Tuesday 10/13.
     - Checkpoint due next Tuesday 10/6.
     - Early submission bonus point for submitting by next Monday 10/12.
