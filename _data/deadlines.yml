@@ -55,3 +55,17 @@ deadlines:
   label: Homework 4
   title: Recursion
   link: /hw/hw04/
+- when: Tue 10/6
+  day: '2026-10-06'
+  kind: proj
+  label: Project 1
+  title: Computer Aided Typing Software
+  link: /projects/cats/
+  what: checkpoint
+- when: Tue 10/13
+  day: '2026-10-13'
+  kind: proj
+  label: Project 1
+  title: Computer Aided Typing Software
+  link: /projects/cats/
+  note: 1 bonus point for submitting by Mon 10/12

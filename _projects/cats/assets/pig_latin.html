@@ -1,0 +1,21 @@
+<div class="form-horizontal">
+  <div class="form-group">
+    <label class="col-sm-3 control-label" for="original-phrase">Original Phrase</label>
+    <div class="col-sm-9">
+      <input id="original-phrase" class="form-control" type="text" value="Computer science at Berkeley is fun, isn't it?">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="col-sm-3 control-label">Translation</label>
+    <div class="col-sm-9">
+      <p id="translated-phrase" class="form-control-static"></p>
+    </div>
+  </div>
+
+  <script defer>
+function f(b){var c=0;return function(){return c<b.length?{done:!1,value:b[c++]}:{done:!0}}}function h(b){var c="undefined"!=typeof Symbol&&Symbol.iterator&&b[Symbol.iterator];return c?c.call(b):{next:f(b)}}var k=$("#original-phrase");
+k.on("change paste keyup",function(){var b=$("#original-phrase").val(),c=[];b=h(b.split(" "));for(var a=b.next();!a.done;a=b.next())if(a=a.value,0!==a.length){var l=a[0]===a[0].toUpperCase();a=a.toLowerCase().split("");for(var g=[];a.length&&!a[a.length-1].match(/[a-z0-9]/);)g.unshift(a[a.length-1]),a.pop();var e=a.findIndex(function(m){return-1!==["a","e","i","o","u"].indexOf(m)});a=a.join("");var d=void 0;d=0===e?a.concat("way"):a.substring(e).concat(a.substring(0,e)).concat("ay");l&&(d=d[0].toUpperCase()+
+d.substring(1));c.push(d+g.join(""))}$("#translated-phrase").text(c.join(" "))});k.trigger("change");
+  </script>
+</div>

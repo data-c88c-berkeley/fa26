@@ -1,0 +1,903 @@
+---
+title: "Computer Aided Typing Software"
+layout: assignment
+nav_exclude: true
+excerpt_separator: ""
+due: "Tuesday 10/13"
+checkpoint: "Tuesday 10/06"
+earlydue: "Monday 10/12"
+---
+
+{% raw %}
+<header class="assignment-header"><h1>Computer Aided Typing Software</h1><ul class="assignment-facts"><li><strong>Due:</strong> Tuesday 10/13 @ 11:59pm</li><li><strong>Checkpoint:</strong> Tuesday 10/06 @ 11:59pm</li><li><strong>Points:</strong> 20</li><li><strong>Download:</strong> <a href="cats.zip">cats.zip</a></li></ul></header>
+<blockquote>
+<img id="cats_typing" src="assets/cats_typing_still.gif" class="img-responsive" style="display: block; margin: 0 auto;"/>
+</blockquote>
+<hr />
+<blockquote>
+<cite>
+Programmers dream of<br/>
+Abstraction, recursion, and<br/>
+Typing really fast.
+</cite>
+</blockquote>
+<blockquote>
+<p><strong>Important submission note:</strong> For full credit:</p>
+<ul>
+<li>Submit with Phases 1 and 2 complete by <strong>Tuesday 10/06</strong>, worth 1 pt.</li>
+<li>Submit the complete project by <strong>Tuesday 10/13</strong>.</li>
+</ul>
+<p>Try to attempt the problems in order, including running the tests for each problem
+as you progress, since some later problems will depend on earlier problems in their implementation.</p>
+<p>You may complete the project with a partner.</p>
+<p>You can get 1 bonus point by submitting the entire project by <strong>Monday 10/12</strong>.
+You can receive extensions on the project deadline and checkpoint
+deadline, but not on the early deadline, unless you're a DSP student with an
+accommodation for assignment extensions.</p>
+</blockquote>
+<h2 id="introduction">Introduction</h2>
+<p>In this project, you will write a program that measures typing speed.
+Additionally, you will implement typing autocorrect, which is a feature that
+attempts to correct the spelling of a word after a user types it. This project
+is inspired by <a href="https://play.typeracer.com/">typeracer</a>.</p>
+<h2 id="final-product">Final Product</h2>
+<p>Our staff solution to the project can be interacted with at
+<a href="https://cats.cs61a.org">cats.cs61a.org</a>.
+Feel free to try it out now.
+When you finish the project, you'll have implemented a significant part of
+this yourself, including the multiplayer mode!</p>
+<h2 id="download-starter-files">Download starter files</h2>
+<p>To get started, download all of the project code as a <a href="cats.zip">zip archive</a>.
+Below is a list of all the files you will see in the archive once unzipped.
+For the project, you'll only be making changes to <a href="cats.py.html"><code>cats.py</code></a>.</p>
+<ul>
+<li><a href="cats.py.html"><code>cats.py</code></a>: The typing test logic.</li>
+<li><a href="utils.py.html"><code>utils.py</code></a>: Utility functions for interacting with files and strings.</li>
+<li><a href="ucb.py.html"><code>ucb.py</code></a>: Utility functions for CS 61A projects.</li>
+<li><a href="data/sample_passages.txt.html"><code>data/sample_passages.txt</code></a>: Text samples to be typed.
+These are
+<a href="https://github.com/kavigupta/wikivideos/blob/626de521e04ca643751ed85d549faca6ea528b1d/get_corpus.py">scraped</a>
+Wikipedia articles about various subjects.</li>
+<li><a href="data/common_words.txt.html"><code>data/common_words.txt</code></a>: Common
+<a href="https://github.com/first20hours/google-10000-english/blob/master/google-10000-english-usa-no-swears.txt">English words in order of frequency</a>.</li>
+<li><a href="data/words.txt.html"><code>data/words.txt</code></a>: Many more
+<a href="https://github.com/first20hours/google-10000-english/blob/master/google-10000-english-usa-no-swears.txt">English words in order of frequency</a>.</li>
+<li><a href="data/final_diff_words.txt.html"><code>data/final_diff_words.txt</code></a>: Even more English words!</li>
+<li><code>data/testcases.out</code>: Test cases for the optional Final Diff extension.</li>
+<li><a href="cats_gui.py.html"><code>cats_gui.py</code></a>: A web server for the web-based graphical user interface (GUI).</li>
+<li><code>gui_files</code>: A directory of files needed for the graphical user interface
+(GUI).</li>
+<li><code>tests</code>: The pytest-grader test suite.</li>
+<li><a href="score.py.html"><code>score.py</code></a>: Part of the optional Final Diff extension.</li>
+</ul>
+<p>You may notice some files other than the ones listed above too—those are needed
+for the test runner and portions of the GUI work. Please do not modify any files
+other than <a href="cats.py.html"><code>cats.py</code></a>.</p>
+<h2 id="logistics">Logistics</h2>
+<p>The project is worth 20 points.
+19 points are for correctness
+and 1 point is for submitting Phases 1 &amp; 2 by the checkpoint date.</p>
+<h2 id="getting-started-videos">Getting Started Videos</h2>
+<p><a href="https://www.youtube.com/playlist?list=PLAgL9fR__tSs">These videos</a> may provide some helpful direction for tackling the coding
+problems on this assignment.</p>
+<blockquote><p>To see these videos, you should be logged into your berkeley.edu email.</p></blockquote>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?si=zXi64OFTqPhA9BY6&amp;list=PLAgL9fR__tSs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h2 id="phase-1-typing">Phase 1: Typing</h2>
+<blockquote>
+<p><strong>Reminder</strong>: Throughout the project, we will only be making changes to functions in <a href="cats.py.html"><code>cats.py</code></a>.</p>
+</blockquote>
+<h3 id="problem-1-1-pt">Problem 1 (1 pt)</h3>
+<p>Implement <code>pick</code>. This function selects which passage the user will type for the typing test.
+It takes three parameters:</p>
+<ul>
+<li><code>passages</code>: a list of potential passages (strings)</li>
+<li><code>select</code>: a function that evaluates a passage and returns <code>True</code> if it meets certain criteria, and <code>False</code> otherwise</li>
+<li><code>k</code>: a non-negative integer representing the index of the desired passage among those that meet the criteria</li>
+</ul>
+<p>The <code>pick</code> function returns the <code>k</code>th passage from <code>passages</code> for which the <code>select</code> function returns <code>True</code>.
+If no such passage exists (because <code>k</code> is greater than or equal to the number of qualifying passages), then <code>pick</code>
+returns an empty string.</p>
+<blockquote>
+<p><strong>Hint</strong>:
+Don't worry about the specific implementation of the <code>select</code> function. Just assume it takes a passage as input and
+returns <code>True</code> or<code>False</code>.
+<strong>Reminder</strong>: Indexing starts at 0. If <code>k</code> is 0, we want to pick the <em>first</em> qualifying passage.</p>
+</blockquote>
+<div class="pytest-command" data-command="python3 -m pytest -k q01 --unlock"><pre><code>python3 -m pytest -k q01 --unlock</code></pre></div>
+<details class="unlock-examples">
+<summary>Unlocking Examples</summary>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; from cats import pick
+&gt;&gt;&gt; ps = [&#x27;short&#x27;, &#x27;really long&#x27;, &#x27;tiny&#x27;]
+&gt;&gt;&gt; s = lambda p: len(p) &lt;= 5
+&gt;&gt;&gt; pick(ps, s, 0) # remember to put quotes (&#x27;&#x27;) around strings!
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; pick(ps, s, 1)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; pick(ps, s, 2)
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+</details>
+<div class="pytest-command" data-command="python3 -m pytest -k q01"><pre><code>python3 -m pytest -k q01</code></pre></div>
+<h3 id="problem-2-1-pt">Problem 2 (1 pt)</h3>
+<p>Implement the <code>about</code> function, which takes a list of words called <code>keywords</code>. It returns a
+function that, when given a passage, checks whether the passage contains any of
+the words in <code>keywords</code>. The returned function will return <code>True</code> if any of the
+words in the keywords list are found in the passage and <code>False</code> otherwise.</p>
+<p>Once <code>about</code> is implemented, we can use the function it returns as the <code>select</code> argument in <code>pick</code>.
+This is useful because it allows us to filter passages based on whether they contain any words from the keywords list provided to the <code>about</code> function.
+This functionality will be useful as we continue to develop our typing test.</p>
+<p>To ensure accurate comparisons, you will need to:</p>
+<ol>
+<li>Ignore case (treat uppercase and lowercase letters as equivalent).</li>
+<li>Ignore punctuation in the passage.</li>
+<li>Only check for exact matches of the words in the <code>keywords</code> list, not substrings.
+For example, instances of &quot;dogs&quot; in <code>passage</code> should not match &quot;dog&quot; in <code>keywords</code>.</li>
+</ol>
+<blockquote>
+<p><strong>Hint</strong>:
+Use the <code>split</code>, <code>lower</code>, and <code>remove_punctuation</code> functions in <a href="utils.py.html"><code>utils.py</code></a>.</p>
+</blockquote>
+<div class="pytest-command" data-command="python3 -m pytest -k q02 --unlock"><pre><code>python3 -m pytest -k q02 --unlock</code></pre></div>
+<details class="unlock-examples">
+<summary>Unlocking Examples</summary>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; from cats import about
+&gt;&gt;&gt; from cats import pick
+&gt;&gt;&gt; dogs = about([&#x27;dogs&#x27;, &#x27;hounds&#x27;])
+&gt;&gt;&gt; dogs(&#x27;A passage about cats.&#x27;)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; dogs(&#x27;A passage about dogs.&#x27;)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; dogs(&#x27;Release the Hounds!&#x27;)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; dogs(&#x27;&quot;DOGS&quot; stands for Department Of Geophysical Science.&#x27;)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; dogs(&#x27;Do gs and ho unds don\&#x27;t count&#x27;)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; dogs(&quot;AdogsPassage&quot;)
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+</details>
+<div class="pytest-command" data-command="python3 -m pytest -k q02"><pre><code>python3 -m pytest -k q02</code></pre></div>
+<h3 id="problem-3-2-pt">Problem 3 (2 pt)</h3>
+<p>Implement <code>accuracy</code>, which takes both a <code>typed</code> passage and a <code>source</code>
+passage. It returns the percentage of words in <code>typed</code> that exactly match
+the corresponding words in <code>source</code>. Case and punctuation must match as
+well. &quot;Corresponding&quot; means that each word in <code>typed</code> must appear in the same position as the matching word in <code>source</code>. In other words, the first word in <code>typed</code> must match the first word in <code>source</code>, the second word in <code>typed</code> must match the second word in <code>source</code>, and so on.</p>
+<p>A <em>word</em> in this context is any sequence of characters separated from other
+words by whitespace. Therefore, treat sequences like &quot;dog;&quot; as a single word.</p>
+<p>In the actual typing test, <code>typed</code> represents what the player has typed, and <code>source</code> is the passage they are attempting to replicate.</p>
+<ul>
+<li>If <code>typed</code> is longer than <code>source</code>, then the extra words in <code>typed</code> that have no corresponding word in <code>source</code> are all <em>incorrect</em>.</li>
+<li>If <code>typed</code> is shorter than <code>source</code> and all the words in <code>typed</code> correspond to <code>source</code> so far, then the accuracy is 100.0.</li>
+<li>If <code>typed</code> is empty and <code>source</code> is empty, then the accuracy is 100.0.</li>
+<li>If <code>typed</code> is empty but <code>source</code> is not empty, then the accuracy is 0.0.</li>
+<li>If <code>typed</code> is not empty but <code>source</code> is empty, then the accuracy is 0.0.</li>
+</ul>
+<div class="pytest-command" data-command="python3 -m pytest -k q03 --unlock"><pre><code>python3 -m pytest -k q03 --unlock</code></pre></div>
+<details class="unlock-examples">
+<summary>Unlocking Examples</summary>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; from cats import accuracy
+&gt;&gt;&gt; accuracy(&quot;12345&quot;, &quot;12345&quot;) # This should return 100.0 (not the integer 100!)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; accuracy(&quot;a b c&quot;, &quot;a b c&quot;)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; accuracy(&quot;a  b  c  d&quot;, &quot;b  a  c  d&quot;)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; accuracy(&quot;a b&quot;, &quot;c d e&quot;)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; accuracy(&quot;Cat&quot;, &quot;cat&quot;) # the function is case-sensitive
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; accuracy(&quot;a b c d&quot;, &quot;a d&quot;)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; accuracy(&quot;abc&quot;, &quot; &quot;)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; accuracy(&quot;a b \tc&quot; , &quot;a b c&quot;) # Tabs don&#x27;t count as words
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; accuracy(&quot;abc&quot;, &quot;&quot;)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; accuracy(&quot;&quot;, &quot;abc&quot;)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; accuracy(&quot;a b c d&quot;, &quot;b c d&quot;)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; accuracy(&quot;cats.&quot;, &quot;cats&quot;) # punctuation counts
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; accuracy(&quot;&quot;, &quot;&quot;) # Returns 100.0
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+</details>
+<div class="pytest-command" data-command="python3 -m pytest -k q03"><pre><code>python3 -m pytest -k q03</code></pre></div>
+<h3 id="problem-4-1-pt">Problem 4 (1 pt)</h3>
+<p>Implement <code>wpm</code>, which computes the <em>words per minute</em>, a measure of typing
+speed, given a string <code>typed</code> and the amount of <code>elapsed</code> time in <strong>seconds</strong>.
+Despite its name, <em>words per minute</em> is not based on the number of words typed,
+but instead the number of groups of 5 characters, so that a typing test is not
+biased by the length of words. The formula for <em>words per minute</em> is calculated by dividing the total number of characters typed (including spaces) by 5 (the average word length) and then dividing the result by the elapsed time in <strong>minutes</strong>.</p>
+<p>For example, the string <code>&quot;I am glad!&quot;</code> contains ten characters
+(not including the quotation marks). The words per minute calculation uses 2 as
+the number of words typed (because 10 / 5 = 2). If someone typed this string in
+30 seconds (half a minute), their speed would be 4 words per minute.</p>
+<div class="pytest-command" data-command="python3 -m pytest -k q04 --unlock"><pre><code>python3 -m pytest -k q04 --unlock</code></pre></div>
+<details class="unlock-examples">
+<summary>Unlocking Examples</summary>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; from cats import wpm
+&gt;&gt;&gt; wpm(&quot;12345&quot;, 3) # Note: wpm returns a float (with a decimal point)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; wpm(&quot;a b c&quot;, 20)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; wpm(&quot;&quot;, 10)
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+</details>
+<div class="pytest-command" data-command="python3 -m pytest -k q04"><pre><code>python3 -m pytest -k q04</code></pre></div>
+<p><strong>Time to test your typing speed!</strong> You can use the command line to test your
+typing speed on passages about a particular subject. For example, the command
+below will load passages about cats or kittens. See the <code>run_typing_test</code>
+function for the implementation if you're curious (but it is defined for you).</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python3 cats.py -t cats kittens
+</code></pre></div></div>
+<p>You can also try out the web-based graphical user interface (GUI) using the
+following command.
+(You may have to use <code>Ctrl+C</code> or <code>Cmd+C</code> on your terminal to quit the GUI
+after you close the tab in your browser).</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python3 cats_gui.py
+</code></pre></div></div>
+<h2 id="phase-2-autocorrect">Phase 2: Autocorrect</h2>
+<p>In the web-based GUI, there is an &quot;Enable Auto-Correct&quot; option, but right now it
+doesn't do anything. Let's implement automatic typo correction. Whenever the
+user presses the space bar, if the last word they typed doesn't match a word in
+the dictionary but is close to one, then that similar word will be substituted
+for what they typed.</p>
+<h3 id="problem-5-2-pt">Problem 5 (2 pt)</h3>
+<p>Implement <code>autocorrect</code>, which takes a <code>typed_word</code>, a
+<code>word_list</code>, a <code>diff_function</code>, and a <code>limit</code>. The goal of <code>autocorrect</code>
+is to return the word in <code>word_list</code> that is closest to the provided
+<code>typed_word</code>, as determined by <code>diff_function</code>.</p>
+<p>Specifically, <code>autocorrect</code> does the following:</p>
+<ul>
+<li>If the <code>typed_word</code> is contained inside the <code>word_list</code>, <code>autocorrect</code>
+returns that word.</li>
+<li>Otherwise, <code>autocorrect</code> returns the word from <code>word_list</code>
+that has the lowest difference from the provided <code>typed_word</code>.
+This difference is the number returned by the <code>diff_function</code>.</li>
+<li>However, if the lowest difference between <code>typed_word</code> and any
+of the words in <code>word_list</code> is greater than <code>limit</code>, then <code>typed_word</code> is returned
+instead. In other words, <code>limit</code> sets a maximum threshold on how severe a typo can
+be for it to still be corrected.</li>
+</ul>
+<p>Assume that <code>typed_word</code> and all elements of <code>word_list</code> are lowercase and
+have no punctuation.</p>
+<blockquote>
+<p><strong>Important</strong>:
+If multiple strings in <code>word_list</code> are tied for the lowest difference
+from <code>typed_word</code>, <code>autocorrect</code> should return the string that appears
+earliest (with the smallest index) in <code>word_list</code>.</p>
+</blockquote>
+<p>A diff function takes in three arguments. The first is the <code>typed_word</code>, the second is
+the source word (in this case, a word from <code>word_list</code>), and
+the third argument is the <code>limit</code>. The output of the diff function, which is
+a number, represents the amount of difference between the two strings.</p>
+<p>Here is an example of a diff function that computes the minimum of <code>1 + limit</code>
+and the difference in length between the two input strings:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; def length_diff(w1, w2, limit):
+...     return min(limit + 1, abs(len(w2) - len(w1)))
+&gt;&gt;&gt; length_diff(&#x27;mellow&#x27;, &#x27;cello&#x27;, 10)
+1
+&gt;&gt;&gt; length_diff(&#x27;hippo&#x27;, &#x27;hippopotamus&#x27;, 5)
+6
+</code></pre></div></div>
+<blockquote>
+<p><strong>Note</strong>:
+For conciseness, some unlocking tests use a ternary operator when defining a lambda function. A ternary operator is the one-line version of an <code>if</code> statement.</p>
+<p>For example, in one of the ok tests, we define a diff function as <code>first_diff = lambda w1, w2, limit: 1 if w1[0] != w2[0] else 0</code>.
+Here, lambda function returns 1 if the first characters of <code>w1</code> and <code>w2</code> are different, otherwise it returns 0.</p>
+</blockquote>
+<p>Here is a helpful hint for implementing <code>autocorrect</code>:</p>
+<blockquote>
+<p><strong>Note</strong>:
+Optionally, for a one-line solution, try using <code>max</code> or <code>min</code> with the optional <code>key</code> argument (which takes in a one-argument function).
+For example, <code>max([-7, 2, -1], key=abs)</code> would return <code>-7</code> since <code>abs(-7)</code> is greater than <code>abs(2)</code> and <code>abs(-1)</code>.</p>
+</blockquote>
+<div class="pytest-command" data-command="python3 -m pytest -k q05 --unlock"><pre><code>python3 -m pytest -k q05 --unlock</code></pre></div>
+<details class="unlock-examples">
+<summary>Unlocking Examples</summary>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; from cats import autocorrect, lines_from_file
+&gt;&gt;&gt; abs_diff = lambda w1, w2, limit: abs(len(w2) - len(w1))
+&gt;&gt;&gt; autocorrect(&quot;cul&quot;, [&quot;culture&quot;, &quot;cult&quot;, &quot;cultivate&quot;], abs_diff, 10)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; autocorrect(&quot;cul&quot;, [&quot;culture&quot;, &quot;cult&quot;, &quot;cultivate&quot;], abs_diff, 0)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; autocorrect(&quot;wor&quot;, [&quot;worry&quot;, &quot;car&quot;, &quot;part&quot;], abs_diff, 10)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; first_diff = lambda w1, w2, limit: 1 if w1[0] != w2[0] else 0
+&gt;&gt;&gt; autocorrect(&quot;wrod&quot;, [&quot;word&quot;, &quot;rod&quot;], first_diff, 1)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; autocorrect(&quot;inside&quot;, [&quot;idea&quot;, &quot;inside&quot;], first_diff, 0.5)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; autocorrect(&quot;inside&quot;, [&quot;idea&quot;, &quot;insider&quot;], first_diff, 0.5)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; autocorrect(&quot;outside&quot;, [&quot;idea&quot;, &quot;insider&quot;], first_diff, 0.5)
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+</details>
+<div class="pytest-command" data-command="python3 -m pytest -k q05"><pre><code>python3 -m pytest -k q05</code></pre></div>
+<h3 id="problem-6-3-pt">Problem 6 (3 pt)</h3>
+<p>Implement <code>furry_fixes</code>, a diff function that could be passed into the <code>diff_function</code> parameter in <code>autocorrect</code>.
+This function takes in two strings and returns the minimum number of characters that must be changed in the <code>typed</code>
+word in order to transform it into the <code>source</code> word. If the strings are not of
+equal length, the difference in lengths is added to the total change count.</p>
+<p>Here are some examples:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; big_limit = 10
+&gt;&gt;&gt; furry_fixes(&quot;nice&quot;, &quot;rice&quot;, big_limit)    # Substitute: n -&gt; r
+1
+&gt;&gt;&gt; furry_fixes(&quot;range&quot;, &quot;rungs&quot;, big_limit)  # Substitute: a -&gt; u, e -&gt; s
+2
+&gt;&gt;&gt; furry_fixes(&quot;pill&quot;, &quot;pillage&quot;, big_limit) # Don&#x27;t substitute anything, length difference of 3.
+3
+&gt;&gt;&gt; furry_fixes(&quot;goodbye&quot;, &quot;good&quot;, big_limit) # Don&#x27;t substitute anything, length difference of 3.
+3
+&gt;&gt;&gt; furry_fixes(&quot;roses&quot;, &quot;arose&quot;, big_limit)  # Substitute: r -&gt; a, o -&gt; r, s -&gt; o, e -&gt; s, s -&gt; e
+5
+&gt;&gt;&gt; furry_fixes(&quot;rose&quot;, &quot;hello&quot;, big_limit)   # Substitute: r-&gt;h, o-&gt;e, s-&gt;l, e-&gt;l, length difference of 1.
+5
+</code></pre></div></div>
+<blockquote>
+<p><strong>Important</strong>:
+You may not use <code>while</code>, <code>for</code>, or list comprehensions in your implementation.
+Use recursion.</p>
+</blockquote>
+<p>If the number of characters that must change is greater than <code>limit</code>,
+then <code>furry_fixes</code> should return any number larger than <code>limit</code> and
+should minimize the amount of computation needed to do so.</p>
+<blockquote>
+<p>Why is there a limit? From Problem 5, we know that <code>autocorrect</code> will reject any <code>source</code>
+word whose difference with the <code>typed</code> word is greater than <code>limit</code>. It doesn't
+matter if the difference is greater than <code>limit</code> by 1 or by 100; autocorrect will
+reject it just the same. Therefore, as soon as we know the difference is above <code>limit</code>,
+it makes sense to stop making recursive calls, saving time,
+even if the returned difference won't be exactly correct.</p>
+<p>These two calls to <code>furry_fixes</code> should take about the same amount of time to
+evaluate:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; limit = 4
+&gt;&gt;&gt; furry_fixes(&quot;roses&quot;, &quot;arose&quot;, limit) &gt; limit
+True
+&gt;&gt;&gt; furry_fixes(&quot;rosesabcdefghijklm&quot;, &quot;arosenopqrstuvwxyz&quot;, limit) &gt; limit
+True
+</code></pre></div></div>
+</blockquote>
+<p>To ensure that you are correctly saving time by stopping the recursion after
+<code>limit</code> is reached, there is an autograder test that measures the performance of
+your solution based on the number of function calls that it makes. If you fail
+this test, consider adding a base case related to the <code>limit</code>.</p>
+<blockquote>
+<p><strong>Hint</strong>: you will need more than one base case to solve this problem.</p>
+</blockquote>
+<details class="hint"><summary>String Slicing</summary><div>
+<p>A string is a sequence of characters. (Letters, digits, and punctuation are all characters.) A slice of a string is another string that contains some of the characters of the original. Here are some examples:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; a = &#x27;strap&#x27;
+&gt;&gt;&gt; a[0]
+&#x27;s&#x27;
+&gt;&gt;&gt; a[1:]
+&#x27;trap&#x27;
+&gt;&gt;&gt; a[2:]
+&#x27;rap&#x27;
+&gt;&gt;&gt; a[1:][1:]
+&#x27;rap&#x27;
+</code></pre></div></div>
+</div></details>
+<div class="pytest-command" data-command="python3 -m pytest -k q06 --unlock"><pre><code>python3 -m pytest -k q06 --unlock</code></pre></div>
+<details class="unlock-examples">
+<summary>Unlocking Examples</summary>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; from cats import furry_fixes, autocorrect
+&gt;&gt;&gt; import tests.construct_check as test
+&gt;&gt;&gt; big_limit = 10
+&gt;&gt;&gt; furry_fixes(&quot;car&quot;, &quot;cad&quot;, big_limit)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; furry_fixes(&quot;this&quot;, &quot;that&quot;, big_limit)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; furry_fixes(&quot;one&quot;, &quot;two&quot;, big_limit)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; furry_fixes(&quot;from&quot;, &quot;form&quot;, big_limit)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; furry_fixes(&quot;awe&quot;, &quot;awesome&quot;, big_limit)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; furry_fixes(&quot;awful&quot;, &quot;awesome&quot;, big_limit)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; furry_fixes(&quot;awful&quot;, &quot;awesome&quot;, 3) &gt; 3
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; furry_fixes(&quot;awful&quot;, &quot;awesome&quot;, 4) &gt; 4
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; furry_fixes(&quot;awful&quot;, &quot;awesome&quot;, 5) &gt; 5
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+</details>
+<div class="pytest-command" data-command="python3 -m pytest -k q06"><pre><code>python3 -m pytest -k q06</code></pre></div>
+<p>Try enabling auto-correct in the GUI. Does it help you type faster? Are the
+corrections accurate?</p>
+<h3 id="problem-7-3-pt">Problem 7 (3 pt)</h3>
+<p>Implement <code>minimum_mewtations</code>, a more advanced diff function that can be used in <code>autocorrect</code>, which
+returns the <em>minimum</em> number of edit operations needed to transform the <code>typed</code> word into
+the <code>source</code> word.</p>
+<p>There are three kinds of edit operations, with some examples:</p>
+<ol>
+<li>Add a letter to <code>typed</code>.
+<ul>
+<li>Adding <code>&quot;k&quot;</code> to <code>&quot;itten&quot;</code> gives us <code>&quot;kitten&quot;</code>.</li>
+</ul>
+</li>
+<li>Remove a letter from <code>typed</code>.
+<ul>
+<li>Removing <code>&quot;s&quot;</code> from <code>&quot;scat&quot;</code> gives us <code>&quot;cat&quot;</code>.</li>
+</ul>
+</li>
+<li>Substitute a letter in <code>typed</code> for another.
+<ul>
+<li>Substituting <code>&quot;z&quot;</code> with <code>&quot;j&quot;</code> in <code>&quot;zaguar&quot;</code> gives us <code>&quot;jaguar&quot;</code>.</li>
+</ul>
+</li>
+</ol>
+<p>Each edit operation increases the difference between two words by 1.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; big_limit = 10
+&gt;&gt;&gt; minimum_mewtations(&quot;cats&quot;, &quot;scat&quot;, big_limit)       # cats -&gt; scats -&gt; scat
+2
+&gt;&gt;&gt; minimum_mewtations(&quot;purng&quot;, &quot;purring&quot;, big_limit)   # purng -&gt; purrng -&gt; purring
+2
+&gt;&gt;&gt; minimum_mewtations(&quot;ckiteus&quot;, &quot;kittens&quot;, big_limit) # ckiteus -&gt; kiteus -&gt; kitteus -&gt; kittens
+3
+</code></pre></div></div>
+<p>We have provided a template of an implementation in <a href="cats.py.html"><code>cats.py</code></a>. You may modify the template however you want or delete it entirely.</p>
+<blockquote>
+<p><strong>Hint:</strong>
+One of the recursive calls in <code>minimum_mewtations</code> will be similar to <code>furry_fixes</code>.
+However, because <code>minimum_mewtations</code> considers three <em>specific</em> types of edits (add, remove, substitute),
+there will need to be additional recursive calls to handle each of these cases.</p>
+</blockquote>
+<p>If the number of edits required is greater than <code>limit</code>, then
+<code>minimum_mewtations</code> should return <strong>any number</strong> larger than <code>limit</code> (such as
+<code>limit + 1</code>) and should stop making recursive calls once the limit is reached to
+save time.</p>
+<blockquote>
+<p>These two calls to <code>minimum_mewtations</code> should take about the same amount of
+time to evaluate:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; limit = 2
+&gt;&gt;&gt; minimum_mewtations(&quot;ckiteus&quot;, &quot;kittens&quot;, limit) &gt; limit
+True
+&gt;&gt;&gt; minimum_mewtations(&quot;ckiteusabcdefghijklm&quot;, &quot;kittensnopqrstuvwxyz&quot;, limit) &gt; limit
+True
+</code></pre></div></div>
+</blockquote>
+<p>To ensure that your code stops making recursive calls after the <code>limit</code> is
+reached, there is an autograder test that measures the performance of your
+solution based on the number of function calls that it makes.</p>
+<blockquote>
+<p><strong>Important</strong>:
+You <em>should not</em> use any helper functions in your implementation of <code>minimum_mewtations</code>. Otherwise the autograder test might fail.</p>
+</blockquote>
+<blockquote>
+<p><strong>Important</strong>:
+Remember to remove the following line of code when you are ready to test your implementation:
+assert False, 'Remove this line'</p>
+</blockquote>
+<div class="pytest-command" data-command="python3 -m pytest -k q07 --unlock"><pre><code>python3 -m pytest -k q07 --unlock</code></pre></div>
+<details class="unlock-examples">
+<summary>Unlocking Examples</summary>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; from cats import minimum_mewtations, autocorrect
+&gt;&gt;&gt; import tests.construct_check as test
+&gt;&gt;&gt; big_limit = 10
+&gt;&gt;&gt; minimum_mewtations(&quot;wind&quot;, &quot;wind&quot;, big_limit)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; minimum_mewtations(&quot;wird&quot;, &quot;wiry&quot;, big_limit)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; minimum_mewtations(&quot;wird&quot;, &quot;bird&quot;, big_limit)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; minimum_mewtations(&quot;wird&quot;, &quot;wires&quot;, big_limit)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; minimum_mewtations(&quot;wird&quot;, &quot;bwird&quot;, big_limit)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; minimum_mewtations(&quot;speling&quot;, &quot;spellings&quot;, big_limit)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; minimum_mewtations(&quot;hash&quot;, &quot;ash&quot;, big_limit)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; minimum_mewtations(&quot;ash&quot;, &quot;hash&quot;, big_limit)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; minimum_mewtations(&quot;roses&quot;, &quot;arose&quot;, big_limit)     # roses -&gt; aroses -&gt; arose
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; minimum_mewtations(&quot;tesng&quot;, &quot;testing&quot;, big_limit)   # tesng -&gt; testng -&gt; testing
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; minimum_mewtations(&quot;rlogcul&quot;, &quot;logical&quot;, big_limit) # rlogcul -&gt; logcul -&gt; logicul -&gt; logical
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; minimum_mewtations(&quot;&quot;, &quot;&quot;, big_limit) # nothing to nothing needs no edits
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+</details>
+<div class="pytest-command" data-command="python3 -m pytest -k q07"><pre><code>python3 -m pytest -k q07</code></pre></div>
+<p>Try enabling auto-correct and typing again. Are the corrections more accurate?</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python3 cats_gui.py
+</code></pre></div></div>
+<h3 id="optional-final-diff-extension-0-pt">Optional: Final Diff Extension (0 pt)</h3>
+<p>You may optionally design your own diff function called
+<code>final_diff</code>. Here are some ideas for making even more accurate corrections:</p>
+<ul>
+<li>Take into account which additions and deletions are more likely than others.
+For example, it's much more likely that you'll accidentally leave out a
+letter if it appears twice in a row.</li>
+<li>Treat two adjacent letters that have swapped positions as one change,
+not two.</li>
+<li>Try to incorporate common misspellings.</li>
+<li>Letters near to each other on the keyboard are more commonly substituted.</li>
+</ul>
+<p>You can also set the limit you'd like your diff function to use by changing
+the value of the variable <code>FINAL_DIFF_LIMIT</code> in <a href="cats.py.html"><code>cats.py</code></a>.</p>
+<p>You can check your <code>final_diff</code>'s success rate on a provided dataset of common
+misspellings by running:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> python3 score.py
+</code></pre></div></div>
+<p>If you don't know where to start, try copy-pasting your code for <code>furry_fixes</code>
+and <code>minimum_mewtations</code> into <code>final_diff</code> and scoring them. Looking at the
+typos they fixed (and didn't fix) might give you some ideas!</p>
+<h2 id="checkpoint-submission">Checkpoint Submission</h2>
+<p>Check to make sure that you completed all the problems in Phase 1 and Phase 2:</p>
+<div class="pytest-command" data-command="python3 -m pytest --score"><pre><code>python3 -m pytest --score</code></pre></div>
+<p>When you run pytest, you'll still see that some tests are locked
+because you haven't completed the whole project yet. You'll get full credit for
+the checkpoint if you correctly complete all the problems up to this point.</p>
+<p>Once you are satisfied, submit the checkpoint: run <strong>Provenance: Prepare Submission Bundle</strong> from the VS Code command palette and upload the zip it creates to the Cats Checkpoint assignment <strong>on Gradescope.</strong>
+Be sure to submit before the checkpoint deadline of Tuesday 10/06.
+For a refresher on how to create and submit your zip with Provenance, refer to <a href="../../labs/lab00/#task-c-submit-the-assignment">Lab 00</a>.</p>
+<!-- You can add a partner to your Gradescope submission by clicking on **Group Members** and entering their email address. -->
+<p>Each partner must submit the version of the project that they typed.</p>
+<h2 id="phase-3-multiplayer">Phase 3: Multiplayer</h2>
+<p>Typing is more fun with friends! You'll now implement multiplayer
+functionality, so that when you run <a href="cats_gui.py.html"><code>cats_gui.py</code></a> on your computer,
+it connects to the course server at
+<a href="https://cats.cs61a.org">cats.cs61a.org</a>
+and looks for someone else to race against.</p>
+<p>To race against a friend, 5 different programs will be running:</p>
+<ul>
+<li>Your GUI, which is a program that handles all the text coloring and display
+in your web browser.</li>
+<li>Your <a href="cats_gui.py.html"><code>cats_gui.py</code></a>, which is a web server that communicates with your GUI using
+the code you wrote in <a href="cats.py.html"><code>cats.py</code></a>.</li>
+<li>Your opponent's <a href="cats_gui.py.html"><code>cats_gui.py</code></a>.</li>
+<li>Your opponent's GUI.</li>
+<li>The CS 61A multiplayer server, which matches players together and passes
+messages around.</li>
+</ul>
+<p>When you type, your GUI uploads what you have typed to your <a href="cats_gui.py.html"><code>cats_gui.py</code></a> server,
+which computes how much progress you have made and returns a progress update.
+This server also uploads a progress update to the CS 61A multiplayer server, so that your
+opponent's GUI can also display your progress.</p>
+<p>Meanwhile, your GUI display constantly tries to stay current by requesting
+your opponent's progress updates from <a href="cats_gui.py.html"><code>cats_gui.py</code></a>, which, in turn, retrieves
+that information from the multiplayer server.</p>
+<p>Each player has an <code>id</code> number that is used by the server to track typing
+progress.</p>
+<h3 id="problem-8-2-pt">Problem 8 (2 pt)</h3>
+<p>Implement <code>report_progress</code>, which is called every time the user finishes
+typing a word. It takes a list of the words <code>typed</code> so far, a list of the words in the <code>source</code> text, the user's <code>user_id</code>, and an <code>upload</code> function that is used to upload
+a progress report to the multiplayer server. There will never be more words in
+<code>typed</code> than in <code>source</code>.</p>
+<p>Your progress is a ratio of the words in the <code>source</code> that you have typed
+correctly, up to the first incorrect word, divided by the number of <code>source</code>
+words. For instance, this example has a progress of <code>0.25</code>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>report_progress([&quot;Hello&quot;, &quot;ths&quot;, &quot;is&quot;], [&quot;Hello&quot;, &quot;this&quot;, &quot;is&quot;, &quot;wrong&quot;], ...)
+</code></pre></div></div>
+<p>Your <code>report_progress</code> function should:</p>
+<ol>
+<li>Upload a message to the multiplayer server by calling the <code>upload</code> function with a dictionary containing two keys: <code>'id'</code> and <code>'progress'</code>. The <code>'id'</code> key should be set to the user's <code>user_id</code>, and the <code>'progress'</code> key should store the computed progress for the user, as defined above.</li>
+<li>Return the user's computed progress.</li>
+</ol>
+<blockquote>
+<p><strong>Hint:</strong>
+See the dictionary below for an example of a potential input to the <code>upload</code>
+function.
+This dictionary represents a player with <code>user_id</code> 4 and <code>progress</code> 0.6.</p>
+<p><code>{'id': 4, 'progress': 0.6}</code></p>
+</blockquote>
+<div class="pytest-command" data-command="python3 -m pytest -k q08 --unlock"><pre><code>python3 -m pytest -k q08 --unlock</code></pre></div>
+<details class="unlock-examples">
+<summary>Unlocking Examples</summary>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; from cats import report_progress
+&gt;&gt;&gt; print_progress = lambda d: print(&#x27;ID:&#x27;, d[&#x27;id&#x27;], &#x27;Progress:&#x27;, d[&#x27;progress&#x27;])
+&gt;&gt;&gt; typed = [&#x27;I&#x27;, &#x27;have&#x27;, &#x27;begun&#x27;]
+&gt;&gt;&gt; source = [&#x27;I&#x27;, &#x27;have&#x27;, &#x27;begun&#x27;, &#x27;to&#x27;, &#x27;type&#x27;]
+&gt;&gt;&gt; print_progress({&#x27;id&#x27;: 1, &#x27;progress&#x27;: 0.6})
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; report_progress(typed, source, 1, print_progress) # print_progress is called on the report
+<span class="wwpd-blank">______</span>
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; report_progress([&#x27;I&#x27;, &#x27;begun&#x27;], source, 2, print_progress)
+<span class="wwpd-blank">______</span>
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; report_progress([&#x27;I&#x27;, &#x27;hve&#x27;, &#x27;begun&#x27;, &#x27;to&#x27;, &#x27;type&#x27;], source, 3, print_progress)
+<span class="wwpd-blank">______</span>
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+</details>
+<div class="pytest-command" data-command="python3 -m pytest -k q08"><pre><code>python3 -m pytest -k q08</code></pre></div>
+<h3 id="problem-9-1-pt">Problem 9 (1 pt)</h3>
+<p>Implement <code>time_per_word</code>, which takes in two arguments:</p>
+<ol>
+<li><code>words</code>: a list of words that players are typing.</li>
+<li><code>player_timestamps</code>: a list of lists where each inner list contains the timestamps indicating
+when each player finished typing each word in <code>words</code>.</li>
+</ol>
+<p>The function should return a dictionary with the following structure:</p>
+<ul>
+<li><code>'words'</code>: The list of words that the players are typing.</li>
+<li><code>'times'</code>: A list of lists <code>times</code> that stores the durations it took each player to type each word. Specifically, the value at <code>times[i][j]</code>should indicate
+how long it took player <code>i</code> to type the word at <code>words[j]</code>. This would be the difference between when the player finished typing <code>words[j]</code> and when the player finished typing <code>words[j-1]</code>. For <code>words[0]</code>, this would be the difference between when the player finished typing <code>words[0]</code> and when the player started typing.</li>
+</ul>
+<p>Timestamps found in the parameter <code>player_timestamps</code> are
+cumulative and always increasing, while the values in <code>times</code> are
+<strong>differences between consecutive timestamps for each player</strong>.</p>
+<p>Here's an example:
+If <code>player_timestamps = [[1, 3, 5], [2, 5, 6]]</code>, then <code>times</code> would be <code>[[2, 2], [3, 1]]</code>.</p>
+<p>This is because the first player finished typing each word at timestamps <code>1</code>, <code>3</code>, and <code>5</code>, while the second player finished typing each word at timestamps <code>2</code>, <code>5</code>, and <code>6</code>.
+So the differences in timestamps are
+<code>(3-1)</code>, <code>(5-3)</code> for the first player and
+<code>(5-2)</code>, <code>(6-5)</code> for the second player.
+The first value of each list within <code>player_timestamps</code> represents the
+initial starting time for each player.</p>
+<div class="pytest-command" data-command="python3 -m pytest -k q09 --unlock"><pre><code>python3 -m pytest -k q09 --unlock</code></pre></div>
+<details class="unlock-examples">
+<summary>Unlocking Examples</summary>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; from cats import *
+&gt;&gt;&gt; p = [[1, 4, 6, 7], [0, 4, 6, 9]]
+&gt;&gt;&gt; words = [&#x27;This&#x27;, &#x27;is&#x27;, &#x27;fun&#x27;]
+&gt;&gt;&gt; words_and_times = time_per_word(words, p)
+&gt;&gt;&gt; words, times = words_and_times[&#x27;words&#x27;], words_and_times[&#x27;times&#x27;]
+&gt;&gt;&gt; words
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; times
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; p = [[0, 2, 3], [2, 4, 7]]
+&gt;&gt;&gt; words_and_times =time_per_word([&#x27;hello&#x27;, &#x27;world&#x27;], p)
+&gt;&gt;&gt; words, times = words_and_times[&#x27;words&#x27;], words_and_times[&#x27;times&#x27;]
+&gt;&gt;&gt; words
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; words[1]
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; times
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; times[0][1]
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+</details>
+<div class="pytest-command" data-command="python3 -m pytest -k q09"><pre><code>python3 -m pytest -k q09</code></pre></div>
+<h3 id="problem-10-3-pt">Problem 10 (3 pt)</h3>
+<p>Implement <code>fastest_words</code>, which returns which words each player typed fastest.
+This function is called once all players have finished typing.
+It takes in a dictionary returned by <code>time_per_word</code>.</p>
+<p>The <code>fastest_words</code> function returns a list of lists of words, one list for each
+player. The index of the nested list denotes the player. The list for each player contains the words they typed faster
+than all the other players. In the case of a tie, the player with the smallest
+index is considered to be the one who typed it the fastest.</p>
+<p>For example, consider two players who typed <code>Just have fun</code>. Player 0 typed
+<code>'fun'</code> the fastest (3 seconds), Player 1 typed <code>'Just'</code> the fastest (4
+seconds), and they tied on the word <code>'have'</code> (both took 1 second). In this case,
+Player 0 is considered the fastest for <code>'have'</code> because their index is smaller.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; player_0 = [5, 1, 3]
+&gt;&gt;&gt; player_1 = [4, 1, 6]
+&gt;&gt;&gt; fastest_words({&#x27;words&#x27;: [&#x27;Just&#x27;, &#x27;have&#x27;, &#x27;fun&#x27;], &#x27;times&#x27;: [player_0, player_1]}) # player 0 -&gt; [&#x27;have&#x27;, &#x27;fun&#x27;], player 1 -&gt; [&#x27;Just&#x27;]
+[[&#x27;have&#x27;, &#x27;fun&#x27;], [&#x27;Just&#x27;]]
+</code></pre></div></div>
+<p>Use the helper function <code>get_time</code> (provided) to get an individual time from <code>times</code>. It provides helpful error messages when you try to access a time that doesn't exist.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>def get_time(times, player_num, word_index):
+    &quot;&quot;&quot;Return the time it took player_num to type the word at word_index,
+    given a list of lists of times returned by time_per_word.&quot;&quot;&quot;
+</code></pre></div></div>
+<blockquote>
+<p><strong>Important</strong>:
+Make sure your implementation does not mutate the given player input lists.
+For the example above, calling <code>fastest_words</code> on <code>[player_0, player_1]</code>
+should <strong>not</strong> mutate <code>player_0</code> or <code>player_1</code>.</p>
+<p>There might not always be two players, so generalize this function in a
+way that will allow it to handle an indeterminate number of players.</p>
+</blockquote>
+<div class="pytest-command" data-command="python3 -m pytest -k q10 --unlock"><pre><code>python3 -m pytest -k q10 --unlock</code></pre></div>
+<details class="unlock-examples">
+<summary>Unlocking Examples</summary>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; from cats import fastest_words, get_time
+&gt;&gt;&gt; p0 = [2, 2, 3]
+&gt;&gt;&gt; p1 = [6, 1, 2]
+&gt;&gt;&gt; get_time([p0, p1], 0, 1)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; fastest_words({&#x27;words&#x27;: [&#x27;What&#x27;, &#x27;great&#x27;, &#x27;luck&#x27;], &#x27;times&#x27;: [p0, p1]})
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; p0 = [2, 2, 3]
+&gt;&gt;&gt; p1 = [6, 1, 3]
+&gt;&gt;&gt; fastest_words({&#x27;words&#x27;: [&#x27;What&#x27;, &#x27;great&#x27;, &#x27;luck&#x27;], &#x27;times&#x27;: [p0, p1]})  # with a tie, choose the first player
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; p2 = [4, 3, 1]
+&gt;&gt;&gt; fastest_words({&#x27;words&#x27;: [&#x27;What&#x27;, &#x27;great&#x27;, &#x27;luck&#x27;], &#x27;times&#x27;: [p0, p1, p2]})
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+</details>
+<div class="pytest-command" data-command="python3 -m pytest -k q10"><pre><code>python3 -m pytest -k q10</code></pre></div>
+<p>Congratulations! Now you can play against other students in the course. Set
+<code>enable_multiplayer</code> to <code>True</code> near the bottom of <a href="cats.py.html"><code>cats.py</code></a> and type swiftly!</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python3 cats_gui.py
+</code></pre></div></div>
+<h2 id="project-submission">Project Submission</h2>
+<p>Run pytest on all problems to make sure all tests are unlocked and pass:</p>
+<div class="pytest-command" data-command="python3 -m pytest"><pre><code>python3 -m pytest</code></pre></div>
+<p>You can also check your score on each part of the project:</p>
+<div class="pytest-command" data-command="python3 -m pytest --score"><pre><code>python3 -m pytest --score</code></pre></div>
+<p>Once you are satisfied, submit this assignment: run <strong>Provenance: Prepare Submission Bundle</strong> from the VS Code command palette and upload the zip it creates <strong>to Gradescope.</strong> For a refresher on how to do this, refer to <a href="../../labs/lab00/#task-c-submit-the-assignment">Lab 00</a>.</p>
+<!-- You can add a partner to your Gradescope submission by clicking on **Group Members** and entering their email address. Only one partner needs to submit to Gradescope. -->
+<p>Each partner must submit the version of the project that they typed.</p>
+<h2 id="phase-4-efficiency-extra-challenge">Phase 4: Efficiency (Extra Challenge)</h2>
+<h3 id="optional-problem-ec-0-pt">Optional: Problem EC (0 pt)</h3>
+<blockquote>
+<p><strong>Note</strong>:
+This problem is <strong>optional</strong> and <strong>will not worth any points</strong>. It is meant to be a extra challenge for those who are interested in improving the efficiency of their code. <strong>Only attempt this problem if you have completed all other problems in the project.</strong></p>
+</blockquote>
+<!-- line break -->
+<blockquote>
+<p>During Office Hours and Project Parties, the staff will prioritize helping students with required
+questions. We will not be offering help with this question unless the
+<a href="https://oh.cs61a.org/">queue</a> is empty.
+In this problem, you will implement memoization decorators that will increase the efficiency of our our program by &quot;remembering&quot; the results of particularly intensive operations.</p>
+</blockquote>
+<p>Make sure you're familiar with the decorators and memoization. If you would like a refresher, open the dropdown boxes below for more information.</p>
+<details class="hint"><summary>Decorators</summary><div>
+<p>A Python decorator allows you to modify a pre-existing function without changing the function's structure.</p>
+<p>Specifically, a decorator function is a higher-order function that...</p>
+<ul>
+<li>Takes the original function as an input</li>
+<li>Returns a new function with modified functionality
+<ul>
+<li>This new function <strong>must</strong> contain the same arguments as the original function</li>
+</ul>
+</li>
+</ul>
+<p>An example of a decorator that executes a one-input function twice is shown below:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; def do_twice(original_function):
+...     def repeat(x):
+...             original_function(x)
+...             original_function(x)
+...     return repeat
+</code></pre></div></div>
+<p>We can apply this function in multiple contexts:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Printing a value twice
+&gt;&gt;&gt; @do_twice
+... def print_value(x):
+...     print(x)
+...
+&gt;&gt;&gt; print_value(5)
+5
+5
+# Adding an item to a list twice
+&gt;&gt;&gt; lst = []
+&gt;&gt;&gt; @do_twice
+... def add_to_list(item):
+...     lst.append(item)
+...
+&gt;&gt;&gt; add_to_list(5)
+&gt;&gt;&gt; lst
+[5, 5]
+</code></pre></div></div>
+<p>Additionally, note that we could also directly call the decorator function instead of using the <code>@</code> notation (i.e. <code>print_value = do_twice(print_value)</code>).
+However, it's typically useful to place decorators directly above the function that we are modifying since they better describe how these functions
+are being changed in our code.</p>
+</div></details>
+<details class="hint"><summary>Memoization</summary><div>
+<p>Notice that the diff functions we wrote in the previous questions are very inefficient: you will likely find that the computer will make the same recursive call multiple times. For a function with multiple arguments and three recursive calls, this can be harder to see. It can be easier to first see this with a function like <code>fib</code> that is defined in lecture.</p>
+<p><img src="assets/fib_tree.png" alt="Fib Tree" /></p>
+<p>Noticed how many redundant recursive calls there are in the above tree diagram. Our goal is to have our program store past results of evaluated recursive calls so that we can reuse them if the same recursive call comes up in the future. For example, the first branch of <code>fib(5)</code> calls <code>fib(3)</code>, which has not yet been evaluated. So we must go through all of its subsequent recursive calls to find its return value. However when we encounter the call to <code>fib(3)</code> that is a branch of <code>fib(4)</code>, we have already found its return value before! So if we have a way to store and retrieve that information in something called a cache, we can avoid needless computation. We no longer need to make any subsequent recursive calls to its branches <code>fib(1)</code> and <code>fib(2)</code>. This
+is the concept of <strong>memoization</strong>: store the results of expensive computations in a cache, and retrieve information from the cache in the case we
+execute a repeated action.</p>
+</div></details>
+<p>We will be working with two memoization decorators. <code>memo</code> is a general all-purpose decorator that memoizes the function it annotates. If <code>memo</code> encounters
+an input it has not seen, it will store the calculated result into its <code>cache</code>. If <code>memo</code> receives an input it has already seen, it will take the stored
+value in the <code>cache</code> and returns it directly without doing any extra computation. We have provided you with the full implementation of <code>memo</code>.</p>
+<p>Your task is to implement <code>memo_diff</code>. <code>memo_diff</code> is a higher-order function that takes in a <code>diff_function</code> and returns another diff function called <code>memoized</code> that, like all diff functions, takes in <code>typed</code>, <code>source</code>, and <code>limit</code>. <code>memoized</code> should do the following:</p>
+<ul>
+<li>When <code>memoized</code> sees a (<code>typed</code>, <code>source</code>) pair for the first time, it should calculate the
+difference using <code>diff_function</code> and cache that value along with the <code>limit</code> used as a (<code>value</code>, <code>limit</code>) tuple pair.</li>
+<li>If <code>memoized</code> encounters the (<code>typed</code>, <code>source</code>) pair again, it should return the memoized
+<code>value</code> if the provided <code>limit</code> is less than or equal to the cached limit. Otherwise, the
+difference should be recalculated, recached, and returned.</li>
+</ul>
+<blockquote>
+<p><strong>Important:</strong> When implementing this function, make sure you store pairs of values in the cache
+with a tuple, <strong>not</strong> a list. In dictionaries, keys must be <em>immutable</em> (that's why using a tuple
+is fine, but using a list is not).
+If you're curious about why <code>memo_diff</code> is different than <code>memo</code> and is implemented in this way, reference the dropdown below:</p>
+</blockquote>
+<details class="hint"><summary>More Information</summary><div>
+<p>How do <code>memo</code> and <code>memo_diff</code> differ? Although <code>memo</code> stores only the result of a function call, <code>memo_diff</code> takes into account an additional constraint, <code>limit</code>, that affects whether the cached result can be used or not. When the <code>memo_diff</code> function is called with a (<code>typed</code>, <code>source</code>) pair, it doesn’t just check if the pair has been seen before; it also checks if the <code>limit</code> is less than or equal to the cached <code>limit</code>. This is an additional check that <code>memo</code> does not perform.</p>
+<p>Why is <code>limit</code> handled this way? We already know that the <code>limit</code> represents the maximum
+difference that a diff function cares about—that is, differences above the <code>limit</code> might
+as well be the same. So diff functions will provide an accurate difference value when it is
+below the limit and an inaccurate one when it is above the limit. Therefore, we can trust a
+cached difference value if it was calculated with a higher limit, but we can't trust ones
+calculated with a lower limit.</p>
+<p>For example, the result of the first call below would allow us to predict the result of
+the second call. The higher limit provides us with more information. However, the second
+call would not allow us to predict the first one.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; minimum_mewtations(&quot;hello&quot;, &quot;hasldfasdfsffsfasdf&quot;, 100)
+17
+&gt;&gt;&gt; minimum_mewtations(&quot;hello&quot;, &quot;hasldfasdfsffsfasdf&quot;, 2)
+3
+</code></pre></div></div>
+</div></details>
+<p>Once you've implemented <code>memo_diff</code>, finish by:</p>
+<ol>
+<li>Decorating <code>autocorrect</code> with <code>memo</code>.</li>
+<li>Decorating <code>minimum_mewtations</code> with <code>memo_diff</code>.</li>
+</ol>
+<p>Running <code>autocorrect</code> and <code>minimum_mewtations</code> should now be much faster!</p>
+<blockquote>
+<p><strong>Note</strong>:
+If you are failing the autograder tests involving <code>call_count</code>, it is likely that your <code>minimum_mewtations</code> implementation (from Q7) is not having the <em>tightest base cases</em> possible and still needs some optimization.
+The tests from Q7 are not meant to be strict, so even if you passed the Q7 tests, your base cases might still not be the tightest.
+Make sure you are not making unnecessary recursive calls.
+We are being strict about this here because having the tightest base cases is crucial for the efficiency of your code.</p>
+<p><strong>Important</strong>:
+Try it yourself first! Only consult the following common mistakes section if you have been stuck on one test case for a while. Otherwise, you might not learn as much from the project.</p>
+</blockquote>
+<details class="hint"><summary>Common Mistakes</summary><div>
+<ul>
+<li>
+<p>Consider the case <code>minimum_mewtations(typed = &quot;maooo&quot;, source = &quot;mao&quot;, limit = 0)</code>: since no transformations are allowed and the two words are not the same, how quick can your function figure out that the result is impossible?</p>
+</li>
+<li>
+<p>Consider the case <code>minimum_mewtations(typed = &quot;habc&quot;, source = &quot;hmao&quot;, limit = some_limit_greater_than_zero)</code>: Given that both strings start with the same character <code>h</code>, what is the most effective approach in this situation? Should the function even attempt to &quot;add&quot; (resulting in <code>habc</code> and <code>mao</code>) or &quot;remove&quot; (resulting in <code>abc</code> and <code>hmao</code>)? Does your implementation take advantage of this optimization?</p>
+</li>
+</ul>
+</div></details>
+<blockquote>
+<p>Note: The autograder takes a bit of time to run, but it should not be longer than 10 seconds.</p>
+</blockquote>
+<div class="pytest-command" data-command="python3 -m pytest -k qEC --unlock"><pre><code>python3 -m pytest -k qEC --unlock</code></pre></div>
+<details class="unlock-examples">
+<summary>Unlocking Examples</summary>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; from cats import minimum_mewtations, furry_fixes, autocorrect, lines_from_file
+&gt;&gt;&gt; all_words = lines_from_file(&quot;data/words.txt&quot;)
+&gt;&gt;&gt; common_words = lines_from_file(&quot;data/common_words.txt&quot;)
+&gt;&gt;&gt; def my_decorator(func):
+...   def wrapper():
+...       print(&quot;Say Hello&quot;)
+...       func()
+...       print(&quot;Say Goodbye&quot;)
+...   return wrapper
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; @my_decorator
+... def say_hello():
+...     print(&quot;Hello World&quot;)
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; say_hello()
+<span class="wwpd-blank">______</span>
+<span class="wwpd-blank">______</span>
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; def magic_decorator(func):
+...   def wrapper(x):
+...     return func(x * 2)
+...   return wrapper
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; @magic_decorator
+... def myfunc(x):
+...   return x * 3
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; print(myfunc(4))
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+</details>
+<div class="pytest-command" data-command="python3 -m pytest -k qEC"><pre><code>python3 -m pytest -k qEC</code></pre></div>
+{% endraw %}
