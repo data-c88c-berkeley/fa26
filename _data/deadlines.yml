@@ -49,6 +49,12 @@ deadlines:
   label: Lab 4
   title: Recursion
   link: /labs/lab04/
+- when: Fri 10/2
+  day: '2026-10-02'
+  kind: lab
+  label: Lab 5
+  title: Sequences
+  link: /labs/lab05/
 - when: Tue 10/6
   day: '2026-10-06'
   kind: hw

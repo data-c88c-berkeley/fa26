@@ -15,7 +15,8 @@ labs:
 - slug: lab04
   title: Recursion (due Fri 9/25)
 - skip: true
-- title: Sequences (due Fri 10/2)
+- slug: lab05
+  title: Sequences (due Fri 10/2)
 - skip: true
 - title: Objects (due Fri 10/9)
 - skip: true

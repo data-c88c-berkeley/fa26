@@ -1,0 +1,433 @@
+---
+title: "Lab 5: Sequences"
+layout: assignment
+nav_exclude: true
+excerpt_separator: ""
+due: "Friday 10/02"
+---
+
+{% raw %}
+<header class="assignment-header"><h1>Lab 5: Sequences</h1><ul class="assignment-facts"><li><strong>Due:</strong> Friday 10/02 @ 11:59pm</li><li><strong>Points:</strong> 1</li><li><strong>Download:</strong> <a href="lab05.zip">lab05.zip</a></li></ul></header>
+<h1 id="attendance">Attendance</h1>
+<p>You need to submit the lab problems in addition to attending to get credit for lab. Students in mega lab only need to submit the lab problems. Preceptor interviews are highly recommended but <strong>not required</strong> for lab submissions.</p>
+<p>If you are in regular lab, your TA will come around during lab to check you in. If you didn't attend for a good reason (such as being sick), fill out this form (within 2 weeks of your lab): <a href="https://forms.gle/QsRLAvLnn5xoJgdv9">attendance form</a>.</p>
+<h1 id="required-questions">Required Questions</h1>
+<h2 id="review">Review</h2>
+<details class="hint"><summary>Lists</summary><div>
+<p>A list is a data structure that can hold an ordered collection of items.
+These items, known as elements, can be of any data type, including numbers,
+strings, or even other lists. A comma-separated list of expressions in square
+brackets creates a list:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; list_of_values = [2, 1, 3, True, 3]
+&gt;&gt;&gt; nested_list = [2, [1, 3], [True, [3]]]
+</code></pre></div></div>
+<p>Each position in a list has an index, with the left-most element indexed <code>0</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; list_of_values[0]
+2
+&gt;&gt;&gt; nested_list[1]
+[1, 3]
+</code></pre></div></div>
+<p>A negative index counts from the end, with the right-most element indexed <code>-1</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; nested_list[-1]
+[True, [3]]
+</code></pre></div></div>
+<p>Adding lists creates a longer list containing the elements of the added lists.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; [1, 2] + [3] + [4, 5]
+[1, 2, 3, 4, 5]
+</code></pre></div></div>
+</div></details>
+<details class="hint"><summary>List Comprehensions</summary><div>
+<p>A list comprehension describes the elements in a list and evaluates to a new
+list containing those elements.</p>
+<p>There are two forms:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[&lt;expression&gt; for &lt;element&gt; in &lt;sequence&gt;]
+[&lt;expression&gt; for &lt;element&gt; in &lt;sequence&gt; if &lt;conditional&gt;]
+</code></pre></div></div>
+<p>Here's an example that starts with <code>[1, 2, 3, 4]</code>, picks out the even elements
+<code>2</code> and <code>4</code> using <code>if i % 2 == 0</code>, then squares each of these using <code>i*i</code>. The
+purpose of <code>for i</code> is to give a name to each element in <code>[1, 2, 3, 4]</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; [i*i for i in [1, 2, 3, 4] if i % 2 == 0]
+[4, 16]
+</code></pre></div></div>
+<p>This list comprehension evaluates to a list of:</p>
+<ul>
+<li>The value of <code>i*i</code></li>
+<li>For each element <code>i</code> in the sequence <code>[1, 2, 3, 4]</code></li>
+<li>For which <code>i % 2 == 0</code></li>
+</ul>
+<p>In other words, this list comprehension will create a new list that contains
+the square of every even element of the original list <code>[1, 2, 3, 4]</code>.</p>
+<p>We can also rewrite a list comprehension as an equivalent <code>for</code> statement,
+such as for the example above:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; result = []
+&gt;&gt;&gt; for i in [1, 2, 3, 4]:
+...     if i % 2 == 0:
+...         result = result + [i*i]
+&gt;&gt;&gt; result
+[4, 16]
+</code></pre></div></div>
+</div></details>
+<details class="hint"><summary>List Slicing</summary><div>
+<p>To create a copy of part or all of a list, we can use list slicing.
+The syntax to slice a list <code>lst</code> is:
+<code>lst[&lt;start index&gt;:&lt;end index&gt;:&lt;step size&gt;]</code>.</p>
+<p>This expression evaluates to a new list containing the elements of <code>lst</code>:</p>
+<ul>
+<li>Starting at and including the element at <code>&lt;start index&gt;</code>.</li>
+<li>Up to but not including the element at <code>&lt;end index&gt;</code>.</li>
+<li>With <code>&lt;step size&gt;</code> as the difference between indices of elements to include.</li>
+</ul>
+<p>If the start, end, or step size are not explicitly specified, Python has
+default values for them. A negative step size indicates that we are stepping
+backwards through a list when including elements.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    &gt;&gt;&gt; lst = [6, 5, 4, 3, 2, 1, 0]
+    &gt;&gt;&gt; lst[:3]     # Start index defaults to 0
+    [6, 5, 4]
+    &gt;&gt;&gt; lst[3:]     # End index defaults to len(lst)
+    [3, 2, 1, 0]
+    &gt;&gt;&gt; lst[:]      # Creates a copy of the list
+    [6, 5, 4, 3, 2, 1, 0]
+    &gt;&gt;&gt; lst[:] == lst
+    True
+    &gt;&gt;&gt; lst[:] is lst
+    False
+    &gt;&gt;&gt; lst[::-1]   # Make a reversed copy of the entire list
+    [0, 1, 2, 3, 4, 5, 6]
+    &gt;&gt;&gt; lst[::2]    # Skip every other; step size defaults to 1 otherwise
+    [6, 4, 2, 0]
+</code></pre></div></div>
+<p>Slicing never causes an <code>IndexError</code>, even when the indices are out of range
+or the list is empty. This is different from indexing with a single number,
+which does error. This difference is because a slice always evaluates to a list,
+while indexing evaluates to an element of a list, where if no element exists
+at that position, there is no valid value to return. This is why Python raises
+an error for invalid indexing, while slicing just returns an empty list.</p>
+<p>Again, if a slice has nothing to include, the result is an empty list. Assume for the
+following doctests, lst carries through from the above doctests.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    &gt;&gt;&gt; lst[10:]        # Start index is past the end of the list
+    []
+    &gt;&gt;&gt; empty = []
+    &gt;&gt;&gt; # indexing an empty list is an error
+    &gt;&gt;&gt; empty[0]        # You&#x27;ll get the following error or some similar variation
+    Traceback (most recent call last):
+      ...
+    IndexError: list index out of range
+    &gt;&gt;&gt; empty[:]        # Slicing an empty list is not
+    []
+    &gt;&gt;&gt; empty[1:]
+    []
+    &gt;&gt;&gt; empty[:3]
+    []
+    &gt;&gt;&gt; empty[::-1]
+    []
+    &gt;&gt;&gt; empty[:] is empty   # Still creates a new list
+    False
+</code></pre></div></div>
+</div></details>
+<details class="hint"><summary>For Statements</summary><div>
+<p>A <code>for</code> statement executes code for each element of a sequence, such as a list
+or range. Each time the code is executed, the name right after <code>for</code> is bound
+to a different element of the sequence.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for &lt;name&gt; in &lt;expression&gt;:
+    &lt;suite&gt;
+</code></pre></div></div>
+<p>First, <code>&lt;expression&gt;</code> is evaluated. It must evaluate to a sequence. Then, for
+each element in the sequence in order,</p>
+<ol>
+<li><code>&lt;name&gt;</code> is bound to the element.</li>
+<li><code>&lt;suite&gt;</code> is executed.</li>
+</ol>
+<p>Here is an example:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for x in [-1, 4, 2, 0, 5]:
+    print(&quot;Current elem:&quot;, x)
+</code></pre></div></div>
+<p>This would display the following:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Current elem: -1
+Current elem: 4
+Current elem: 2
+Current elem: 0
+Current elem: 5
+</code></pre></div></div>
+</div></details>
+<details class="hint"><summary>Ranges</summary><div>
+<p>A range is a data structure that holds integer sequences. A range can be
+created by:</p>
+<ul>
+<li><code>range(stop)</code> contains 0, 1, ..., <code>stop</code> - 1</li>
+<li><code>range(start, stop)</code> contains <code>start</code>, <code>start</code> + 1, ..., <code>stop</code> - 1</li>
+</ul>
+<p>Notice how the range function doesn't include the <code>stop</code> value; it generates
+numbers up to, but not including, the <code>stop</code> value.</p>
+<p>For example:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; for i in range(3):
+...     print(i)
+...
+0
+1
+2
+</code></pre></div></div>
+<p>While ranges and lists are both sequences, a range object is different from a
+list. A range can be converted to a list by calling <code>list()</code>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; range(3, 6)
+range(3, 6)
+&gt;&gt;&gt; list(range(3, 6))  # list() converts the range object to a list
+[3, 4, 5]
+&gt;&gt;&gt; list(range(5))
+[0, 1, 2, 3, 4]
+&gt;&gt;&gt; list(range(1, 6))
+[1, 2, 3, 4, 5]
+</code></pre></div></div>
+</div></details>
+<h2 id="lists">Lists</h2>
+<h3 id="q1-wwpd-lists--ranges">Q1: WWPD: Lists &amp; Ranges</h3>
+<p>Predict what Python will display when the following lines are entered into an
+interactive session, then unlock the test to check your answers:</p>
+<div class="pytest-command" data-command="python3 -m pytest -k lists_wwpd --unlock"><pre><code>python3 -m pytest -k lists_wwpd --unlock</code></pre></div>
+<details class="unlock-examples" open>
+<summary>Unlocking Examples</summary>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; s = [7//3, 5, [4, 0, 1], 2]
+&gt;&gt;&gt; s[0]
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; s[2]
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; s[-1]
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; len(s)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; 4 in s
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; 4 in s[2]
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; s[2] + [3 + 2]
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; 5 in s[2]
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; s[2] * 2
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; list(range(3, 6))
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; range(3, 6)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; r = range(3, 6)
+&gt;&gt;&gt; [r[0], r[2]]
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; range(4)[-1]
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+</details>
+<h3 id="q2-print-if">Q2: Print If</h3>
+<p>Implement <code>print_if</code>, which takes a list of integers <code>s</code> and a one-argument function <code>f</code>.
+It prints each element <code>x</code> of <code>s</code> for which <code>f(x)</code> returns a true value.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">print_if</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Print each element of s for which f returns a true value.</span>
+
+<span class="sd">    &gt;&gt;&gt; print_if([3, 4, 5, 6], lambda n: n &gt; 4)</span>
+<span class="sd">    5</span>
+<span class="sd">    6</span>
+<span class="sd">    &gt;&gt;&gt; result = print_if([3, 4, 5, 6], lambda n: n % 2 == 0)</span>
+<span class="sd">    4</span>
+<span class="sd">    6</span>
+<span class="sd">    &gt;&gt;&gt; print(result)  # print_if should return None</span>
+<span class="sd">    None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+        <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k print_if"><pre><code>python3 -m pytest -k print_if</code></pre></div>
+<h3 id="q3-close">Q3: Close</h3>
+<p>Implement <code>close</code>, which takes a list of integers <code>s</code> and a non-negative
+integer <code>k</code>. It returns how many of the elements of <code>s</code> are within <code>k</code> of
+their index. That is, the absolute value of the difference between the
+element and its index is less than or equal to <code>k</code>.</p>
+<blockquote>
+<p>Remember that a list is &quot;zero-indexed&quot;; the index of the first element
+is <code>0</code>.</p>
+</blockquote>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return how many elements of s are within k of their index.</span>
+
+<span class="sd">    &gt;&gt;&gt; t = [6, 2, 4, 3, 5]</span>
+<span class="sd">    &gt;&gt;&gt; close(t, 0)  # Only 3 is equal to its index</span>
+<span class="sd">    1</span>
+<span class="sd">    &gt;&gt;&gt; close(t, 1)  # 2, 3, and 5 are within 1 of their index</span>
+<span class="sd">    3</span>
+<span class="sd">    &gt;&gt;&gt; close(t, 2)  # 2, 3, 4, and 5 are all within 2 of their index</span>
+<span class="sd">    4</span>
+<span class="sd">    &gt;&gt;&gt; close(list(range(10)), 0)</span>
+<span class="sd">    10</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">k</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)):</span>  <span class="c1"># Use a range to loop over indices</span>
+        <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+    <span class="k">return</span> <span class="n">count</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k close"><pre><code>python3 -m pytest -k close</code></pre></div>
+<h2 id="list-comprehensions">List Comprehensions</h2>
+<h3 id="q4-wwpd-list-comprehensions">Q4: WWPD: List Comprehensions</h3>
+<p>Predict what Python will display when the following lines are entered into an
+interactive session, then unlock the test to check your answers:</p>
+<div class="pytest-command" data-command="python3 -m pytest -k list_comprehensions_wwpd --unlock"><pre><code>python3 -m pytest -k list_comprehensions_wwpd --unlock</code></pre></div>
+<details class="unlock-examples" open>
+<summary>Unlocking Examples</summary>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; [2 * x for x in range(4)]
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; [y for y in [6, 1, 6, 1] if y &gt; 2]
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; [[1] + s for s in [[4], [5, 6]]]
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; [z + 1 for z in range(10) if z % 3 == 0]
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+</details>
+<h3 id="q5-squares-only">Q5: Squares Only</h3>
+<p>Implement the function <code>squares</code>, which takes in a list of positive integers.
+It returns a list that contains the square roots of the elements of the
+original list that are perfect squares. Use a list comprehension.</p>
+<blockquote>
+<p>To find if <code>x</code> is a perfect square, you can check if <code>sqrt(x)</code> equals
+<code>round(sqrt(x))</code>.</p>
+</blockquote>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">squares</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a new list containing square roots of the elements of the</span>
+<span class="sd">    original list that are perfect squares.</span>
+
+<span class="sd">    &gt;&gt;&gt; seq = [8, 49, 8, 9, 2, 1, 100, 102]</span>
+<span class="sd">    &gt;&gt;&gt; squares(seq)</span>
+<span class="sd">    [7, 3, 1, 10]</span>
+<span class="sd">    &gt;&gt;&gt; seq = [500, 30]</span>
+<span class="sd">    &gt;&gt;&gt; squares(seq)</span>
+<span class="sd">    []</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">___</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">s</span> <span class="k">if</span> <span class="n">___</span><span class="p">]</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k squares"><pre><code>python3 -m pytest -k squares</code></pre></div>
+<h2 id="recursion">Recursion</h2>
+<h3 id="q6-double-eights">Q6: Double Eights</h3>
+<p>Write a <strong>recursive</strong> function that takes in a positive integer <code>n</code> and
+determines if its digits contain two adjacent <code>8</code>s (that is, two <code>8</code>s right
+next to each other). You implemented this function with iteration in Lab 2;
+now implement it with recursion.</p>
+<blockquote>
+<p><strong>Hint:</strong> Start by coming up with a recursive plan: the digits of a number
+have double eights if either ____ (think of something that is
+straightforward to check) or double eights appear in the rest of the digits.</p>
+</blockquote>
+<p><strong>Important:</strong> Use recursion; the tests will fail if you use any loops
+(<code>for</code>, <code>while</code>), the <code>in</code> operator, or the <code>str</code> function.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">double_eights</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns whether or not n has two digits in row that</span>
+<span class="sd">    are the number 8.</span>
+
+<span class="sd">    &gt;&gt;&gt; double_eights(1288)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; double_eights(880)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; double_eights(538835)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; double_eights(284682)</span>
+<span class="sd">    False</span>
+<span class="sd">    &gt;&gt;&gt; double_eights(588138)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; double_eights(78)</span>
+<span class="sd">    False</span>
+<span class="sd">    &gt;&gt;&gt; double_eights(1077)</span>
+<span class="sd">    False</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k double_eights"><pre><code>python3 -m pytest -k double_eights</code></pre></div>
+<h1 id="submit-assignment">Submit Assignment</h1>
+<p>Submit this assignment by running
+<strong>Provenance: Prepare Submission Bundle</strong> from the VS Code command palette and
+uploading the resulting zip <strong>to Gradescope</strong>. The zip already contains the
+files you've edited.
+<a href="../../labs/lab00/#task-c-submit-the-assignment">Lab 00</a> has detailed
+instructions.</p>
+<p>Your responses to WWPD questions are not submitted, and they do not need to
+be. Lab credit is based on the code writing questions.</p>
+<h1 id="optional-questions">Optional Questions</h1>
+<blockquote>
+<p>These questions are optional. If you don't complete them, you will
+still receive credit for this assignment. They are great practice, so do them
+anyway!</p>
+</blockquote>
+<h2 id="q7-flatten">Q7: Flatten</h2>
+<p><strong>Definition.</strong> A nested list of integers is a list of items that are either integers or nested lists of integers.</p>
+<p>Write a function <code>flatten</code> that takes in a nested list of integers <code>s</code> and returns a list of the integers that appear in <code>s</code>.</p>
+<p>(If you know about list mutation operations already, don't use them to change the input. We'll cover those later.)</p>
+<blockquote>
+<p><strong>Hint</strong>: you can check if something is a list two ways:</p>
+<p>(1) by using the built-in <code>type</code> function.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; type(3) == list
+False
+&gt;&gt;&gt; type([1, 2, 3]) == list
+True
+</code></pre></div></div>
+<p>(2) by using the built-in <code>isinstance</code> function.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; isinstance(3, list)
+False
+&gt;&gt;&gt; isinstance([1, 2, 3], list)
+True
+</code></pre></div></div>
+</blockquote>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">flatten</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a flattened version of list s, which contains lists and integers.</span>
+
+<span class="sd">    &gt;&gt;&gt; flatten([1, 2, 3])</span>
+<span class="sd">    [1, 2, 3]</span>
+<span class="sd">    &gt;&gt;&gt; deep = [1, [[2], 3], 4, [[[[5], 6]], 7]]</span>
+<span class="sd">    &gt;&gt;&gt; flatten(deep)</span>
+<span class="sd">    [1, 2, 3, 4, 5, 6, 7]</span>
+<span class="sd">    &gt;&gt;&gt; flatten(deep[1])</span>
+<span class="sd">    [2, 3]</span>
+<span class="sd">    &gt;&gt;&gt; deep                                # input list should be unchanged</span>
+<span class="sd">    [1, [[2], 3], 4, [[[[5], 6]], 7]]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k flatten"><pre><code>python3 -m pytest -k flatten</code></pre></div>
+<h2 id="q8-ten-pairs">Q8: Ten-Pairs</h2>
+<p>Write a function that takes a positive integer <code>n</code> and returns the number of
+ten-pairs it contains. A ten-pair is a pair of digits within <code>n</code> that sums
+to 10.</p>
+<p>The number 7,823,952 has 3 ten-pairs. The first and fourth digits sum to
+7+3=10, the second and third digits sum to 8+2=10, and the second and last
+digit sum to 8+2=10.</p>
+<p>Important notes:</p>
+<ul>
+<li>A digit can be part of more than one ten-pair.</li>
+<li>One 5 does not make a ten-pair with itself.</li>
+</ul>
+<blockquote>
+<p><em>Recommended</em>: Complete and use the helper function <code>count_digit</code> to
+calculate how many times a digit appears in <code>n</code>.</p>
+</blockquote>
+<p><strong>Important:</strong> Use recursion; the tests will fail if you use any loops
+(<code>for</code>, <code>while</code>).</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">ten_pairs</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the number of ten-pairs within positive integer n.</span>
+
+<span class="sd">    &gt;&gt;&gt; ten_pairs(7823952) # 7+3, 8+2, and 8+2</span>
+<span class="sd">    3</span>
+<span class="sd">    &gt;&gt;&gt; ten_pairs(55055)</span>
+<span class="sd">    6</span>
+<span class="sd">    &gt;&gt;&gt; ten_pairs(9641469) # 9+1, 6+4, 6+4, 4+6, 1+9, 4+6</span>
+<span class="sd">    6</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">count_digit</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">digit</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return how many times digit appears in n.</span>
+
+<span class="sd">    &gt;&gt;&gt; count_digit(55055, 5) # digit 5 appears 4 times in 55055</span>
+<span class="sd">    4</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k count_digit"><pre><code>python3 -m pytest -k count_digit</code></pre></div>
+<div class="pytest-command" data-command="python3 -m pytest -k ten_pairs"><pre><code>python3 -m pytest -k ten_pairs</code></pre></div>
+{% endraw %}
