@@ -12,7 +12,8 @@
 //     deleting them cannot fake a pass. A failed verify cools the button
 //     down for 30 seconds, and a reload does not cut the wait short.
 //   * Visualize: a link beside Reset that opens a Python Tutor diagram of
-//     the code (plus the doctests as calls) in a new tab.
+//     the code (plus the doctests as calls) in a new tab. A discussion can
+//     turn it off with `visualize: false` (data-visualize on each widget).
 //   * Saved answers: edits, outcomes, and the verify history are kept in
 //     localStorage per page and restored on the next visit. The server
 //     never stores answers.
@@ -620,9 +621,10 @@
 
   // Built once the question has both its editor (the row to sit in) and its
   // Verify widget (the doctests and lib to include); either can come second.
+  // A discussion published with `visualize: false` gets none.
   function buildVisualize(qid) {
     var q = questions[qid];
-    if (OBSERVER || q.visualize || !q.check || !api(q)) return;
+    if (OBSERVER || q.visualize || q.noVisualize || !q.check || !api(q)) return;
     var actions = q.wrapper.querySelector('.code-editor-actions');
     if (!actions) return;
     var link = document.createElement('a');
@@ -659,6 +661,7 @@
     box.append(button, marks, output);
     q.lib = box.dataset.lib || '';
     q.uses = (box.dataset.uses || '').split(/\s+/).filter(Boolean);
+    q.noVisualize = box.dataset.visualize === 'false';
     q.check = button;
     q.marks = marks;
     q.output = output;
