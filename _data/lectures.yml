@@ -71,6 +71,7 @@ lectures:
   - title: "Linked Lists" # Wed 10/07
   # Week 8
   - title: "Trees"              # Mon 10/12
+    slug: trees
   - title: "Problem Solving"    # Wed 10/14
   # Week 9 (Midterm 1 in the CBTF)
   - title: "Midterm 1 Review"   # Mon 10/19
