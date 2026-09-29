@@ -534,9 +534,9 @@
             {%- comment -%} --- READINGS LOGIC (Consolidated & Inline) --- {%- endcomment -%}
             {%- if site.data.syllabus.class_days contains day_of_week and active_components contains 'lecture' -%}
                 {%- if lec_entry.readings -%}
-                    <div class="syllabus-item" style="margin-bottom: 4px;">
-                        <strong class="label label-reading">Reading</strong>
-                        
+                    <div class="syllabus-item" style="margin-bottom: 4px; display: flex; flex-wrap: wrap; align-items: flex-start; gap: 0.4em;">
+                        <strong class="label label-reading" style="flex-shrink: 0;">Reading</strong>
+
                         <span class="readings-list">
                         {%- for r in lec_entry.readings -%}
                             {%- if r.links -%}
@@ -552,6 +552,32 @@
                             {%- endif -%}
                             
                             {%- comment -%} Add a comma between different reading entries in the YAML list {%- endcomment -%}
+                            {%- unless forloop.last -%}, {% endunless -%}
+                        {%- endfor -%}
+                        </span>
+                    </div>
+                {%- endif -%}
+
+                {%- comment -%} --- VIDEOS LOGIC (Consolidated & Inline) --- {%- endcomment -%}
+                {%- if lec_entry.videos -%}
+                    <div class="syllabus-item" style="margin-bottom: 4px; display: flex; flex-wrap: wrap; align-items: flex-start; gap: 0.4em;">
+                        <strong class="label label-video" style="flex-shrink: 0;">Videos</strong>
+
+                        <span class="videos-list">
+                        {%- for v in lec_entry.videos -%}
+                            {%- if v.links -%}
+                                {%- comment -%} Handle multiple links list {%- endcomment -%}
+                                {%- for item in v.links -%}
+                                    <a href="{{ item.url }}">{{ item.text }}</a>{% unless forloop.last %}, {% endunless %}
+                                {%- endfor -%}
+                            {%- elsif v.link -%}
+                                {%- comment -%} Handle single title/link pair {%- endcomment -%}
+                                <a href="{{ v.link }}">{{ v.title }}</a>
+                            {%- else -%}
+                                <span>{{ v.title }}</span>
+                            {%- endif -%}
+
+                            {%- comment -%} Add a comma between different video entries in the YAML list {%- endcomment -%}
                             {%- unless forloop.last -%}, {% endunless -%}
                         {%- endfor -%}
                         </span>

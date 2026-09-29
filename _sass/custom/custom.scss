@@ -104,6 +104,10 @@ p.note::before {
       background-color: #8a3ffc;
       color: white;
     }
+    &.label-video {
+      background-color: #ff832b;
+      color: black;
+    }
     &.label-vitamin {
       background-color: #5c5962;
       color: white;
