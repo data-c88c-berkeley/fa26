@@ -15,7 +15,8 @@ discussions:
 - slug: disc04
   title: Recursion
 - skip: true
-- title: Sequences
+- slug: disc05
+  title: Tree Recursion
 - skip: true
 - title: Objects
 - skip: true

@@ -1,0 +1,183 @@
+---
+title: "Discussion 5: Tree Recursion"
+layout: assignment
+nav_exclude: true
+excerpt_separator: ""
+---
+
+{% raw %}
+<header class="assignment-header"><h1>Discussion 5: Tree Recursion<a class="print-button" href="print.html" title="Printable version" aria-label="Printable version">🖨️</a></h1></header>
+<p><strong>IMPORTANT!</strong> Add your email address and then press &quot;Join Group&quot; above!</p>
+<h2 id="getting-started">Getting Started</h2>
+<p>Say your name and your favorite tree (a particular tree or a kind of tree) in
+honor of today's topic: tree recursion.</p>
+<p><strong>Definition</strong>: Tree recursive functions are functions that call themselves
+more than once.</p>
+<p>Recursion takes practice. Please don't get discouraged if you're struggling to
+write recursive functions. Instead, every time you do solve one (even with help
+or in a group), make note of what you had to realize to make progress. Students
+improve through practice and reflection.</p>
+<p><strong>VERY IMPORTANT:</strong> In this discussion, don't check your answers until your
+whole group is sure that the answer is right. Figure things out and check your
+work by <em>thinking</em> about what your code will do. Your goal should be to have
+all answers right the first time! If you need help, ask.</p>
+<h2 id="tree-recursion">Tree Recursion</h2>
+<p>For the following questions, don't start trying to write code right away.
+Instead, start by describing the recursive case in words. Some examples:</p>
+<ul>
+<li>In <code>fib</code> from <a href="https://composingprograms.com/3ed/recursive-functions#tree-recursion">Section 1.7</a>
+of the textbook, the recursive case is to add together the previous two
+Fibonacci numbers.</li>
+<li>In <code>skip_factorial</code> from <a href="../../labs/lab04/">Lab 4</a> (Q2), the recursive case is to
+multiply <code>n</code> by the skip factorial of <code>n - 2</code>.</li>
+<li>In <code>count_partitions</code> from <a href="https://composingprograms.com/3ed/recursive-functions#example-partitions">Section 1.7</a>
+of the textbook, the recursive case is to partition <code>n-m</code> using parts up to
+size <code>m</code> <strong>and</strong> to partition <code>n</code> using parts up to size <code>m-1</code>.</li>
+</ul>
+<h3 id="q1-insect-combinatorics">Q1: Insect Combinatorics</h3>
+<p>An insect is inside an <code>m</code> by <code>n</code> grid. The insect starts at the bottom-left
+corner <code>(1, 1)</code> and wants to end up at the top-right corner <code>(m, n)</code>. The
+insect can only move up or to the right. Write a function <code>paths</code> that takes
+the height and width of a grid and returns the number of paths the insect can
+take from the start to the end. (There is a <a href="https://en.wikipedia.org/wiki/Closed-form_expression">closed-form
+solution</a> to this
+problem, but try to answer it with recursion.)</p>
+<p><img src="assets/grid.jpg" alt="Insect grids." /></p>
+<p>In the <code>2</code> by <code>2</code> grid, the insect has two paths from the start to the end. In
+the <code>3</code> by <code>3</code> grid, the insect has six paths (only three are shown above).</p>
+<blockquote>
+<p><strong>Hint:</strong> What happens if the insect hits the upper or rightmost edge of the
+grid?</p>
+</blockquote>
+<div class="code-editor" data-language="python" data-question="paths">
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">paths</span><span class="p">(</span><span class="n">m</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the number of paths from one corner of an</span>
+<span class="sd">    m by n grid to the opposite corner.</span>
+
+<span class="sd">    &gt;&gt;&gt; paths(2, 2)</span>
+<span class="sd">    2</span>
+<span class="sd">    &gt;&gt;&gt; paths(5, 7)</span>
+<span class="sd">    210</span>
+<span class="sd">    &gt;&gt;&gt; paths(117, 1)</span>
+<span class="sd">    1</span>
+<span class="sd">    &gt;&gt;&gt; paths(1, 157)</span>
+<span class="sd">    1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre></div></div>
+</div>
+<div class="discuss-check" data-question="paths"></div>
+<details class="hint"><summary>Recursive Case</summary><div>
+<p>From any square, what are the insect's only two possible next moves? After
+either one, it is in a smaller grid with the same goal corner. If you knew the
+number of paths from each of those two squares, how would you get the number
+of paths from the current square?</p>
+</div></details>
+<p><strong>Presentation Time:</strong> Once your group has converged on a solution, it's time
+to practice your ability to describe why your recursive case is correct.
+Nominate someone and have them present to the group for practice. If you want
+feedback, ask.</p>
+<h3 id="q2-a-perfect-question">Q2: A Perfect Question</h3>
+<p>This question was Fall 2023 Midterm 2 Question 4(a) (find it with the other
+<a href="https://cs61a.org/fa26/resources/#past-exams">past exams</a>). The original exam
+version had an extra blank (where <code>total &lt; k * k</code> appears below), but also
+included some guidance via multiple choice options and hints.</p>
+<p><strong>Definition.</strong> A <em>perfect square</em> is <code>k*k</code> for some integer <code>k</code>.</p>
+<p>Implement <code>fit</code>, which takes positive integers <code>total</code> and <code>n</code>. It returns
+<code>True</code> or <code>False</code> indicating whether there are <code>n</code> <strong>positive</strong> perfect squares
+that sum to <code>total</code>. The perfect squares need not be unique.</p>
+<div class="code-editor" data-language="python" data-question="fit">
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="n">total</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return whether there are n positive perfect squares that sums to total.</span>
+
+<span class="sd">    &gt;&gt;&gt; [fit(4, 1), fit(4, 2), fit(4, 3), fit(4, 4)]  # 1*(2*2) for n=1; 4*(1*1) for n=4</span>
+<span class="sd">    [True, False, False, True]</span>
+<span class="sd">    &gt;&gt;&gt; [fit(12, n) for n in range(3, 8)]  # 3*(2*2), 3*(1*1)+3*3, 4*(1*1)+2*(2*2)</span>
+<span class="sd">    [True, True, False, True, False]</span>
+<span class="sd">    &gt;&gt;&gt; [fit(32, 2), fit(32, 3), fit(32, 4), fit(32, 5)] # 2*(4*4), 3*(1*1)+2*2+5*5</span>
+<span class="sd">    [True, False, False, True]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">f</span><span class="p">(</span><span class="n">total</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">____</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">total</span> <span class="o">&lt;</span> <span class="n">k</span> <span class="o">*</span> <span class="n">k</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">____</span>
+    <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="n">total</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</code></pre></div></div>
+</div>
+<div class="discuss-check" data-question="fit"></div>
+<details class="hint"><summary>Why the False cases are False</summary><div>
+<ul>
+<li><code>fit(4, 2)</code> and <code>fit(4, 3)</code>: the only positive squares up to 4 are 1 and 4,
+and no two or three of them sum to 4 (<code>1 + 1</code>, <code>1 + 4</code>, <code>4 + 4</code>, <code>1 + 1 + 1</code>,
+... none equal 4).</li>
+<li><code>fit(12, 5)</code> and <code>fit(12, 7)</code>: every square up to 12 is 1, 4, or 9. Five
+squares sum to 5 plus some 3s (a 4 is <code>1 + 3</code>) and 8s (a 9 is <code>1 + 8</code>), and
+<code>12 - 5 = 7</code> can't be made from 3s and 8s. Likewise <code>12 - 7 = 5</code> for seven.</li>
+<li><code>fit(32, 3)</code> and <code>fit(32, 4)</code>: <code>16 + 16</code> reaches 32 with only two squares, and
+no three or four squares from 1, 4, 9, 16, 25 sum to 32.</li>
+</ul>
+</div></details>
+<h2 id="tree-recursion-with-lists">Tree Recursion with Lists</h2>
+<p>Some of you already know list operations that we haven't covered yet, such as
+<code>append</code>. Don't use those today. All you need are list literals (e.g.,
+<code>[1, 2, 3]</code>), item selection (e.g., <code>s[0]</code>), list addition (e.g.,
+<code>[1] + [2, 3]</code>), <code>len</code> (e.g., <code>len(s)</code>), slicing (e.g., <code>s[1:]</code>), <code>for</code>
+statements, <code>range</code>, and list comprehensions. Use those!</p>
+<p><strong>Important:</strong> The most important thing to remember about lists is that a
+non-empty list <code>s</code> can be split into its first element <code>s[0]</code> and the rest of
+the list <code>s[1:]</code>. Slicing works from other positions too: <code>s[2:]</code> is everything
+after the first two elements. Slicing past the end of a list never errors; it
+just gives <code>[]</code> (see the List Slicing review in <a href="../../labs/lab05/">Lab 5</a>).</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; s = [2, 3, 6, 4]
+&gt;&gt;&gt; s[0]
+2
+&gt;&gt;&gt; s[1:]
+[3, 6, 4]
+&gt;&gt;&gt; s[2:]
+[6, 4]
+&gt;&gt;&gt; len(s)
+4
+&gt;&gt;&gt; s[4:]
+[]
+&gt;&gt;&gt; [][1:]
+[]
+</code></pre></div></div>
+<h3 id="q3-max-product">Q3: Max Product</h3>
+<p>Implement <code>max_product</code>, which takes a list of integers and returns the maximum
+product that can be formed by multiplying together non-consecutive elements of
+the list. Assume that all numbers in the input list are greater than or equal
+to 1.</p>
+<div class="code-editor" data-language="python" data-question="max_product">
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">max_product</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the maximum product of non-consecutive elements of s.</span>
+
+<span class="sd">    &gt;&gt;&gt; max_product([10, 3, 1, 9, 2])   # 10 * 9</span>
+<span class="sd">    90</span>
+<span class="sd">    &gt;&gt;&gt; max_product([5, 10, 5, 10, 5])  # 5 * 5 * 5</span>
+<span class="sd">    125</span>
+<span class="sd">    &gt;&gt;&gt; max_product([5, 10, 5, 10, 5, 10]) # 10 * 10 * 10</span>
+<span class="sd">    1000</span>
+<span class="sd">    &gt;&gt;&gt; max_product([])                 # The product of no numbers is 1</span>
+<span class="sd">    1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre></div></div>
+</div>
+<div class="discuss-check" data-question="max_product"></div>
+<details class="hint"><summary>Hint</summary><div>
+<p>First try multiplying the first element by the <code>max_product</code> of everything
+after the first two elements (skipping the second element because it is
+consecutive with the first), then try skipping the first element and finding
+the <code>max_product</code> of the rest. To find which of these options is better, use
+<code>max</code>.</p>
+</div></details>
+<details class="hint"><summary>More Help</summary><div>
+<p>A great way to get help is to talk to the course staff!</p>
+</div></details>
+<p><strong>Description Time:</strong> Now try to complete this sentence together: &quot;The
+recursive case is to choose the larger of ___ and ___.&quot; When you're done, see
+how your answer compares to ours.</p>
+{% endraw %}
