@@ -69,9 +69,7 @@ lectures:
       - title: "2.3"
         link: https://composingprograms.com/3ed/compound-data/
   - title: "Linked Lists" # Wed 10/07
-    videos:
-      - title: "YouTube"
-        link: https://www.youtube.com/watch?v=LbqHl278hcQ&list=PLO9sS0wuGDK0
+    slug: linked-lists
   # Week 8
   - title: "Trees"              # Mon 10/12
     slug: trees
