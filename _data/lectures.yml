@@ -123,6 +123,9 @@ lectures:
   # Week 10
   - title: "Classes"            # Mon 10/26
     slug: classes
+    readings:
+      - title: "2.5"
+        link: https://composingprograms.com/3ed/object-oriented-programming/
     videos:
       - title: "YouTube"
         link: https://www.youtube.com/watch?v=XdRZkeCRXs4&list=PL6BsET-8jgYVz2dLlWRsktOrtqO8wWRsy
