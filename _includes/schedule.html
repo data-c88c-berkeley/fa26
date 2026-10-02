@@ -519,7 +519,7 @@
             
             {%- if project_date == current_date -%}
                 <div class="syllabus-item" style="margin-bottom: 8px;">
-                <strong class="label label-project">Project {{project.label-number}}</strong>
+                <strong class="label label-project">{%- if project.label -%}{{ project.label }}{%- else -%}Project {{project.label-number}}{%- endif -%}</strong>
                 {%- if project.link -%}
                     <a href="{{ project.link | relative_url }}">{{ project.title }}</a>
                 {%- else -%}
