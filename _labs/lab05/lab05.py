@@ -1,6 +1,9 @@
 """Lab 5: Sequences."""
 
 
+from math import sqrt
+
+
 def print_if(s, f):
     """Print each element of s for which f returns a true value.
 
@@ -36,8 +39,6 @@ def close(s, k):
         "*** YOUR CODE HERE ***"
     return count
 
-
-from math import sqrt
 
 def squares(s):
     """Returns a new list containing square roots of the elements of the

@@ -1,6 +1,9 @@
 """Homework 3: Higher-Order Functions."""
 
 
+from operator import add, mul
+
+
 def product(n, term):
     """Return the product of the first n terms in a sequence.
 
@@ -22,8 +25,6 @@ def product(n, term):
     """
     "*** YOUR CODE HERE ***"
 
-
-from operator import add, mul
 
 def accumulate(fuse, start, n, term):
     """Return the result of fusing together the first n terms in a sequence
