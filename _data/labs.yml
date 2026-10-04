@@ -18,7 +18,8 @@ labs:
 - slug: lab05
   title: Sequences (due Fri 10/2)
 - skip: true
-- title: Objects (due Fri 10/9)
+- slug: lab06
+  title: Dictionaries and Strings (due Fri 10/9)
 - skip: true
 - title: Recursive Data (due Fri 10/16)
 - skip: true

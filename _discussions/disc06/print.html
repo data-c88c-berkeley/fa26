@@ -1,0 +1,211 @@
+---
+title: "Discussion 6: Data Classes"
+layout: print
+nav_exclude: true
+excerpt_separator: ""
+permalink: /:collection/:path:output_ext
+---
+
+{% raw %}
+<header class="assignment-header"><h1>Discussion 6: Data Classes</h1></header>
+<h2 id="data-classes">Data Classes</h2>
+<p>A <code>class</code> statement decorated with <code>@dataclass</code> contains a list of attribute names and type hints. Instances of that class are constructed by calling the class on values for those attributes. The attribute values are accessed using dot notation.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="nd">@dataclass</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Position</span><span class="p">:</span>
+        <span class="s2">&quot;A geographic position.&quot;</span>
+        <span class="n">lat</span><span class="p">:</span> <span class="nb">float</span>
+        <span class="n">lon</span><span class="p">:</span> <span class="nb">float</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">sydney</span> <span class="o">=</span> <span class="n">Position</span><span class="p">(</span><span class="o">-</span><span class="mf">33.87</span><span class="p">,</span> <span class="mf">151.21</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">sydney</span><span class="o">.</span><span class="n">lat</span>
+<span class="o">-</span><span class="mf">33.87</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">sydney</span><span class="o">.</span><span class="n">lon</span>
+<span class="mf">151.2</span>
+</code></pre></div></div>
+<h2 id="intervals">Intervals</h2>
+<p><strong>Acknowledgements.</strong> This interval arithmetic example is based on
+a classic problem from Structure and Interpretation of Computer Programs,
+<a href="https://mitp-content-server.mit.edu/books/content/sectbyfn/books_pres_0/6515/sicp.zip/full-text/book/book-Z-H-14.html#%25_sec_2.1.4">Section 2.1.4</a>.</p>
+<p><strong>Introduction.</strong> Alyssa P. Hacker is designing a system to help people
+solve engineering problems. One feature she wants to provide in her
+system is the ability to manipulate inexact quantities (such as
+measurements from physical devices) with known precision, so that
+when computations are done with such approximate quantities the results
+will be numbers of known precision. For example, if a measured quantity
+x lies between two numbers a and b, Alyssa would like her system to
+use this range in computations involving x.</p>
+<p>Alyssa's idea is to implement interval arithmetic as a set of
+arithmetic operations for combining &quot;intervals&quot; (objects that represent
+the range of possible values of an inexact quantity). The result of
+adding, subtracting, multiplying, or dividing two intervals is also an
+interval, one that represents the range of the result.</p>
+<p>Alyssa represents an interval as an <code>Interval</code> dataclass that has two
+endpoints: a <code>lower</code> bound and an <code>upper</code> bound. <code>Interval(1, 3)</code> creates the
+interval from 1 to 3, and if <code>x</code> is an interval, then <code>x.lower</code> and <code>x.upper</code>
+are its endpoints.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Interval</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The range of possible values of an inexact quantity, from lower to upper.&quot;&quot;&quot;</span>
+    <span class="n">lower</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">upper</span><span class="p">:</span> <span class="nb">float</span>
+</code></pre></div></div>
+<h3 id="q1-interval-addition">Q1: Interval Addition</h3>
+<p>Implement <code>add_interval</code>, which returns an interval that contains the sum of any
+value in interval <code>x</code> and any value in interval <code>y</code>.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">add_interval</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Interval</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">Interval</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Interval</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return an interval that contains the sum of any value in interval x and</span>
+<span class="sd">    any value in interval y.</span>
+
+<span class="sd">    &gt;&gt;&gt; add_interval(Interval(-1, 2), Interval(4, 8))</span>
+<span class="sd">    Interval(lower=3, upper=10)</span>
+<span class="sd">    &gt;&gt;&gt; add_interval(Interval(-3, -2), Interval(-1, 5))</span>
+<span class="sd">    Interval(lower=-4, upper=3)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<span class="write-space" style="--lines: 3"></span>
+</code></pre></div></div>
+<h3 id="q2-interval-multiplication">Q2: Interval Multiplication</h3>
+<p>Implement <code>mul_interval</code>, which returns the interval that
+contains the product of any value in <code>x</code> and any value in <code>y</code>.</p>
+<blockquote>
+<p><strong>Hint</strong>: The smallest product is not always the product of two lower bounds because multiplying two negative numbers makes a positive number.</p>
+</blockquote>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">mul_interval</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Interval</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">Interval</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Interval</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the interval that contains the product of any value in x and any</span>
+<span class="sd">    value in y.</span>
+
+<span class="sd">    &gt;&gt;&gt; mul_interval(Interval(1, 2), Interval(3, 4))</span>
+<span class="sd">    Interval(lower=3, upper=8)</span>
+<span class="sd">    &gt;&gt;&gt; mul_interval(Interval(1, 2), Interval(-4, -3))</span>
+<span class="sd">    Interval(lower=-8, upper=-3)</span>
+<span class="sd">    &gt;&gt;&gt; mul_interval(Interval(2, 3), Interval(-1, 4))</span>
+<span class="sd">    Interval(lower=-3, upper=12)</span>
+<span class="sd">    &gt;&gt;&gt; mul_interval(Interval(-2, -1), Interval(3, 4))</span>
+<span class="sd">    Interval(lower=-8, upper=-3)</span>
+<span class="sd">    &gt;&gt;&gt; mul_interval(Interval(-2, -1), Interval(-4, -3))</span>
+<span class="sd">    Interval(lower=3, upper=8)</span>
+<span class="sd">    &gt;&gt;&gt; mul_interval(Interval(-3, -2), Interval(-1, 5))</span>
+<span class="sd">    Interval(lower=-15, upper=3)</span>
+<span class="sd">    &gt;&gt;&gt; mul_interval(Interval(-1, 2), Interval(4, 8))</span>
+<span class="sd">    Interval(lower=-8, upper=16)</span>
+<span class="sd">    &gt;&gt;&gt; mul_interval(Interval(-1, 2), Interval(-4, -3))</span>
+<span class="sd">    Interval(lower=-8, upper=4)</span>
+<span class="sd">    &gt;&gt;&gt; mul_interval(Interval(-1, 2), Interval(-3, 1))</span>
+<span class="sd">    Interval(lower=-6, upper=3)</span>
+<span class="sd">    &gt;&gt;&gt; mul_interval(Interval(-3, 1), Interval(-1, 2))</span>
+<span class="sd">    Interval(lower=-6, upper=3)</span>
+<span class="sd">    &gt;&gt;&gt; mul_interval(Interval(-1, 3), Interval(-2, 1))</span>
+<span class="sd">    Interval(lower=-6, upper=3)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<span class="write-space" style="--lines: 8"></span>
+</code></pre></div></div>
+<h3 id="q3-interval-squaring">Q3: Interval Squaring</h3>
+<p>Eva Lu Ator, another user, has noticed that <code>mul_interval(x, x)</code> does not
+always compute the square of an interval <code>x</code> correctly. She says that the
+problem is multiple references to the same interval.</p>
+<p>The true value within a particular interval is fixed (though unknown).
+Combinations that refer to the same interval twice may assume two different
+true values for the same interval, which is an error that results in intervals
+that are larger than they should be.</p>
+<p>Consider the case of <code>x * x</code>, where <code>x</code> is an interval from -1 to 2. No value
+within this interval, when squared, will give a negative result. However,
+<code>mul_interval</code> will allow us to choose 2 from the first reference to <code>x</code> and
+-1 from the second, giving an erroneous lower bound of -2.</p>
+<p>Implement <code>square_interval</code>, which returns the smallest interval that contains
+the square of every value in <code>x</code>.</p>
+<blockquote>
+<p><strong>Hint</strong>: <code>mul_interval(x, x)</code> is correct when <code>x</code> does not contain 0.</p>
+</blockquote>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">square_interval</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Interval</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Interval</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the smallest interval that contains the square of every value in x.</span>
+
+<span class="sd">    &gt;&gt;&gt; square_interval(Interval(2, 3))</span>
+<span class="sd">    Interval(lower=4, upper=9)</span>
+<span class="sd">    &gt;&gt;&gt; square_interval(Interval(-3, -2))</span>
+<span class="sd">    Interval(lower=4, upper=9)</span>
+<span class="sd">    &gt;&gt;&gt; square_interval(Interval(-1, 2))  # No square is negative</span>
+<span class="sd">    Interval(lower=0, upper=4)</span>
+<span class="sd">    &gt;&gt;&gt; mul_interval(Interval(-1, 2), Interval(-1, 2))</span>
+<span class="sd">    Interval(lower=-2, upper=4)</span>
+<span class="sd">    &gt;&gt;&gt; square_interval(Interval(-3, 1))</span>
+<span class="sd">    Interval(lower=0, upper=9)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<span class="write-space" style="--lines: 4"></span>
+</code></pre></div></div>
+<h3 id="recommended-but-more-challenging-if-theres-time">Recommended, but more challenging (if there's time)</h3>
+<h4 id="q4-sum-fun">Q4: Sum Fun</h4>
+<p>Implement <code>sums(n, m)</code>, which takes a total <code>n</code> and maximum <code>m</code>. It returns a
+list of all lists:</p>
+<ol>
+<li>that sum to <code>n</code>,</li>
+<li>that contain only positive numbers up to <code>m</code>, and</li>
+<li>in which no two adjacent numbers are the same.</li>
+</ol>
+<p><strong>Important:</strong> Two lists with the same numbers in a different order should
+both be returned.</p>
+<p>Here's a recursive approach that matches the template below: build up the
+<code>result</code> list by building all lists that sum to <code>n</code> and start with <code>k</code>, for each
+<code>k</code> from 1 to <code>m</code>. For example, the result of <code>sums(5, 3)</code> is made up of three
+lists:</p>
+<ul>
+<li><code>[[1, 3, 1]]</code> starts with 1,</li>
+<li><code>[[2, 1, 2], [2, 3]]</code> start with 2, and</li>
+<li><code>[[3, 2]]</code> starts with 3.</li>
+</ul>
+<p><strong>Hint:</strong> Use <code>[k] + s</code> for a number <code>k</code> and list <code>s</code> to build a list that
+starts with <code>k</code> and then has all the elements of <code>s</code>.</p>
+<p><strong>Important:</strong> The hint references that your recursion should build each list by
+deciding its <strong>first</strong> element and prepending it to the result of the recursive call
+on the rest (<code>[k] + rest</code>, not <code>rest + [k]</code>). Both are valid ways to solve
+the underlying problem, but only the <code>[k] + rest</code> order matches the order
+that our doctests below expect.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; k = 2
+&gt;&gt;&gt; s = [4, 3, 1]
+&gt;&gt;&gt; [k] + s
+[2, 4, 3, 1]
+</code></pre></div></div>
+<blockquote>
+<p><strong>Hint (first blank):</strong> <code>k</code> is the first number in a list that sums to <code>n</code>,
+and <code>rest</code> is the rest of that list, so build a list that sums to <code>n</code>.</p>
+</blockquote>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">sums</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">m</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return lists that sum to n containing positive numbers up to m that</span>
+<span class="sd">    have no adjacent repeats.</span>
+
+<span class="sd">    &gt;&gt;&gt; sums(5, 1)</span>
+<span class="sd">    []</span>
+<span class="sd">    &gt;&gt;&gt; sums(5, 2)</span>
+<span class="sd">    [[2, 1, 2]]</span>
+<span class="sd">    &gt;&gt;&gt; sums(5, 3)</span>
+<span class="sd">    [[1, 3, 1], [2, 1, 2], [2, 3], [3, 2]]</span>
+<span class="sd">    &gt;&gt;&gt; sums(5, 5)</span>
+<span class="sd">    [[1, 3, 1], [1, 4], [2, 1, 2], [2, 3], [3, 2], [4, 1], [5]]</span>
+<span class="sd">    &gt;&gt;&gt; sums(6, 3)</span>
+<span class="sd">    [[1, 2, 1, 2], [1, 2, 3], [1, 3, 2], [2, 1, 2, 1], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">sums_to_zero</span> <span class="o">=</span> <span class="p">[]</span>     <span class="c1"># The only way to sum to zero using positives</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">sums_to_zero</span><span class="p">]</span> <span class="c1"># Return a list of all the ways to sum to zero</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">result</span> <span class="o">+</span> <span class="p">[</span> <span class="n">___</span> <span class="k">for</span> <span class="n">rest</span> <span class="ow">in</span> <span class="n">___</span> <span class="k">if</span> <span class="n">rest</span> <span class="o">==</span> <span class="p">[]</span> <span class="ow">or</span> <span class="n">___</span> <span class="p">]</span>
+    <span class="k">return</span> <span class="n">result</span>
+</code></pre></div></div>
+<p class="hint-ref"><a href="#hint-1">Hint 1: Second Blank</a> (at the end)</p>
+<p class="hint-ref"><a href="#hint-2">Hint 2: Third Blank</a> (at the end)</p>
+<section class="hints">
+<h2>Hints</h2>
+<div class="hint-note" id="hint-1"><h3>Hint 1: Second Blank</h3>
+<p>Call <code>sums</code> to build all of the lists that sum to <code>n-k</code> so that they can be
+used to construct lists that sum to <code>n</code> by putting a <code>k</code> on the front.</p>
+</div>
+<div class="hint-note" id="hint-2"><h3>Hint 2: Third Blank</h3>
+<p>Here is where you ensure that &quot;no two adjacent numbers are the same.&quot; Since <code>k</code>
+will be the first number in the list you're building, it must not be equal to
+the first element of <code>rest</code> (which will be the second number in the list you're
+building).</p>
+</div>
+</section>
+{% endraw %}

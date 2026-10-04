@@ -1,0 +1,239 @@
+---
+title: "Lab 6: Dictionaries and Strings"
+layout: assignment
+nav_exclude: true
+excerpt_separator: ""
+due: "Friday 10/09"
+---
+
+{% raw %}
+<header class="assignment-header"><h1>Lab 6: Dictionaries and Strings</h1><ul class="assignment-facts"><li><strong>Due:</strong> Friday 10/09 @ 11:59pm</li><li><strong>Points:</strong> 1</li><li><strong>Download:</strong> <a href="lab06.zip">lab06.zip</a></li></ul></header>
+<h1 id="attendance">Attendance</h1>
+<p>You need to submit the lab problems in addition to attending to get credit for lab. Students in mega lab only need to submit the lab problems. Preceptor interviews are highly recommended but <strong>not required</strong> for lab submissions.</p>
+<p>If you are in regular lab, your TA will come around during lab to check you in. If you didn't attend for a good reason (such as being sick), fill out this form (within 2 weeks of your lab): <a href="https://forms.gle/QsRLAvLnn5xoJgdv9">attendance form</a>.</p>
+<h1 id="required-questions">Required Questions</h1>
+<h2 id="review">Review</h2>
+<details class="hint"><summary>Dictionaries</summary><div>
+<p>A dictionary contains key-value pairs and allows the values to be looked up by
+their key using square brackets. Each key must be unique.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; d = {2: 4, &#x27;two&#x27;: [&#x27;four&#x27;], (1, 1): 4}
+&gt;&gt;&gt; d[2]
+4
+&gt;&gt;&gt; d[&#x27;two&#x27;]
+[&#x27;four&#x27;]
+&gt;&gt;&gt; d[(1, 1)]
+4
+</code></pre></div></div>
+<p>The sequence of keys or values or key-value pairs can be accessed using
+<code>.keys()</code> or <code>.values()</code> or <code>.items()</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; for k in d.keys():
+...     print(k)
+...
+2
+two
+(1, 1)
+&gt;&gt;&gt; for v in d.values():
+...     print(v)
+...
+4
+[&#x27;four&#x27;]
+4
+&gt;&gt;&gt; for k, v in d.items():
+...     print(k, v)
+...
+2 4
+two [&#x27;four&#x27;]
+(1, 1) 4
+</code></pre></div></div>
+<p>By default, iterating through a dictionary iterates through its keys.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; for x in d:
+...     print(x)
+...
+2
+two
+(1, 1)
+</code></pre></div></div>
+<p>You can check whether a dictionary contains a key using <code>in</code>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; &#x27;two&#x27; in d
+True
+&gt;&gt;&gt; 4 in d
+False
+</code></pre></div></div>
+<p>Attempting to access a key that does not exist in a dictionary will cause an
+error. You can use <code>.get(&lt;key&gt;, &lt;default&gt;)</code>, which returns the value
+corresponding to <code>&lt;key&gt;</code> in a dictionary or, if it doesn't exist, returns
+<code>&lt;default&gt;</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; d[3]
+KeyError: 3
+&gt;&gt;&gt; d.get(3, &quot;fun&quot;)
+&#x27;fun&#x27;
+&gt;&gt;&gt; d.get(2, &quot;fun&quot;)
+4
+</code></pre></div></div>
+<p>The contents of a dictionary can be modified using <code>=</code>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; d
+{2: 4, &#x27;two&#x27;: [&#x27;four&#x27;], (1, 1): 4}
+&gt;&gt;&gt; d[(1, 1)] = &quot;61a&quot;
+&gt;&gt;&gt; d[(1, 1)]
+&#x27;61a&#x27;
+</code></pre></div></div>
+<p>A dictionary comprehension is an expression that evaluates to a new
+dictionary.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; {3*x: 3*x + 1 for x in range(2, 5)}
+{6: 7, 9: 10, 12: 13}
+</code></pre></div></div>
+</div></details>
+<details class="hint"><summary>Type Hints</summary><div>
+<p>Type hints can appear <code>def</code> statements (and a few other
+places) to indicate the types of value that a variable should have or that
+functions should return.</p>
+<p>An example without type hints:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>def pair(y, z):
+    return [y, z]
+</code></pre></div></div>
+<p>The same example with type hints that <code>y</code>, and <code>z</code> are integers and the
+<code>pair</code> function returns a list of integers:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>def pair(y: int, z: int) -&gt; list[int]:
+    return [y, z]
+</code></pre></div></div>
+<p>Code behaves identically with or without type hints.</p>
+<p><strong>(Optional) Automatic Type Checking</strong>: VS Code can be configured to annotate
+locations where a variable has been assigned a value that does not have the
+expected type. To enable type checking, open the VS Code settings, which you can
+do by pressing the Command and <code>,</code> keys on a Mac, or the Control and <code>,</code> keys
+simultaneously on a Windows machine. Type <code>type checking</code> in the search bar,
+which should pull up the Type Checking options. Use the dropdown menu to change
+type checking from the default of <code>off</code> to <code>basic</code>.</p>
+<p>If these type checking options did not appear, you may need to install the
+Pylance extension. Open the Extensions view by holding Shift, Command, and <code>X</code>
+on a Mac or Shift, Control, and <code>X</code> on Windows. Type <code>Pylance</code> in the search
+bar, and press the install button.</p>
+<p>To check to ensure that type checking has been enabled, type the following
+into a Python file:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>def f(x: int):
+    return x
+
+f(&#x27;not an int&#x27;)
+</code></pre></div></div>
+<p>You should see a red underline under <code>'not an int'</code>. If you hover over
+<code>'not an int'</code>, VS Code displays an error message, explaining that
+<code>'not an int'</code> does not match the expected type <code>int</code>. Keep an eye out for
+these errors while you're writing code! They're often a hint about where
+your code has a bug.</p>
+</div></details>
+<h2 id="what-would-python-display-wwpd">What Would Python Display? (WWPD)</h2>
+<h3 id="q1-wwpd-dictionaries">Q1: WWPD: Dictionaries</h3>
+<p>Predict what Python will display when the following lines are entered into an
+interactive session, then unlock the test to check your answers:</p>
+<div class="pytest-command" data-command="python3 -m pytest -k dictionaries_wwpd --unlock"><pre><code>python3 -m pytest -k dictionaries_wwpd --unlock</code></pre></div>
+<details class="unlock-examples" open>
+<summary>Unlocking Examples</summary>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; pokemon = {&#x27;pikachu&#x27;: 25, &#x27;dragonair&#x27;: 148, &#x27;mew&#x27;: 151}
+&gt;&gt;&gt; pokemon[&#x27;pikachu&#x27;]
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; len(pokemon)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; &#x27;mewtwo&#x27; in pokemon
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; &#x27;pikachu&#x27; in pokemon
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; 25 in pokemon
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; 148 in pokemon.values()
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; pokemon.get(&#x27;mew&#x27;, 100000)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; pokemon.get(&#x27;mewtwo&#x27;, 10)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; {pokemon[k]: k for k in pokemon if len(k) &lt; 5}
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; min(pokemon, key=len)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; pokemon[min(pokemon, key=len)]
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+</details>
+<h2 id="write-code">Write Code</h2>
+<h3 id="q2-displaying-fruit">Q2: Displaying Fruit</h3>
+<p>Implement <code>display</code>, which takes a string <code>fruit</code> naming a fruit in plural form
+(such as <code>'apples'</code>) and a positive integer <code>count</code>. It returns a string that
+shows the <code>count</code> and the <code>fruit</code> inside angle brackets, such as <code>'&lt;3 apples&gt;'</code>.
+When <code>count</code> is 1, the fruit name should be singular: drop the final <code>s</code>, so
+that <code>display('apples', 1)</code> returns <code>'&lt;1 apple&gt;'</code>. Assume that every plural
+fruit name can be made singular by removing the last letter.</p>
+<blockquote>
+<p><strong>Hint</strong>: <code>str(n)</code> converts an integer <code>n</code> to a string, and <code>+</code> joins strings
+together. A string can be sliced.</p>
+</blockquote>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">display</span><span class="p">(</span><span class="n">fruit</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Display a count of a fruit in angle brackets.</span>
+
+<span class="sd">    &gt;&gt;&gt; display(&#39;apples&#39;, 3)</span>
+<span class="sd">    &#39;&lt;3 apples&gt;&#39;</span>
+<span class="sd">    &gt;&gt;&gt; display(&#39;apples&#39;, 1)</span>
+<span class="sd">    &#39;&lt;1 apple&gt;&#39;</span>
+<span class="sd">    &gt;&gt;&gt; display(&#39;kiwis&#39;, 12)</span>
+<span class="sd">    &#39;&lt;12 kiwis&gt;&#39;</span>
+<span class="sd">    &gt;&gt;&gt; print(display(&#39;apples&#39;, 3) + display(&#39;kiwis&#39;, 3))</span>
+<span class="sd">    &lt;3 apples&gt;&lt;3 kiwis&gt;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">fruit</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;s&#39;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k display"><pre><code>python3 -m pytest -k display</code></pre></div>
+<h3 id="q3-buying-fruit">Q3: Buying Fruit</h3>
+<p>Implement the <code>buy</code> function that takes three parameters:</p>
+<ol>
+<li><code>fruits_to_buy</code>: A list of strings representing the fruits you need to buy.
+<em>At least one of each fruit must be bought.</em></li>
+<li><code>prices</code>: A dictionary where the keys are fruit names (strings) and the
+values are positive integers representing the cost of each fruit.</li>
+<li><code>total_amount</code>: An integer representing the total money available for
+purchasing the fruits.</li>
+</ol>
+<p>Take a look at the docstring for more details on the input structure.</p>
+<p>The function should print <strong>all possible ways</strong> to buy the required fruits so
+that the combined cost equals <code>total_amount</code>. You can only select fruits
+mentioned in the <code>fruits_to_buy</code> list.</p>
+<blockquote>
+<p><strong>Note</strong>: Use the <code>display</code> function from the previous question to format the
+output. Call <code>display(fruit, count)</code> for each fruit and its corresponding
+quantity to generate a string showing the type and amount of fruit bought.</p>
+</blockquote>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">buy</span><span class="p">(</span><span class="n">fruits_to_buy</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">prices</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">total_amount</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Print ways to buy some of each fruit so that the sum of prices is amount.</span>
+
+<span class="sd">    &gt;&gt;&gt; prices = {&#39;oranges&#39;: 4, &#39;apples&#39;: 3, &#39;bananas&#39;: 2, &#39;kiwis&#39;: 9}</span>
+<span class="sd">    &gt;&gt;&gt; buy([&#39;apples&#39;, &#39;oranges&#39;, &#39;bananas&#39;], prices, 12)  # We can only buy apple, orange, and banana, but not kiwi</span>
+<span class="sd">    &lt;2 apples&gt;&lt;1 orange&gt;&lt;1 banana&gt;</span>
+<span class="sd">    &gt;&gt;&gt; buy([&#39;apples&#39;, &#39;oranges&#39;, &#39;bananas&#39;], prices, 16)</span>
+<span class="sd">    &lt;2 apples&gt;&lt;1 orange&gt;&lt;3 bananas&gt;</span>
+<span class="sd">    &lt;2 apples&gt;&lt;2 oranges&gt;&lt;1 banana&gt;</span>
+<span class="sd">    &gt;&gt;&gt; buy([&#39;apples&#39;, &#39;kiwis&#39;], prices, 36)</span>
+<span class="sd">    &lt;3 apples&gt;&lt;3 kiwis&gt;</span>
+<span class="sd">    &lt;6 apples&gt;&lt;2 kiwis&gt;</span>
+<span class="sd">    &lt;9 apples&gt;&lt;1 kiwi&gt;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="n">fruits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">amount</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">cart</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">fruits</span> <span class="o">==</span> <span class="p">[]</span> <span class="ow">and</span> <span class="n">amount</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">cart</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">fruits</span> <span class="ow">and</span> <span class="n">amount</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">fruit</span> <span class="o">=</span> <span class="n">fruits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">price</span> <span class="o">=</span> <span class="n">____</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">____</span><span class="p">:</span>
+                <span class="c1"># Hint: The display function will help you add fruit to the cart.</span>
+                <span class="n">add</span><span class="p">(</span><span class="n">____</span><span class="p">,</span> <span class="n">____</span><span class="p">,</span> <span class="n">____</span><span class="p">)</span>
+    <span class="n">add</span><span class="p">(</span><span class="n">fruits_to_buy</span><span class="p">,</span> <span class="n">total_amount</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k buy"><pre><code>python3 -m pytest -k buy</code></pre></div>
+<h1 id="submit-assignment">Submit Assignment</h1>
+<p>Submit this assignment by running
+<strong>Provenance: Prepare Submission Bundle</strong> from the VS Code command palette and
+uploading the resulting zip <strong>to Gradescope</strong>. The zip already contains the
+files you've edited.
+<a href="../../labs/lab00/#task-c-submit-the-assignment">Lab 00</a> has detailed
+instructions.</p>
+<p>Your responses to WWPD questions are not submitted, and they do not need to
+be. Lab credit is based on the code writing questions.</p>
+{% endraw %}

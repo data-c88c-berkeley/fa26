@@ -68,6 +68,12 @@ deadlines:
   title: Computer Aided Typing Software
   link: /projects/cats/
   what: checkpoint
+- when: Fri 10/9
+  day: '2026-10-09'
+  kind: lab
+  label: Lab 6
+  title: Dictionaries and Strings
+  link: /labs/lab06/
 - when: Tue 10/13
   day: '2026-10-13'
   kind: proj

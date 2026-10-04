@@ -18,7 +18,8 @@ discussions:
 - slug: disc05
   title: Tree Recursion
 - skip: true
-- title: Objects
+- slug: disc06
+  title: Data Classes
 - skip: true
 - title: Recursive Data
 - skip: true
