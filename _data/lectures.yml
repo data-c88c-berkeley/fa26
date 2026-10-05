@@ -109,9 +109,9 @@ lectures:
     videos:
       - title: "YouTube"
         link: https://www.youtube.com/watch?v=pTPDmMH9dbs&list=PLCWEE1T0BmmA
-  - title: "Problem Solving"    # Wed 10/14
+  - title: "Midterm 1 Review"   # Wed 10/14
   # Week 9 (Midterm 1 in the CBTF)
-  - title: "Midterm 1 Review"   # Mon 10/19
+  - title: "Problem Solving"    # Mon 10/19
   - title: "Mutation"           # Wed 10/21
     slug: mutation
     readings:
