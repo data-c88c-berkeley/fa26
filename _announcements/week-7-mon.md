@@ -11,3 +11,4 @@ date: 2026-10-05
 - Cats project is due Tuesday 10/13.
     - Checkpoint due Tuesday 10/6.
     - Early submission bonus point for submitting by Monday 10/12.
+- Kay's Monday 10/5 4pm office hours will be staffed by Esha.
