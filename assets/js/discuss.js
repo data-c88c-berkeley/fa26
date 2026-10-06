@@ -26,6 +26,11 @@
 //     they can run their code). A strikes line counts the whole group's ❌s
 //     for the question. State is shared through the discuss server while
 //     members are on the page.
+//   * Pacing reminders: while in a group, a question's Verify is held back,
+//     with a note and a Dismiss button beside it, when the group has 5
+//     strikes on it (talk to staff first), or when you are the only member
+//     to have passed an earlier question (bring the group along). Dismiss
+//     re-enables it; dismissals are kept per page and group.
 //   * Observer (staff view): a page opened with #discuss-view=<token> (the
 //     View link on discuss.cs61a.org, see apps/discuss/server.py) watches
 //     one group without joining it. No join bar, nothing saved or shared,
@@ -53,6 +58,9 @@
   var MAX_NAME = 24;         // longer tab names are truncated to 22 + …
   var MAX_CODE = 20000;      // code chars shared/saved per question (server cap)
   var MAX_MEMBERS = 10;      // members shown at once (matches the server + palette)
+  var STRIKE_LIMIT = 5;      // group strikes that hold a question's Verify back
+  var AHEAD_NOTE = 'Please make sure the other members of your group also ' +
+    'finish the previous questions before moving on.';
 
   // One background tint per group member, in each color scheme (same index
   // = same member). Light: near-white hue tints, close to the editors'
@@ -115,6 +123,17 @@
   try { cooldowns = JSON.parse(stored(COOLDOWN_KEY)) || {}; } catch (e) {}
   if (OBSERVER) cooldowns = {};
   saveCooldowns();  // drop the ones that ran out while the page was closed
+
+  // The pacing reminders this student dismissed, for one group (joining a
+  // different group starts over): ahead[qid] for an earlier question they
+  // passed first, strikes[qid] for a question at the strike limit.
+  var DISMISSED_KEY = 'discuss-dismissed:' + page;
+  var dismissed = null;
+  try { dismissed = JSON.parse(stored(DISMISSED_KEY)); } catch (e) {}
+  if (!dismissed || typeof dismissed !== 'object' ||
+      !dismissed.ahead || !dismissed.strikes) {
+    dismissed = { group: null, ahead: {}, strikes: {} };
+  }
 
   // ── The verify history (✅/❌ strings) ────────────────────────────────────
 
@@ -487,6 +506,7 @@
     if (!q || !api(q) || showingMember(q) || OBSERVER) return;
     var button = q.check;
     var cooldownMs = 0;  // set by a failed run
+    q.running = true;
     button.disabled = true;
     button.textContent = workerReady ? 'Checking…' : 'Loading Python…';
     runInWorker(api(q).original, api(q).getText(), q.lib, usedCode(q)).then(function (result) {
@@ -523,7 +543,8 @@
       // Reset the label before the cooldown ring is added: setting
       // textContent replaces the button's children.
       button.textContent = 'Verify';
-      button.disabled = showingMember(q) || coolingDown(q);
+      q.running = false;
+      button.disabled = locked(qid);
       if (cooldownMs) startCooldown(qid, 0, cooldownMs);
     });
   }
@@ -531,6 +552,14 @@
   // ── Cooldown: 20s between failed verifies (5s after an exception) ────────
 
   function coolingDown(q) { return q.cooldownUntil > Date.now(); }
+
+  // Whether the question's Verify button is disabled: mid-run, cooling
+  // down, showing a member's code, or held back by a pacing reminder.
+  function locked(qid) {
+    var q = questions[qid];
+    return OBSERVER || !!q.running || showingMember(q) || coolingDown(q) ||
+      reminders(qid).length > 0;
+  }
 
   function saveCooldowns() {
     var now = Date.now();
@@ -560,7 +589,7 @@
         delete cooldowns[qid];
         saveCooldowns();
         q.check.textContent = 'Verify';
-        if (!showingMember(q)) q.check.disabled = false;
+        q.check.disabled = locked(qid);
         return;
       }
       // Counts 20, 15, 10, 5: a 5-second tick is enough to explain the
@@ -671,13 +700,17 @@
     var output = document.createElement('code');  // exception, after the marks
     output.className = 'discuss-check-output';
     output.hidden = true;
-    box.append(button, marks, output);
+    var notes = document.createElement('span');  // pacing reminders, last
+    notes.className = 'discuss-reminders';
+    notes.hidden = true;
+    box.append(button, marks, output, notes);
     q.lib = box.dataset.lib || '';
     q.uses = (box.dataset.uses || '').split(/\s+/).filter(Boolean);
     q.noVisualize = box.dataset.visualize === 'false';
     q.check = button;
     q.marks = marks;
     q.output = output;
+    q.notes = notes;
     buildVisualize(qid);
     showMarks(qid);
     // A cooldown that a reload interrupted picks up where it left off.
@@ -810,6 +843,10 @@
     store('discuss-name', name);
     store('discuss-email', email);
     store('discuss-group', group);
+    if (dismissed.group !== group) {  // another group's dismissals don't carry
+      dismissed = { group: group, ahead: {}, strikes: {} };
+      saveDismissed();
+    }
     dirty = true;
     showJoined();
     if (!pollTimer) pollTimer = setInterval(poll, POLL_MS);
@@ -1064,6 +1101,7 @@
     handle.setReadOnly(true);
     silently(function () { handle.setText(''); });
     renderPaneTabs(qid);
+    renderReminder(qid);   // your reminders hide while their code shows
     requestAnimationFrame(function () {
       if (q.pane && q.pane.showing === id) refreshShown(qid);
     });
@@ -1102,10 +1140,10 @@
     }
     if (q.check) {
       q.check.dataset.state = q.ownState;
-      q.check.disabled = OBSERVER || coolingDown(q);
       showMarks(qid);
     }
     renderPaneTabs(qid);
+    renderReminder(qid);
   }
 
   // Everything the tab column displays, as one string. Rebuilding the tabs
@@ -1194,6 +1232,90 @@
       renderPaneTabs(qid);
       if (q.pane.showing) refreshShown(qid);
     });
+    order.forEach(renderReminder);
+  }
+
+  // ── Pacing reminders (hold Verify back until dismissed) ──────────────────
+
+  function saveDismissed() {
+    store(DISMISSED_KEY, JSON.stringify(dismissed));
+  }
+
+  function passed(marks) { return marks.indexOf(PASS) >= 0; }
+
+  // You have passed this question and no one else in the group has.
+  function aheadOn(qid) {
+    return passed(history(answers[qid])) && !memberOrder.some(function (id) {
+      return passed(history(memberAnswer(id, qid)));
+    });
+  }
+
+  // The reminders holding this question's Verify back, as [kind, text]
+  // pairs: the group is at the strike limit on it, or you alone have passed
+  // an earlier question. Only while the group has other members (the
+  // strikes line is showing), and never for a watcher.
+  function reminders(qid) {
+    if (OBSERVER || !group || !memberOrder || !memberOrder.length) return [];
+    var list = [];
+    var count = strikes(qid);
+    if (count >= STRIKE_LIMIT && !dismissed.strikes[qid]) {
+      list.push(['strikes', 'Your group has ' + count + ' strikes. We ' +
+        'recommend that you talk to someone from the course staff before ' +
+        'trying again.']);
+    }
+    var earlier = order.slice(0, order.indexOf(qid));
+    if (earlier.some(function (p) {
+      return questions[p].check && !dismissed.ahead[p] && aheadOn(p);
+    })) {
+      list.push(['ahead', AHEAD_NOTE]);
+    }
+    return list;
+  }
+
+  // Dismissing the strikes reminder frees this question; dismissing the
+  // ahead reminder frees every later question, for each question you are
+  // ahead on now (passing another one first brings the reminder back).
+  function dismiss(kind, qid) {
+    if (kind === 'strikes') {
+      dismissed.strikes[qid] = true;
+    } else {
+      order.forEach(function (p) {
+        if (questions[p].check && aheadOn(p)) dismissed.ahead[p] = true;
+      });
+    }
+    saveDismissed();
+    order.forEach(renderReminder);
+  }
+
+  // Show a question's reminders beside its Verify button (none while a
+  // member's code is shown there) and set the button to match. The notes
+  // are rebuilt only when their text changes, so a poll never replaces a
+  // Dismiss button under a click.
+  function renderReminder(qid) {
+    var q = questions[qid];
+    if (!q.check) return;
+    var list = showingMember(q) ? [] : reminders(qid);
+    var sig = JSON.stringify(list);
+    if (q.notesSig !== sig) {
+      q.notesSig = sig;
+      q.notes.textContent = '';
+      list.forEach(function (item) {
+        var note = document.createElement('span');
+        note.className = 'discuss-reminder';
+        note.dataset.kind = item[0];
+        var text = document.createElement('span');
+        text.textContent = item[1];
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'discuss-dismiss';
+        button.textContent = 'Dismiss';
+        button.addEventListener('click', function () { dismiss(item[0], qid); });
+        note.append(text, button);
+        q.notes.appendChild(note);
+      });
+      q.notes.hidden = list.length === 0;
+    }
+    q.check.disabled = locked(qid);
   }
 
   buildBar();

@@ -612,3 +612,33 @@ pre.wwpd .wwpd-answer {
 [data-theme="dark"] .discuss-check-output {
   color: #ef9a9a;
 }
+
+/* Pacing reminders beside a held-back Verify button (the group's strikes,
+   or being ahead of the group), each with a Dismiss button that frees it. */
+.discuss-reminder {
+  margin-left: 0.75em;
+  font-size: 0.8rem;
+  color: #8a4b00;
+}
+
+[data-theme="dark"] .discuss-reminder {
+  color: #ffcc80;
+}
+
+/* Both at once: the second starts a line of its own. */
+.discuss-reminder + .discuss-reminder::before {
+  content: "";
+  display: block;
+  margin-top: 0.4em;
+}
+
+.discuss-dismiss {
+  margin-left: 0.5em;
+  font: inherit;
+  padding: 0.1em 0.6em;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
