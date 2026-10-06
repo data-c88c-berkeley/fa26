@@ -126,7 +126,9 @@ document.querySelectorAll('.pytest-command').forEach(function (box) {
   if (!ASSIGNMENT_JS || !document.querySelector('.code-editor')) return;
   ['code-editor.js', 'discuss.js'].forEach(function (name) {
     var script = document.createElement('script');
-    script.src = ASSIGNMENT_JS.replace(/assignment\.js(\?.*)?$/, name);
+    // Keep assignment.js's ?v= (the asset hash, see the layout), so a page
+    // never pairs with a stale cached copy of these scripts.
+    script.src = ASSIGNMENT_JS.replace(/assignment\.js(\?.*)?$/, name + '$1');
     document.head.appendChild(script);
   });
 })();
