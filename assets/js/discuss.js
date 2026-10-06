@@ -453,12 +453,25 @@
     return run;
   }
 
-  // The code from the questions this one may call (data-uses), as JSON for
-  // the harness to run before the student's own. A member's pane shows their
-  // code rather than yours, so fall back to your own saved answer there.
+  // The code from the questions this one may call, as JSON for the harness
+  // to run before the student's own: first the earlier editors of a code
+  // file split among several questions (data-file, e.g. the Interval class
+  // before add_interval), then the questions named in data-uses. A member's
+  // pane shows their code rather than yours, so fall back to your own saved
+  // answer there.
   function usedCode(q) {
     var code = [];
-    (q.uses || []).forEach(function (name) {
+    var names = [];
+    var file = q.wrapper && q.wrapper.dataset.file;
+    if (file) {
+      var editors = document.querySelectorAll('.code-editor');
+      for (var i = 0; i < editors.length && editors[i] !== q.wrapper; i++) {
+        if (editors[i].dataset.file === file) {
+          names.push(questionFor(editors[i]));
+        }
+      }
+    }
+    names.concat(q.uses || []).forEach(function (name) {
       var dep = questions[name];
       if (!dep) return;
       var text = showingMember(dep)

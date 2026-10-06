@@ -41,7 +41,7 @@ interval, one that represents the range of the result.</p>
 endpoints: a <code>lower</code> bound and an <code>upper</code> bound. <code>Interval(1, 3)</code> creates the
 interval from 1 to 3, and if <code>x</code> is an interval, then <code>x.lower</code> and <code>x.upper</code>
 are its endpoints.</p>
-<div class="code-editor" data-language="python" data-question="interval">
+<div class="code-editor" data-language="python" data-question="Interval" data-file="interval">
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
 
 <span class="nd">@dataclass</span>
@@ -54,7 +54,7 @@ are its endpoints.</p>
 <h3 id="q1-interval-addition">Q1: Interval Addition</h3>
 <p>Implement <code>add_interval</code>, which returns an interval that contains the sum of any
 value in interval <code>x</code> and any value in interval <code>y</code>.</p>
-<div class="code-editor" data-language="python" data-question="interval">
+<div class="code-editor" data-language="python" data-question="add_interval" data-file="interval">
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">add_interval</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Interval</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">Interval</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Interval</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return an interval that contains the sum of any value in interval x and</span>
 <span class="sd">    any value in interval y.</span>
@@ -74,7 +74,7 @@ contains the product of any value in <code>x</code> and any value in <code>y</co
 <blockquote>
 <p><strong>Hint</strong>: The smallest product is not always the product of two lower bounds because multiplying two negative numbers makes a positive number.</p>
 </blockquote>
-<div class="code-editor" data-language="python" data-question="interval">
+<div class="code-editor" data-language="python" data-question="mul_interval" data-file="interval">
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">mul_interval</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Interval</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">Interval</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Interval</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the interval that contains the product of any value in x and any</span>
 <span class="sd">    value in y.</span>
@@ -123,7 +123,7 @@ the square of every value in <code>x</code>.</p>
 <blockquote>
 <p><strong>Hint</strong>: <code>mul_interval(x, x)</code> is correct when <code>x</code> does not contain 0.</p>
 </blockquote>
-<div class="code-editor" data-language="python" data-question="interval">
+<div class="code-editor" data-language="python" data-question="square_interval" data-file="interval">
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">square_interval</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Interval</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Interval</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the smallest interval that contains the square of every value in x.</span>
 
