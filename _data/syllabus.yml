@@ -38,7 +38,7 @@ class_days: ['1', '3']
 # Labs, homework, and discussions are published by publish-61a from the
 # assignments repo, which places each on the row of the last lecture day on or
 # before its post date, so these must match class_days. Labs post Monday with
-# a same-topic discussion; homework posts Wednesday.
+# a same-topic discussion; homework posts Monday (hw01-hw04 posted Wednesday).
 discussion_days: ['1', '3']
 lab_days: ['1', '3']
 hw_days: ['1', '3']
