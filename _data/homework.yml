@@ -18,18 +18,17 @@ homework:
 - skip: true
 - skip: true
 - skip: true
-- skip: true
-- title: Recursive Data (due Tue 10/20)
-- skip: true
-- skip: true
-- skip: true
-- title: Mutation (due Tue 11/3)
-- skip: true
-- title: Classes (due Tue 11/10)
+- title: Recursive Data (due Mon 10/19)
 - skip: true
 - skip: true
 - skip: true
-- title: SQL (due Tue 11/24)
+- title: Mutation (due Mon 11/2)
+- skip: true
+- title: Classes (due Mon 11/9)
+- skip: true
+- skip: true
+- skip: true
+- title: SQL (due Mon 11/23)
 - skip: true
 - skip: true
 - skip: true
