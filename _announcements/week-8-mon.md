@@ -10,6 +10,6 @@ date: 2026-10-12
     - A [Practice Midterm](https://us.prairielearn.com/pl/course_instance/230628/assessment/2736963) is available on PrairieLearn
     - Covers course content through today's Linked List lecture
     - Questions may involve implementing functions and predicting output (What Would Python Display?)
-- Homework 5 is due Monday 10/19 @ 11:59pm.
+- Homework 5 is due Monday 10/26 @ 11:59pm.
    - Quiz 5 will be on the Count Berries problem, and is available as a
      [Practice Quiz](https://us.prairielearn.com/pl/course_instance/230628/assessment/2739007) on PrairieLearn.
