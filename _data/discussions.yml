@@ -22,11 +22,12 @@ discussions:
   title: Data Classes
 - skip: true
 - slug: disc07
+  title: Linked Lists
+- skip: true
+- slug: disc08
   title: Trees
 - skip: true
 - skip: true
-- skip: true
-- title: Mutation
 - skip: true
 - title: Classes
 - skip: true

@@ -1,12 +1,12 @@
 ---
-title: "Discussion 7: Trees"
+title: "Discussion 7: Linked Lists"
 layout: assignment
 nav_exclude: true
 excerpt_separator: ""
 ---
 
 {% raw %}
-<header class="assignment-header"><h1>Discussion 7: Trees<a class="print-button" href="print.html" title="Printable version" aria-label="Printable version">🖨️</a></h1></header>
+<header class="assignment-header"><h1>Discussion 7: Linked Lists<a class="print-button" href="print.html" title="Printable version" aria-label="Printable version">🖨️</a></h1></header>
 <h2 id="attendance">Attendance</h2>
 <p>Your TA will come around during discussion to check you in. You can start on
 the worksheet before being checked in; you don't need to wait for your TA to
@@ -15,271 +15,127 @@ get started.</p>
 form (within 2 weeks of your discussion):
 <a href="https://forms.gle/QsRLAvLnn5xoJgdv9">attendance form</a></p>
 <h2 id="getting-started">Getting Started</h2>
-<p>Everyone go around and say your name.</p>
-<p><strong>For fun:</strong> Think of a big word with at least three syllables, such as
-&quot;solitary&quot; or &quot;conundrum&quot; or &quot;ominous&quot;. Try to use it as many times as you can
-during today's discussion, but in ways that don't give away that it's your big
-word. At the end, your group will try to guess each person's big word. Whoever
-uses their big word the most times (and at least twice) without their group
-guessing it wins.  (You win nothing; it's just a game.)</p>
-<h2 id="trees">Trees</h2>
-<p>A <code>Tree</code> has a <code>label</code> and a list of <code>branches</code>, each
-of which is a <code>Tree</code>. A tree with no branches is called a <em>leaf</em>.</p>
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@dataclass</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">Tree</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
-    <span class="n">label</span><span class="p">:</span> <span class="n">T</span>
-    <span class="n">branches</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Tree</span><span class="p">[</span><span class="n">T</span><span class="p">]]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>  <span class="c1"># branches defaults to []</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">is_leaf</span><span class="p">(</span><span class="n">t</span><span class="p">:</span> <span class="n">Tree</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="s2">&quot;Return whether a Tree t is a leaf with no branches.&quot;</span>
-    <span class="k">return</span> <span class="ow">not</span> <span class="n">t</span><span class="o">.</span><span class="n">branches</span>
-</code></pre></div></div>
-<p>For example:</p>
+<p>Everybody say your name and your birthday and then tell the group about your
+favorite birthday party you've attended (either for your birthday or someone
+else's).</p>
+<h2 id="linked-lists">Linked Lists</h2>
+<p>A linked list is a <code>Link</code> object or <code>()</code>, the empty tuple.</p>
+<p>You can make a new <code>Link</code> object by calling <code>Link</code>. The second argument to <code>Link</code> should <strong>always</strong> be a a linked list (another <code>Link</code> object or <code>()</code>):</p>
 <ul>
-<li><code>Tree(4)</code> makes a leaf labeled 4.</li>
-<li><code>u = Tree(5, [Tree(6), Tree(7)])</code> makes a tree labeled 5 with two leaves labeled 6 and 7.</li>
-<li><code>t = Tree(3, [Tree(4), u])</code> makes a tree labeled 3 with two branches: a leaf labeled 4 and the tree <code>u</code>.</li>
+<li><code>Link(4)</code> makes a linked list containing 4.</li>
+<li><code>Link(4, Link(5))</code> makes a linked list containing 4 and 5.</li>
+<li><code>Link(4, 5)</code> is not well formed because the second argument is not a linked list. Don't do that!</li>
 </ul>
-<p><img src="assets/example_tree_illustration.svg" alt="Example Tree" /></p>
-<p>Printing a <code>Tree</code> shows each label on its own line, indented below its parent's label:</p>
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="n">u</span> <span class="o">=</span> <span class="n">Tree</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="p">[</span><span class="n">Tree</span><span class="p">(</span><span class="mi">6</span><span class="p">),</span> <span class="n">Tree</span><span class="p">(</span><span class="mi">7</span><span class="p">)])</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">t</span> <span class="o">=</span> <span class="n">Tree</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">[</span><span class="n">Tree</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="n">u</span><span class="p">])</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-<span class="mi">3</span>
-  <span class="mi">4</span>
-  <span class="mi">5</span>
-    <span class="mi">6</span>
-    <span class="mi">7</span>
-</code></pre></div></div>
-<p>The label of the second branch of <code>t</code> is <code>t.branches[1].label</code>, which is 5.</p>
-<p>A <em>node</em> of <code>Tree</code> <code>t</code> is either itself or a <code>Tree</code> within it. A node's <em>parent</em> is the <code>Tree</code> for which it is a branch, and its <em>children</em> are its branches. The <em>root node</em> is <code>t</code> and has no parent. Leaves have no children. A <em>path</em> is a sequence of nodes in which each is the parent of the next.</p>
-<p>This <a href="https://composingprograms.com/3ed/draw">tree visualizer</a> draws the
-structure of any tree.</p>
-<p><strong>Remember</strong>, for a tree <code>t</code>:</p>
-<ul>
-<li>Its root label <code>t.label</code> can be any value.</li>
-<li>Its branches are trees, and <code>t.branches</code> is a list of its branches.</li>
-<li>An equivalent tree can be constructed with <code>Tree(t.label, t.branches)</code>.</li>
-<li>To check whether a tree <code>t</code> is a leaf, call <code>is_leaf(t)</code>.</li>
-<li>You can call functions that take a tree as an argument, such as <code>sum_leaves(t)</code>.</li>
-</ul>
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">sum_leaves</span><span class="p">(</span><span class="n">t</span><span class="p">:</span> <span class="n">Tree</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the sum of the labels of the leaves of tree t.</span>
+<p><strong>Drawing time:</strong> Pick a way for your group to draw diagrams. Paper, a
+whiteboard, or a tablet, are all fine. If you don't have anything like that, ask
+another group in the room if they have extra paper. You can also use this <a href="https://composingprograms.com/3ed/draw/">drawing tool</a> to draw a linked list.</p>
+<h3 id="q1-sum-two-ways">Q1: Sum Two Ways</h3>
+<p>Implement both <code>sum_rec</code> and <code>sum_iter</code>. Each one takes a linked list of numbers
+<code>s</code> and a non-negative integer <code>k</code> and returns the sum of the first <code>k</code> elements
+of <code>s</code>. If there are fewer than <code>k</code> elements in <code>s</code>, all of them are summed. If
+<code>k</code> is 0 or <code>s</code> is empty, the sum is 0.</p>
+<p>Use recursion to implement <code>sum_rec</code>. Don't use recursion to implement
+<code>sum_iter</code>; use a <code>while</code> loop instead.</p>
+<p>To get started on the recursive implementation, consider the example
+<code>a = Link(1, Link(6, Link(8)))</code> and the call <code>sum_rec(a, 2)</code>. Write down the
+recursive call to <code>sum_rec</code> that would help compute <code>sum_rec(a, 2)</code>. Then, write
+down what that recursive call should return. Discuss how this return value is
+useful in computing the return value of <code>sum_rec(a, 2)</code>.</p>
+<div class="code-editor" data-language="python" data-question="sum_two_ways">
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">sum_rec</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="n">LinkedList</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the sum of the first k elements in s.</span>
 
-<span class="sd">    &gt;&gt;&gt; t = Tree(3, [Tree(4), Tree(5, [Tree(6), Tree(7)])])</span>
-<span class="sd">    &gt;&gt;&gt; sum_leaves(t)  # 4 + 6 + 7</span>
-<span class="sd">    17</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">is_leaf</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>  <span class="c1"># if t is a leaf,</span>
-        <span class="k">return</span> <span class="n">t</span><span class="o">.</span><span class="n">label</span>  <span class="c1"># then the sum of its leaf labels is just its label</span>
-    <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="n">sum_leaves</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">t</span><span class="o">.</span><span class="n">branches</span><span class="p">])</span>
-</code></pre></div></div>
-<p>The type <code>Tree[int]</code> describes a tree whose labels are all integers.</p>
-<p>A type variable, such as <code>T</code> below, represents any type and expresses that the
-return value has the same type as the labels of the input tree.</p>
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">largest_leaf</span><span class="p">[</span><span class="n">T</span><span class="p">](</span><span class="n">t</span><span class="p">:</span> <span class="n">Tree</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the largest label of the leaves of tree t.</span>
-
-<span class="sd">    &gt;&gt;&gt; t = Tree(3, [Tree(4), Tree(5, [Tree(6), Tree(7)])])</span>
-<span class="sd">    &gt;&gt;&gt; largest_leaf(t)</span>
+<span class="sd">    &gt;&gt;&gt; a = Link(1, Link(6, Link(8)))</span>
+<span class="sd">    &gt;&gt;&gt; sum_rec(a, 2)</span>
 <span class="sd">    7</span>
+<span class="sd">    &gt;&gt;&gt; sum_rec(a, 5)</span>
+<span class="sd">    15</span>
+<span class="sd">    &gt;&gt;&gt; sum_rec((), 1)</span>
+<span class="sd">    0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">is_leaf</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>  <span class="c1"># if t is a leaf,</span>
-        <span class="k">return</span> <span class="n">t</span><span class="o">.</span><span class="n">label</span>  <span class="c1"># then the largest leaf label is just its label</span>
-    <span class="k">return</span> <span class="nb">max</span><span class="p">([</span><span class="n">largest_leaf</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">t</span><span class="o">.</span><span class="n">branches</span><span class="p">])</span>
-</code></pre></div></div>
-<h3 id="q1-has-path">Q1: Has Path</h3>
-<p>Implement <code>has_path</code>, which takes a tree <code>t</code> and a list <code>p</code>. It returns whether
-there is a path from the root of <code>t</code> with labels <code>p</code>. For example, <code>t</code> has a
-path from its root with labels <code>[3, 5, 6]</code> but not <code>[3, 4, 6]</code> or <code>[5, 6]</code>.</p>
-<p><strong>Important</strong>: Before trying to implement this function, discuss these questions
-from lecture about the recursive call of a tree processing function:</p>
-<ul>
-<li>What small initial choice can I make (such as which branch to explore)?</li>
-<li>What recursive call should I make for each option?</li>
-<li>How can I combine the results of those recursive calls?
-<ul>
-<li>What type of values do they return?</li>
-<li>What do those return values mean?</li>
-</ul>
-</li>
-</ul>
-<p>If you get stuck, you can view our answers to these questions by clicking the
-hint button below, but <em>please</em> don't do that until your whole group agrees.</p>
-<details class="hint"><summary>Big Hint: Describing the Recursive Call</summary><div>
-<p><strong>What small initial choice can I make (such as which branch to explore)?</strong></p>
-<p>Choose each one of the branches and call it <code>b</code>.</p>
-<p><strong>What recursive call should I make for each branch?</strong></p>
-<p>Call <code>has_path</code> on each branch <code>b</code>. You'll make this call after comparing <code>p[0]</code>
-to <code>t.label</code>, and so the second argument to <code>has_path</code> will be the rest of <code>p</code>:
-<code>has_path(b, p[1:])</code>.</p>
-<p><strong>What type of values do they return?</strong></p>
-<p><code>has_path</code> always returns a <code>bool</code> value: <code>True</code> or <code>False</code>.</p>
-<p><strong>What do the possible return values mean?</strong></p>
-<p>If <code>has_path(b, p[1:])</code> returns <code>True</code>, then there is a path through branch <code>b</code>
-for which <code>p[1:]</code> are the node labels.</p>
-<p><strong>How can I combine the results of those recursive calls?</strong></p>
-<p>If you have already checked that <code>t.label</code> is equal to <code>p[0]</code>, then a <code>True</code>
-return value from the recursive call <code>has_path(b, p[1:])</code> means there is a path
-through <code>t</code> with labels <code>p</code> using that branch <code>b</code>, so return.  A <code>False</code> value
-means there is no path through that branch, but there might be path through a
-different branch, so don't return yet.</p>
-</div></details>
-<div class="code-editor" data-language="python" data-question="has_path">
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">has_path</span><span class="p">[</span><span class="n">T</span><span class="p">](</span><span class="n">t</span><span class="p">:</span> <span class="n">Tree</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="n">p</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return whether tree t has a path from the root with labels p.</span>
+    <span class="c1"># Use a recursive call to sum_rec; don&#39;t call sum_iter</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
 
-<span class="sd">    &gt;&gt;&gt; u = Tree(5, [Tree(6), Tree(7)])</span>
-<span class="sd">    &gt;&gt;&gt; t = Tree(3, [Tree(4), u])</span>
-<span class="sd">    &gt;&gt;&gt; has_path(t, [5, 6])        # This path is not from the root of t</span>
-<span class="sd">    False</span>
-<span class="sd">    &gt;&gt;&gt; has_path(u, [5, 6])        # This path is from the root of u</span>
-<span class="sd">    True</span>
-<span class="sd">    &gt;&gt;&gt; has_path(t, [3, 5])        # This path does not go to a leaf, but that&#39;s ok</span>
-<span class="sd">    True</span>
-<span class="sd">    &gt;&gt;&gt; has_path(t, [3, 5, 6])     # This path goes to a leaf</span>
-<span class="sd">    True</span>
-<span class="sd">    &gt;&gt;&gt; has_path(t, [3, 4, 5, 6])  # There is no path with these labels</span>
-<span class="sd">    False</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sum_iter</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="n">LinkedList</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the sum of the first k elements in s.</span>
+
+<span class="sd">    &gt;&gt;&gt; a = Link(1, Link(6, Link(8)))</span>
+<span class="sd">    &gt;&gt;&gt; sum_iter(a, 2)</span>
+<span class="sd">    7</span>
+<span class="sd">    &gt;&gt;&gt; sum_iter(a, 5)</span>
+<span class="sd">    15</span>
+<span class="sd">    &gt;&gt;&gt; sum_iter((), 1)</span>
+<span class="sd">    0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">p</span> <span class="o">==</span> <span class="n">____</span><span class="p">:</span>  <span class="c1"># when len(p) is 1</span>
-        <span class="k">return</span> <span class="kc">True</span>
-    <span class="k">elif</span> <span class="n">t</span><span class="o">.</span><span class="n">label</span> <span class="o">!=</span> <span class="n">____</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">False</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+    <span class="c1"># Don&#39;t call sum_rec or sum_iter</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
 </code></pre></div></div>
 </div>
-<div class="discuss-check" data-question="has_path" data-lib="from __future__ import annotations&#10;from dataclasses import dataclass, field&#10;&#10;@dataclass&#10;class Tree[T]:&#10;    &quot;&quot;&quot;A Tree has a label (of type T) and a list of branches, which are trees.&#10;&#10;    &gt;&gt;&gt; t = Tree(3, [Tree(1, []), Tree(2, [Tree(1, []), Tree(1, [])])])&#10;    &gt;&gt;&gt; t.branches[0]&#10;    Tree(label=1, branches=[])&#10;    &gt;&gt;&gt; len(t.branches)&#10;    2&#10;    &gt;&gt;&gt; t.branches[1].label&#10;    2&#10;    &gt;&gt;&gt; len(t.branches[1].branches)&#10;    2&#10;    &gt;&gt;&gt; expr = Tree(10, [Tree(6, [Tree(2), Tree(&#x27;*&#x27;), Tree(3)]), Tree(&#x27;+&#x27;), Tree(4)])&#10;    &gt;&gt;&gt; print(expr)&#10;    10&#10;      6&#10;        2&#10;        *&#10;        3&#10;      +&#10;      4&#10;    &quot;&quot;&quot;&#10;    label: T&#10;    branches: list[Tree[T]] = field(default_factory=list)  # branches defaults to []&#10;&#10;    def __str__(self):&#10;        return format_tree(self)&#10;&#10;def format_tree(t: Tree, indent=&#x27;&#x27;) -&gt; str:&#10;    &quot;Format a tree with each branch indented below its label.&quot;&#10;    assert isinstance(t, Tree), f&#x27;{t!r} is not a Tree&#x27;&#10;    assert isinstance(t.branches, list), f&#x27;branches of {t!r} is not a list&#x27;&#10;    string = indent + str(t.label)&#10;    for b in t.branches:&#10;        string += &#x27;\n&#x27; + format_tree(b, indent + &#x27;  &#x27;)&#10;    return string&#10;&#10;def is_leaf(t: Tree) -&gt; bool:&#10;    &quot;Return whether a Tree t is a leaf with no branches.&quot;&#10;    return not t.branches" data-visualize="false"></div>
-<p>If your group needs some guidance, see the hints below, but please
-talk with your group first before reading the hints.</p>
-<details class="hint"><summary>Hint: Base Cases</summary><div>
-<p>The first base case should check whether <code>p</code> is a list of length one with the
-label of <code>t</code> as its only element.  The second base case should check if the
-first element of <code>p</code> matches the label of <code>t</code>.</p>
+<div class="discuss-check" data-question="sum_two_ways" data-lib="from dataclasses import dataclass&#10;&#10;type LinkedList[T] = Link[T] | tuple[()]&#10;&#10;@dataclass&#10;class Link[T]:&#10;    &quot;&quot;&quot;A Link has a first value of type T and the rest of the linked list.&#10;&#10;    The rest is either another Link or the empty tuple.&#10;&#10;    &gt;&gt;&gt; s = Link(3, Link(4, Link(5)))&#10;    &gt;&gt;&gt; s.first&#10;    3&#10;    &gt;&gt;&gt; s.rest.first&#10;    4&#10;    &gt;&gt;&gt; s.rest.rest.first&#10;    5&#10;    &gt;&gt;&gt; s.rest.rest.rest == ()&#10;    True&#10;    &gt;&gt;&gt; s&#10;    Link(first=3, rest=Link(first=4, rest=Link(first=5, rest=())))&#10;    &gt;&gt;&gt; s.rest.rest&#10;    Link(first=5, rest=())&#10;    &gt;&gt;&gt; print(s)&#10;    (3 4 5)&#10;    &quot;&quot;&quot;&#10;    first: T&#10;    rest: LinkedList[T] = ()  # rest defaults to an empty linked list&#10;&#10;    def __str__(self):&#10;        return format_link(self)&#10;&#10;def format_link(s: Link):&#10;    &quot;&quot;&quot;Return a Link s formatted as items within parentheses.&quot;&quot;&quot;&#10;    string = &#x27;(&#x27; + str(s.first)&#10;    remaining = s.rest&#10;    while isinstance(remaining, Link):&#10;        string += &#x27; &#x27; + str(remaining.first)&#10;        remaining = remaining.rest&#10;    assert remaining == (), f&#x27;{s!r} is not a LinkedList&#x27;&#10;    return string + &#x27;)&#x27;" data-visualize="false"></div>
+<details class="hint"><summary>Hint: Recursive Version</summary><div>
+<p>Add <code>s.first</code> to the sum of the first <code>k-1</code> elements in <code>s.rest</code>. Your base case
+condition should include <code>not isinstance(s, Link)</code> so that you're checking
+whether <code>s</code> is empty before ever evaluating <code>s.first</code> or <code>s.rest</code>.</p>
 </div></details>
-<details class="hint"><summary>Hint: Recursive Case</summary><div>
-<p>When entering the recursive case, your code should already have checked that
-<code>p[0]</code> is equal to <code>t.label</code>, and so all that's left to check is that <code>p[1:]</code>
-contains the labels in a path through one of the branches. One way is with
-this template:</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for ____:
-    if ____:
-        return True
-return False
-</code></pre></div></div>
+<details class="hint"><summary>Hint: Iterative Version</summary><div>
+<p>Introduce a new name, such as <code>total</code>, then repeatedly (in a <code>while</code> loop) add
+<code>s.first</code> to <code>total</code>, set <code>s = s.rest</code> to advance through the linked list, and
+reduce <code>k</code> by one.</p>
 </div></details>
-<h3 id="q2-find-path">Q2: Find Path</h3>
-<p>Implement <code>find_path</code>, which takes a tree <code>t</code> with unique labels and a value
-<code>x</code>. It returns a list containing the labels of the nodes along a path from the
-root of <code>t</code> to a node labeled <code>x</code>.</p>
-<p>If <code>x</code> is not a label in <code>t</code>, return <code>None</code>. Assume that the labels of <code>t</code> are unique.</p>
-<p>First talk through how to make and use the recursive call.
-(Try it yourselves; don't just click the hint button. That's how you learn.)</p>
-<details class="hint"><summary>Big Hint: Describing the Recursive Call</summary><div>
-<p><strong>What small initial choice can I make (such as which branch to explore)?</strong></p>
-<p>Choose each one of the branches and call it <code>b</code>.</p>
-<p><strong>What recursive call should I make for each branch?</strong></p>
-<p><code>find_path(b, x)</code> on each branch <code>b</code>.</p>
-<p><strong>What type of values do they return?</strong></p>
-<p>Each recursive call will either return <code>None</code> or a non-empty list of node labels.</p>
-<p><strong>What do the possible return values mean?</strong></p>
-<p>If <code>find_path(b, x)</code> returns <code>None</code>, then <code>x</code> does not appear in <code>b</code>. If
-<code>find_path(b, x)</code> returns a list, then it contains the node labels for a path
-through <code>b</code> that ends with the node labeled <code>x</code>.</p>
-<p><strong>How can you use those return values to complete your implementation?</strong></p>
-<p>If a list is returned, then it contains all of the labels in the path except
-<code>t.label</code>, which must be placed at the front.</p>
-</div></details>
-<div class="code-editor" data-language="python" data-question="find_path">
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">find_path</span><span class="p">[</span><span class="n">T</span><span class="p">](</span><span class="n">t</span><span class="p">:</span> <span class="n">Tree</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="n">x</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">T</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a list of the labels along a path from the root of t to a node</span>
-<span class="sd">    labeled x, or None if no node is labeled x.</span>
+<h3 id="q2-print-every-other">Q2: Print Every Other</h3>
+<p>Implement <code>print_every_other</code>, which takes a linked list <code>s</code> and prints every
+other element of <code>s</code>, starting with the first, each on its own line. It prints
+nothing if <code>s</code> is empty. It returns <code>None</code>, which should happen automatically; you don't need a <code>return</code> statement.</p>
+<div class="code-editor" data-language="python" data-question="print_every_other">
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">print_every_other</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="n">LinkedList</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Print every other element of linked list s, starting with the first.</span>
 
-<span class="sd">    &gt;&gt;&gt; u = Tree(5, [Tree(6), Tree(7)])</span>
-<span class="sd">    &gt;&gt;&gt; t = Tree(3, [Tree(4), u])</span>
-<span class="sd">    &gt;&gt;&gt; find_path(t, 5)</span>
-<span class="sd">    [3, 5]</span>
-<span class="sd">    &gt;&gt;&gt; find_path(t, 4)</span>
-<span class="sd">    [3, 4]</span>
-<span class="sd">    &gt;&gt;&gt; find_path(t, 6)</span>
-<span class="sd">    [3, 5, 6]</span>
-<span class="sd">    &gt;&gt;&gt; find_path(u, 6)</span>
-<span class="sd">    [5, 6]</span>
-<span class="sd">    &gt;&gt;&gt; print(find_path(t, 2))</span>
-<span class="sd">    None</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">_______________________________________</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">_______________________________________</span>
-    <span class="n">_______________________________________</span><span class="p">:</span>
-        <span class="n">path</span> <span class="o">=</span> <span class="n">_______________________________________</span>
-        <span class="k">if</span> <span class="n">path</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">_______________________________________</span>
-    <span class="k">return</span> <span class="kc">None</span>
-</code></pre></div></div>
-</div>
-<div class="discuss-check" data-question="find_path" data-lib="from __future__ import annotations&#10;from dataclasses import dataclass, field&#10;&#10;@dataclass&#10;class Tree[T]:&#10;    &quot;&quot;&quot;A Tree has a label (of type T) and a list of branches, which are trees.&#10;&#10;    &gt;&gt;&gt; t = Tree(3, [Tree(1, []), Tree(2, [Tree(1, []), Tree(1, [])])])&#10;    &gt;&gt;&gt; t.branches[0]&#10;    Tree(label=1, branches=[])&#10;    &gt;&gt;&gt; len(t.branches)&#10;    2&#10;    &gt;&gt;&gt; t.branches[1].label&#10;    2&#10;    &gt;&gt;&gt; len(t.branches[1].branches)&#10;    2&#10;    &gt;&gt;&gt; expr = Tree(10, [Tree(6, [Tree(2), Tree(&#x27;*&#x27;), Tree(3)]), Tree(&#x27;+&#x27;), Tree(4)])&#10;    &gt;&gt;&gt; print(expr)&#10;    10&#10;      6&#10;        2&#10;        *&#10;        3&#10;      +&#10;      4&#10;    &quot;&quot;&quot;&#10;    label: T&#10;    branches: list[Tree[T]] = field(default_factory=list)  # branches defaults to []&#10;&#10;    def __str__(self):&#10;        return format_tree(self)&#10;&#10;def format_tree(t: Tree, indent=&#x27;&#x27;) -&gt; str:&#10;    &quot;Format a tree with each branch indented below its label.&quot;&#10;    assert isinstance(t, Tree), f&#x27;{t!r} is not a Tree&#x27;&#10;    assert isinstance(t.branches, list), f&#x27;branches of {t!r} is not a list&#x27;&#10;    string = indent + str(t.label)&#10;    for b in t.branches:&#10;        string += &#x27;\n&#x27; + format_tree(b, indent + &#x27;  &#x27;)&#10;    return string&#10;&#10;def is_leaf(t: Tree) -&gt; bool:&#10;    &quot;Return whether a Tree t is a leaf with no branches.&quot;&#10;    return not t.branches" data-visualize="false"></div>
-<p>Please don't view the hints until you've discussed with your group and can't
-make progress.</p>
-<details class="hint"><summary>Hint: Base Case</summary><div>
-<p>If <code>x</code> is the label of <code>t</code>, then return a list with one element that contains
-the label of <code>t</code>.</p>
-</div></details>
-<details class="hint"><summary>Hint: Recursive Case</summary><div>
-<p>Assign <code>path</code> to the result of a recursive call to <code>find_path(b, x)</code> so that you
-can both check whether it's <code>None</code> and extend it if it's a list.</p>
-<p>For a list <code>path</code> and a value <code>v</code>, the expression <code>[v] + path</code> creates a longer
-list that starts with <code>v</code> and then has the elements of <code>path</code>.</p>
-</div></details>
-<p><strong>Description Time!</strong> When your group has completed this question, it's time to
-describe why this function does not have a base case that checks whether <code>t</code>
-is a leaf (<code>is_leaf(t)</code>). If you can't figure it out, talk to a TA.</p>
-<h2 id="big-word-search">Big Word Search</h2>
-<p>For each person, the rest of the group should try to guess their <em>big word</em>
-(from the Getting Started section). The group only gets one guess. After they
-guess, reveal your <em>big word</em> and how many times you used it during discussion.</p>
-<h2 id="highly-recommended-question-if-time-allows">Highly Recommended Question (If Time Allows)</h2>
-<p>Tree problems often appear on exams. Here's one:</p>
-<h3 id="q3-only-paths">Q3: Only Paths</h3>
-<p>This was Question 5 from the <a href="https://cs61a.org/resources/fa23/mt2/61a-fa23-mt2.pdf">Fall 2023 61A Midterm 2</a>.</p>
-<p>Implement <code>only_paths</code>, which takes a tree of numbers <code>t</code> and a number <code>n</code>. It
-returns a tree with only the nodes of <code>t</code> that are on a path from the root
-to a leaf with labels that sum to <code>n</code>, or <code>None</code> if no path sums to <code>n</code>.</p>
-<p>Here is an illustration of the doctest examples involving <code>t</code>.</p>
-<p><img src="assets/only_paths.svg" alt="Diagrams of the tree t and of only_paths(t, 7) and only_paths(t, 9)" /></p>
-<div class="code-editor" data-language="python" data-question="only_paths">
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">only_paths</span><span class="p">(</span><span class="n">t</span><span class="p">:</span> <span class="n">Tree</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tree</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a tree with only the nodes of t along paths from the root to a leaf of t</span>
-<span class="sd">    for which the node labels of the path sum to n. If no paths sum to n, return None.</span>
-
-<span class="sd">    &gt;&gt;&gt; print(only_paths(Tree(5, [Tree(2), Tree(1, [Tree(2)]), Tree(1, [Tree(1)])]), 7))</span>
+<span class="sd">    &gt;&gt;&gt; sentence = Link(&#39;I&#39;, Link(&#39;have&#39;, Link(&#39;love&#39;, Link(&#39;for&#39;, Link(&#39;Oski&#39;)))))</span>
+<span class="sd">    &gt;&gt;&gt; print_every_other(sentence)</span>
+<span class="sd">    I</span>
+<span class="sd">    love</span>
+<span class="sd">    Oski</span>
+<span class="sd">    &gt;&gt;&gt; print_every_other(Link(1, Link(2, Link(3, Link(4)))))</span>
+<span class="sd">    1</span>
+<span class="sd">    3</span>
+<span class="sd">    &gt;&gt;&gt; print_every_other(Link(5))</span>
 <span class="sd">    5</span>
-<span class="sd">      2</span>
-<span class="sd">      1</span>
-<span class="sd">        1</span>
-<span class="sd">    &gt;&gt;&gt; t = Tree(3, [Tree(4), Tree(1, [Tree(3, [Tree(2)]), Tree(2, [Tree(1)]), Tree(5), Tree(3)])])</span>
-<span class="sd">    &gt;&gt;&gt; print(only_paths(t, 7))</span>
-<span class="sd">    3</span>
-<span class="sd">      4</span>
-<span class="sd">      1</span>
-<span class="sd">        2</span>
-<span class="sd">          1</span>
-<span class="sd">        3</span>
-<span class="sd">    &gt;&gt;&gt; print(only_paths(t, 9))</span>
-<span class="sd">    3</span>
-<span class="sd">      1</span>
-<span class="sd">        3</span>
-<span class="sd">          2</span>
-<span class="sd">        5</span>
-<span class="sd">    &gt;&gt;&gt; print(only_paths(t, 3))</span>
-<span class="sd">    None</span>
+<span class="sd">    &gt;&gt;&gt; print_every_other(())</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">____</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">t</span>
-    <span class="n">new_branches</span> <span class="o">=</span> <span class="p">[</span><span class="n">____</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">t</span><span class="o">.</span><span class="n">branches</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">____</span><span class="p">(</span><span class="n">new_branches</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">Tree</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="p">[</span><span class="n">b</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">new_branches</span> <span class="k">if</span> <span class="n">____</span><span class="p">])</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
 </code></pre></div></div>
 </div>
-<div class="discuss-check" data-question="only_paths" data-lib="from __future__ import annotations&#10;from dataclasses import dataclass, field&#10;&#10;@dataclass&#10;class Tree[T]:&#10;    &quot;&quot;&quot;A Tree has a label (of type T) and a list of branches, which are trees.&#10;&#10;    &gt;&gt;&gt; t = Tree(3, [Tree(1, []), Tree(2, [Tree(1, []), Tree(1, [])])])&#10;    &gt;&gt;&gt; t.branches[0]&#10;    Tree(label=1, branches=[])&#10;    &gt;&gt;&gt; len(t.branches)&#10;    2&#10;    &gt;&gt;&gt; t.branches[1].label&#10;    2&#10;    &gt;&gt;&gt; len(t.branches[1].branches)&#10;    2&#10;    &gt;&gt;&gt; expr = Tree(10, [Tree(6, [Tree(2), Tree(&#x27;*&#x27;), Tree(3)]), Tree(&#x27;+&#x27;), Tree(4)])&#10;    &gt;&gt;&gt; print(expr)&#10;    10&#10;      6&#10;        2&#10;        *&#10;        3&#10;      +&#10;      4&#10;    &quot;&quot;&quot;&#10;    label: T&#10;    branches: list[Tree[T]] = field(default_factory=list)  # branches defaults to []&#10;&#10;    def __str__(self):&#10;        return format_tree(self)&#10;&#10;def format_tree(t: Tree, indent=&#x27;&#x27;) -&gt; str:&#10;    &quot;Format a tree with each branch indented below its label.&quot;&#10;    assert isinstance(t, Tree), f&#x27;{t!r} is not a Tree&#x27;&#10;    assert isinstance(t.branches, list), f&#x27;branches of {t!r} is not a list&#x27;&#10;    string = indent + str(t.label)&#10;    for b in t.branches:&#10;        string += &#x27;\n&#x27; + format_tree(b, indent + &#x27;  &#x27;)&#10;    return string&#10;&#10;def is_leaf(t: Tree) -&gt; bool:&#10;    &quot;Return whether a Tree t is a leaf with no branches.&quot;&#10;    return not t.branches" data-visualize="false"></div>
+<div class="discuss-check" data-question="print_every_other" data-lib="from dataclasses import dataclass&#10;&#10;type LinkedList[T] = Link[T] | tuple[()]&#10;&#10;@dataclass&#10;class Link[T]:&#10;    &quot;&quot;&quot;A Link has a first value of type T and the rest of the linked list.&#10;&#10;    The rest is either another Link or the empty tuple.&#10;&#10;    &gt;&gt;&gt; s = Link(3, Link(4, Link(5)))&#10;    &gt;&gt;&gt; s.first&#10;    3&#10;    &gt;&gt;&gt; s.rest.first&#10;    4&#10;    &gt;&gt;&gt; s.rest.rest.first&#10;    5&#10;    &gt;&gt;&gt; s.rest.rest.rest == ()&#10;    True&#10;    &gt;&gt;&gt; s&#10;    Link(first=3, rest=Link(first=4, rest=Link(first=5, rest=())))&#10;    &gt;&gt;&gt; s.rest.rest&#10;    Link(first=5, rest=())&#10;    &gt;&gt;&gt; print(s)&#10;    (3 4 5)&#10;    &quot;&quot;&quot;&#10;    first: T&#10;    rest: LinkedList[T] = ()  # rest defaults to an empty linked list&#10;&#10;    def __str__(self):&#10;        return format_link(self)&#10;&#10;def format_link(s: Link):&#10;    &quot;&quot;&quot;Return a Link s formatted as items within parentheses.&quot;&quot;&quot;&#10;    string = &#x27;(&#x27; + str(s.first)&#10;    remaining = s.rest&#10;    while isinstance(remaining, Link):&#10;        string += &#x27; &#x27; + str(remaining.first)&#10;        remaining = remaining.rest&#10;    assert remaining == (), f&#x27;{s!r} is not a LinkedList&#x27;&#10;    return string + &#x27;)&#x27;" data-visualize="false"></div>
+<h2 id="highly-recommended-question-if-time-allows">Highly Recommended Question (If Time Allows)</h2>
+<p>Linked list problems often appear on exams. Here's one:</p>
+<h3 id="q3-linked-sum">Q3: Linked Sum</h3>
+<p>This was Question 6 on the <a href="https://cs61a.org/resources/su16/mt1/61a-su16-midterm.pdf">Summer 2016 61A Midterm</a>.</p>
+<p>Implement <code>linked_sum</code>, which takes a linked list of positive integers <code>s</code> and a
+non-negative integer <code>total</code>. It returns the number of ways that adding up items
+in <code>s</code> can sum up to <code>total</code>. Each item can be used more than once.</p>
+<div class="code-editor" data-language="python" data-question="linked_sum">
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">linked_sum</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="n">LinkedList</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">total</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the number of combinations of elements in s that</span>
+<span class="sd">    sum up to total.</span>
+
+<span class="sd">    &gt;&gt;&gt; # Four combinations: 1 1 1 1 , 1 1 2 , 1 3 , 2 2</span>
+<span class="sd">    &gt;&gt;&gt; linked_sum(Link(1, Link(2, Link(3, Link(5)))), 4)</span>
+<span class="sd">    4</span>
+<span class="sd">    &gt;&gt;&gt; linked_sum(Link(2, Link(3, Link(5))), 1)</span>
+<span class="sd">    0</span>
+<span class="sd">    &gt;&gt;&gt; # One combination: 2 3</span>
+<span class="sd">    &gt;&gt;&gt; linked_sum(Link(2, Link(4, Link(3))), 5)</span>
+<span class="sd">    1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">____________________________</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">elif</span> <span class="n">____________________________</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">with_first</span> <span class="o">=</span> <span class="n">____________________________</span>
+        <span class="n">without_first</span> <span class="o">=</span> <span class="n">____________________________</span>
+        <span class="k">return</span> <span class="n">____________________________</span>
+</code></pre></div></div>
+</div>
+<div class="discuss-check" data-question="linked_sum" data-lib="from dataclasses import dataclass&#10;&#10;type LinkedList[T] = Link[T] | tuple[()]&#10;&#10;@dataclass&#10;class Link[T]:&#10;    &quot;&quot;&quot;A Link has a first value of type T and the rest of the linked list.&#10;&#10;    The rest is either another Link or the empty tuple.&#10;&#10;    &gt;&gt;&gt; s = Link(3, Link(4, Link(5)))&#10;    &gt;&gt;&gt; s.first&#10;    3&#10;    &gt;&gt;&gt; s.rest.first&#10;    4&#10;    &gt;&gt;&gt; s.rest.rest.first&#10;    5&#10;    &gt;&gt;&gt; s.rest.rest.rest == ()&#10;    True&#10;    &gt;&gt;&gt; s&#10;    Link(first=3, rest=Link(first=4, rest=Link(first=5, rest=())))&#10;    &gt;&gt;&gt; s.rest.rest&#10;    Link(first=5, rest=())&#10;    &gt;&gt;&gt; print(s)&#10;    (3 4 5)&#10;    &quot;&quot;&quot;&#10;    first: T&#10;    rest: LinkedList[T] = ()  # rest defaults to an empty linked list&#10;&#10;    def __str__(self):&#10;        return format_link(self)&#10;&#10;def format_link(s: Link):&#10;    &quot;&quot;&quot;Return a Link s formatted as items within parentheses.&quot;&quot;&quot;&#10;    string = &#x27;(&#x27; + str(s.first)&#10;    remaining = s.rest&#10;    while isinstance(remaining, Link):&#10;        string += &#x27; &#x27; + str(remaining.first)&#10;        remaining = remaining.rest&#10;    assert remaining == (), f&#x27;{s!r} is not a LinkedList&#x27;&#10;    return string + &#x27;)&#x27;" data-visualize="false"></div>
 {% endraw %}
