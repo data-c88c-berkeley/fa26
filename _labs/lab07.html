@@ -1,0 +1,223 @@
+---
+title: "Lab 7: Linked Lists"
+layout: assignment
+nav_exclude: true
+excerpt_separator: ""
+due: "Friday 10/16"
+---
+
+{% raw %}
+<header class="assignment-header"><h1>Lab 7: Linked Lists</h1><ul class="assignment-facts"><li><strong>Due:</strong> Friday 10/16 @ 11:59pm</li><li><strong>Points:</strong> 1</li><li><strong>Download:</strong> <a href="lab07.zip">lab07.zip</a></li></ul></header>
+<h1 id="attendance">Attendance</h1>
+<p>You need to submit the lab problems in addition to attending to get credit for lab. Students in mega lab only need to submit the lab problems. Preceptor interviews are highly recommended but <strong>not required</strong> for lab submissions.</p>
+<p>If you are in regular lab, your TA will come around during lab to check you in. If you didn't attend for a good reason (such as being sick), fill out this form (within 2 weeks of your lab): <a href="https://forms.gle/QsRLAvLnn5xoJgdv9">attendance form</a>.</p>
+<h1 id="required-questions">Required Questions</h1>
+<p>Python 3.12 or newer is required for the remainder of the course. Please upgrade if you're using Python 3.11 (or older). See the <a href="../../labs/lab00/#install-python">Install Python section of Lab 0</a> for instructions.</p>
+<h2 id="review">Review</h2>
+<p>This drop-down provides an overview of working with linked lists.</p>
+<details class="hint"><summary>Linked Lists</summary><div>
+<p>A linked list is a sequence type that is more efficient than a built-in list for
+certain operations, such as inserting a value at the front of a long list.
+Two linked lists that differ only in their <code>first</code> item can share the same <code>rest</code>.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">type</span> <span class="n">LinkedList</span><span class="p">[</span><span class="n">T</span><span class="p">]</span> <span class="o">=</span> <span class="n">Link</span><span class="p">[</span><span class="n">T</span><span class="p">]</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[()]</span>
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Link</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
+    <span class="n">first</span><span class="p">:</span> <span class="n">T</span>
+    <span class="n">rest</span><span class="p">:</span> <span class="n">LinkedList</span><span class="p">[</span><span class="n">T</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>  <span class="c1"># rest defaults to an empty linked list</span>
+</code></pre></div></div>
+<p>A <code>Link</code> is a non-empty <code>LinkedList</code>, and so has a <code>first</code> and <code>rest</code>. The
+<code>rest</code> of a <code>Link</code> should always be a linked list: either another <code>Link</code> or
+<code>()</code>.</p>
+<p>You can make a <code>LinkedList</code> by calling <code>Link</code>.</p>
+<ul>
+<li><code>Link(4)</code> makes a linked list of length 1 containing 4.</li>
+<li><code>Link(4, s)</code> makes a linked list that starts with 4 followed by the elements of
+linked list <code>s</code>.</li>
+</ul>
+<p>Printing a <code>Link</code> shows its elements within parentheses: <code>print(Link(3, Link(4)))</code> displays <code>(3 4)</code>.</p>
+<p>The second element of <code>s</code> is <code>s.rest.first</code> and the third is
+<code>s.rest.rest.first</code>.</p>
+<p>This <a href="https://composingprograms.com/3ed/draw">linked list visualizer</a> is a great way to understand the structure of a
+complex linked list.</p>
+<p>To check whether a linked list <code>s</code> is empty, use <code>isinstance(s, Link)</code>. The VS
+Code type checker infers that <code>s</code> is a <code>Link</code> and therefore has <code>first</code> and
+<code>rest</code> attributes only when <code>isinstance(s, Link)</code> is true:</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">sum_link</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="n">LinkedList</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the sum of the items in linked list s.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">Link</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">first</span> <span class="o">+</span> <span class="n">sum_link</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">rest</span><span class="p">)</span>
+</code></pre></div></div>
+<p>The type <code>LinkedList[int]</code> describes a linked list whose elements are all
+integers. A type variable, such as <code>T</code> in <code>def extend[T](s: LinkedList[T], t: LinkedList[T]) -&gt; LinkedList[T]</code>, represents any type and expresses that the
+inputs and output to this function all contain the same type of items.</p>
+</div></details>
+<h2 id="linked-lists">Linked Lists</h2>
+<h3 id="q1-wwpd-linked-lists">Q1: WWPD: Linked Lists</h3>
+<p>Read over the <code>Link</code> class in <code>link.py</code>. Make sure you understand the
+doctests.</p>
+<p>Predict what Python will display when the following lines are entered into an
+interactive session in which the <code>Link</code> class has already been defined, then
+unlock the test to check your answers. Type <code>ERROR</code> if it errors:</p>
+<div class="pytest-command" data-command="python3 -m pytest -k link_wwpd --unlock"><pre><code>python3 -m pytest -k link_wwpd --unlock</code></pre></div>
+<details class="unlock-examples" open>
+<summary>Unlocking Examples</summary>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; from lab07 import Link
+&gt;&gt;&gt; a = Link(1000)
+&gt;&gt;&gt; a.first
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; a.rest    # the empty linked list is ()
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; print(a)  # printing a linked list shows all its items in parentheses
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; b = Link(1, Link(2, Link(3)))
+&gt;&gt;&gt; print(b)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; b.first
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; b.rest.rest.first
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; b.rest.rest.rest
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; skip = Link(9001, b.rest.rest)
+&gt;&gt;&gt; skip.first
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; skip.rest.first
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; skip.rest.rest
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; b.rest.first
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; print(Link(4, b))
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; c = Link(Link(1), Link(2))
+&gt;&gt;&gt; c.first.first
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; c.first.rest
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; c.rest.first
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; print(c)
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; d = Link(5, Link(6, Link(7)))
+&gt;&gt;&gt; print(d)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; print(d.rest.rest)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; print(Link(8, Link(9, d.rest)))
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; print(Link(10, Link(d.rest.rest, d.rest)))
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; print(Link(5, 6))
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+</details>
+<blockquote>
+<p>If you get stuck, try drawing a linked list on a piece of paper or running
+<code>python3 -i link.py</code> and then evaluating different expressions.</p>
+</blockquote>
+<h3 id="q2-change">Q2: Change</h3>
+<p>Write a function that takes in a linked list <code>s</code> and two values, <code>old</code> and
+<code>new</code>. The function returns a copy of <code>s</code> but with all instances of <code>old</code>
+replaced with <code>new</code>.</p>
+<p>Hint: Use recursion. It's easier in this case!</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">change</span><span class="p">[</span><span class="n">T</span><span class="p">](</span><span class="n">s</span><span class="p">:</span> <span class="n">LinkedList</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="n">old</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span> <span class="n">new</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LinkedList</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a linked list matching s but with all instances of old (if any)</span>
+<span class="sd">    replaced by new.</span>
+
+<span class="sd">    &gt;&gt;&gt; s = Link(1, Link(2, Link(3)))</span>
+<span class="sd">    &gt;&gt;&gt; t = change(s, 3, 1)</span>
+<span class="sd">    &gt;&gt;&gt; print(t)</span>
+<span class="sd">    (1 2 1)</span>
+<span class="sd">    &gt;&gt;&gt; u = change(t, 1, 2)</span>
+<span class="sd">    &gt;&gt;&gt; print(u)</span>
+<span class="sd">    (2 2 2)</span>
+<span class="sd">    &gt;&gt;&gt; v = change(u, 5, 1)</span>
+<span class="sd">    &gt;&gt;&gt; print(v)</span>
+<span class="sd">    (2 2 2)</span>
+<span class="sd">    &gt;&gt;&gt; print(s)   # The original linked list s is unchanged.</span>
+<span class="sd">    (1 2 3)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>  <span class="c1"># replace the code below</span>
+    <span class="k">return</span> <span class="p">()</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k change"><pre><code>python3 -m pytest -k change</code></pre></div>
+<h3 id="q3-without-one">Q3: Without One</h3>
+<p>Implement <code>without</code>, which takes a linked list <code>s</code> and a non-negative integer
+index <code>i</code>. It returns a linked list with all of the elements of <code>s</code> except for the
+one at index <code>i</code>. (Assume <code>s.first</code> is the element at index 0.)</p>
+<p>The original linked list <code>s</code> should not be changed.</p>
+<p>If <code>i</code> is greater than or equal to the length of <code>s</code>, then <code>without</code> should return a linked list with the same contents as <code>s</code>.</p>
+<blockquote>
+<p><strong>Hint:</strong> Use recursion. It's easier in this case!</p>
+</blockquote>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">without</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="n">LinkedList</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LinkedList</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a linked list like s but without the element at index i.</span>
+
+<span class="sd">    &gt;&gt;&gt; s = Link(3, Link(5, Link(7, Link(9))))</span>
+<span class="sd">    &gt;&gt;&gt; print(without(s, 0))</span>
+<span class="sd">    (5 7 9)</span>
+<span class="sd">    &gt;&gt;&gt; print(without(s, 2))</span>
+<span class="sd">    (3 5 9)</span>
+<span class="sd">    &gt;&gt;&gt; print(without(s, 4))  # There is no index 4, so all of s is retained.</span>
+<span class="sd">    (3 5 7 9)</span>
+<span class="sd">    &gt;&gt;&gt; print(s)              # The original linked list s is unchanged.</span>
+<span class="sd">    (3 5 7 9)</span>
+<span class="sd">    &gt;&gt;&gt; without((), 0)</span>
+<span class="sd">    ()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>  <span class="c1"># replace the code below</span>
+    <span class="k">return</span> <span class="p">()</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k without"><pre><code>python3 -m pytest -k without</code></pre></div>
+<h3 id="q4-store-digits">Q4: Store Digits</h3>
+<p>Write a function <code>store_digits</code> that takes in an integer <code>n</code> and returns a linked
+list containing the digits of <code>n</code> in the same order (from left to right).</p>
+<blockquote>
+<p><strong>Important</strong>: Do not use any string manipulation functions, such as <code>str</code> or
+<code>reversed</code>.</p>
+</blockquote>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">store_digits</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LinkedList</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Stores the digits of a positive number n in a linked list.</span>
+
+<span class="sd">    &gt;&gt;&gt; s = store_digits(1)</span>
+<span class="sd">    &gt;&gt;&gt; s</span>
+<span class="sd">    Link(first=1, rest=())</span>
+<span class="sd">    &gt;&gt;&gt; print(store_digits(2345))</span>
+<span class="sd">    (2 3 4 5)</span>
+<span class="sd">    &gt;&gt;&gt; print(store_digits(876))</span>
+<span class="sd">    (8 7 6)</span>
+<span class="sd">    &gt;&gt;&gt; print(store_digits(2450))</span>
+<span class="sd">    (2 4 5 0)</span>
+<span class="sd">    &gt;&gt;&gt; print(store_digits(20105))</span>
+<span class="sd">    (2 0 1 0 5)</span>
+<span class="sd">    &gt;&gt;&gt; # a check that you do not use str or reversed</span>
+<span class="sd">    &gt;&gt;&gt; import inspect, ast</span>
+<span class="sd">    &gt;&gt;&gt; [n.id for n in ast.walk(ast.parse(inspect.getsource(store_digits)))</span>
+<span class="sd">    ...  if isinstance(n, ast.Name) and n.id in (&#39;str&#39;, &#39;reversed&#39;)]</span>
+<span class="sd">    []</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>  <span class="c1"># replace the code below</span>
+    <span class="k">return</span> <span class="p">()</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k store_digits"><pre><code>python3 -m pytest -k store_digits</code></pre></div>
+<h1 id="submit-assignment">Submit Assignment</h1>
+<p>Submit this assignment by running
+<strong>Provenance: Prepare Submission Bundle</strong> from the VS Code command palette and
+uploading the resulting zip <strong>to Gradescope</strong>. The zip already contains the
+files you've edited.
+<a href="../../labs/lab00/#task-c-submit-the-assignment">Lab 00</a> has detailed
+instructions.</p>
+<p>Your responses to WWPD questions are not submitted, and they do not need to
+be. Lab credit is based on the code writing questions.</p>
+{% endraw %}

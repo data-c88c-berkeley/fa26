@@ -21,7 +21,8 @@ labs:
 - slug: lab06
   title: Dictionaries and Strings (due Fri 10/9)
 - skip: true
-- title: Recursive Data (due Fri 10/16)
+- slug: lab07
+  title: Linked Lists (due Fri 10/16)
 - skip: true
 - skip: true
 - skip: true

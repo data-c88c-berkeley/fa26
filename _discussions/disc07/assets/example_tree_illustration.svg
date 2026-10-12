@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 290" role="img"
+     aria-label="Tree t has label 3 and branches [Tree(4), u], where u is the tree labeled 5 with leaves 6 and 7. t.label is 3, t.branches is a list of trees, and t.branches[1] is u.">
+<style>
+  text { font-family: Helvetica, Arial, sans-serif; fill: #000; }
+  .box { fill: #fff; stroke: #000; stroke-width: 2.5; }
+  .edge { stroke: #000; stroke-width: 2; }
+  .n { font-size: 32px; text-anchor: middle; }
+  .lbl { font-size: 30px; font-weight: bold; }
+  .val { font-size: 32px; }
+  .comma { font-size: 110px; font-weight: bold; }
+  .note { font-size: 21px; text-anchor: middle; }
+  .bubble { fill: #fff; stroke: #000; stroke-width: 2; }
+  .bracket { fill: none; stroke: #000; stroke-width: 14; }
+</style>
+<rect width="1920" height="290" fill="#fff"/>
+<text x="20" y="205" class="lbl">t:</text>
+<line x1="215" y1="70.0" x2="125" y2="120.0" class="edge"/>
+<rect x="183.0" y="20.0" width="64" height="50" rx="10" class="box"/><text x="215" y="56" class="n">3</text>
+<rect x="93.0" y="120.0" width="64" height="50" rx="10" class="box"/><text x="125" y="156" class="n">4</text>
+<line x1="215" y1="70.0" x2="305" y2="120.0" class="edge"/>
+<line x1="305" y1="170.0" x2="250" y2="225.0" class="edge"/>
+<line x1="305" y1="170.0" x2="360" y2="225.0" class="edge"/>
+<rect x="273.0" y="120.0" width="64" height="50" rx="10" class="box"/><text x="305" y="156" class="n">5</text>
+<rect x="218.0" y="225.0" width="64" height="50" rx="10" class="box"/><text x="250" y="261" class="n">6</text>
+<rect x="328.0" y="225.0" width="64" height="50" rx="10" class="box"/><text x="360" y="261" class="n">7</text>
+<path class="bubble" d="M430,8 H640 Q650,8 650,18 V98 Q650,108 640,108 H608 L600,150 L586,108 H430 Q420,108 420,98 V18 Q420,8 430,8 Z"/>
+<text x="535.0" y="38" class="note">This is not in a box</text>
+<text x="535.0" y="64" class="note">because it is just a</text>
+<text x="535.0" y="90" class="note">number, not a tree.</text>
+<text x="440" y="205" class="lbl">t.label:</text>
+<text x="578" y="205" class="val">3</text>
+<path class="bubble" d="M670,30 H882 Q892,30 892,40 V94 Q892,104 882,104 H870 L918,118 L848,104 H670 Q660,104 660,94 V40 Q660,30 670,30 Z"/>
+<text x="776.0" y="60" class="note">This is a list of trees.</text>
+<text x="776.0" y="86" class="note">Branches are trees.</text>
+<text x="680" y="205" class="lbl">t.branches:</text>
+<path class="bracket" d="M958,92 H930 V278 H958"/>
+<rect x="968.0" y="160.0" width="64" height="50" rx="10" class="box"/><text x="1000" y="196" class="n">4</text>
+<text x="1052" y="215" class="comma">,</text>
+<line x1="1205" y1="170.0" x2="1150" y2="225.0" class="edge"/>
+<line x1="1205" y1="170.0" x2="1260" y2="225.0" class="edge"/>
+<rect x="1173.0" y="120.0" width="64" height="50" rx="10" class="box"/><text x="1205" y="156" class="n">5</text>
+<rect x="1118.0" y="225.0" width="64" height="50" rx="10" class="box"/><text x="1150" y="261" class="n">6</text>
+<rect x="1228.0" y="225.0" width="64" height="50" rx="10" class="box"/><text x="1260" y="261" class="n">7</text>
+<path class="bracket" d="M1287,92 H1315 V278 H1287"/>
+<path class="bubble" d="M1530,40 H1735 Q1745,40 1745,50 V94 Q1745,104 1735,104 H1723 L1760,125 L1701,104 H1530 Q1520,104 1520,94 V50 Q1520,40 1530,40 Z"/>
+<text x="1632.5" y="70" class="note">This is also a tree.</text>
+<text x="1365" y="175" class="lbl">t.branches[1]:</text>
+<text x="1430" y="240" class="lbl">(also u)</text>
+<line x1="1830" y1="170.0" x2="1775" y2="225.0" class="edge"/>
+<line x1="1830" y1="170.0" x2="1885" y2="225.0" class="edge"/>
+<rect x="1798.0" y="120.0" width="64" height="50" rx="10" class="box"/><text x="1830" y="156" class="n">5</text>
+<rect x="1743.0" y="225.0" width="64" height="50" rx="10" class="box"/><text x="1775" y="261" class="n">6</text>
+<rect x="1853.0" y="225.0" width="64" height="50" rx="10" class="box"/><text x="1885" y="261" class="n">7</text>
+</svg>

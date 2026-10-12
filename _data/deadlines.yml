@@ -81,6 +81,12 @@ deadlines:
   title: Computer Aided Typing Software
   link: /projects/cats/
   note: 1 bonus point for submitting by Mon 10/12
+- when: Fri 10/16
+  day: '2026-10-16'
+  kind: lab
+  label: Lab 7
+  title: Linked Lists
+  link: /labs/lab07/
 - when: Mon 10/19
   day: '2026-10-19'
   kind: hw

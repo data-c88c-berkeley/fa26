@@ -21,7 +21,8 @@ discussions:
 - slug: disc06
   title: Data Classes
 - skip: true
-- title: Recursive Data
+- slug: disc07
+  title: Trees
 - skip: true
 - skip: true
 - skip: true
