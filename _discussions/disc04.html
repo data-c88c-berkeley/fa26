@@ -8,11 +8,11 @@ excerpt_separator: ""
 {% raw %}
 <header class="assignment-header"><h1>Discussion 4: Recursion<a class="print-button" href="print.html" title="Printable version" aria-label="Printable version">🖨️</a></h1></header>
 <p><strong>IMPORTANT!</strong> Add your email address and then press &quot;Join Group&quot; above!</p>
-<h3 id="q1-warm-up">Q1: Warm Up</h3>
+<h2 id="q1-warm-up">Q1: Warm Up</h2>
 <p>What is the value of <code>result</code> after executing
 <code>result = (lambda x: 2 * (lambda x: 3)(4) * x)(5)</code>? Talk about it with your
 whole group and make sure you all agree before anybody checks the answer.</p>
-<h3 id="recursion">Recursion</h3>
+<h2 id="recursion">Recursion</h2>
 <p>Many students find this discussion challenging. Everything gets easier with
 practice. Please help each other learn. It's also long. If you don't finish,
 don't worry.</p>
@@ -20,7 +20,7 @@ don't worry.</p>
 whole group is sure that the answer is right. Figure things out and check your
 work by <em>thinking</em> about what your code will do. Your goal should be to have
 all answers right the first time! If you need help, ask.</p>
-<h4 id="q2-swipe">Q2: Swipe</h4>
+<h3 id="q2-swipe">Q2: Swipe</h3>
 <p>Implement <code>swipe</code>, which prints the digits of argument <code>n</code>, one per line,
 <strong>first backward then forward</strong>. The left-most digit is printed only once. <strong>Do
 not use</strong> <code>while</code> or <code>for</code> or <code>str</code>. (Use recursion, of course!)</p>
@@ -48,7 +48,7 @@ not use</strong> <code>while</code> or <code>for</code> or <code>str</code>. (Us
 <p>First <code>print</code> the first line of the output, then make a recursive call, then
 <code>print</code> the last line of the output.</p>
 </div></details>
-<h4 id="q3-is-prime">Q3: Is Prime</h4>
+<h3 id="q3-is-prime">Q3: Is Prime</h3>
 <p>Implement <code>is_prime</code> that takes an integer <code>n</code> greater than 1. It returns <code>True</code>
 if <code>n</code> is a prime number and <code>False</code> otherwise. Try following the approach
 below, but implement it recursively without using a <code>while</code> (or <code>for</code>)
@@ -85,8 +85,8 @@ evenly divides <code>n</code>. Then you can call it starting with <code>i=2</cod
     return f(2)
 </code></pre></div></div>
 </div></details>
-<h3 id="recommended-but-more-challenging-if-theres-time">Recommended, but more challenging (if there's time)</h3>
-<h4 id="q4-sevens">Q4: Sevens</h4>
+<h2 id="recommended-but-more-challenging-if-theres-time">Recommended, but more challenging (if there's time)</h2>
+<h3 id="q4-sevens">Q4: Sevens</h3>
 <p><strong>The Game of Sevens</strong>: Players in a circle count up from 1 in the clockwise
 direction. (The starting player says 1, the player to their left says 2, etc.) If a
 number is divisible by 7 or contains a 7 (or both), switch directions. Numbers
