@@ -1,0 +1,276 @@
+---
+title: "Homework 5: Recursive Data"
+layout: assignment
+nav_exclude: true
+excerpt_separator: ""
+due: "Monday 10/19"
+---
+
+{% raw %}
+<header class="assignment-header"><h1>Homework 5: Recursive Data</h1><ul class="assignment-facts"><li><strong>Due:</strong> Monday 10/19 @ 11:59pm</li><li><strong>Points:</strong> 1</li><li><strong>Download:</strong> <a href="hw05.zip">hw05.zip</a></li></ul></header>
+<p class="assignment-intro">To receive credit, you must solve each problem and then complete a short checkoff interview about your solution. You may use Preceptor for the interview or come to office hours to be interviewed by a member of the course staff. <strong>Staff will be doing in-person checkoffs for up to 3 business days after the assignment deadline (including any approved extension)</strong>. If a checkoff happens more than 3 business days after the regular deadline, staff may ask to confirm your extended deadline via Flextensions. You will submit a Provenance bundle that includes a record of how you used VS Code, including interactions with Preceptor. Please do not use AI tools other than Preceptor for this assignment.</p>
+<p><strong>Readings:</strong> This homework relies on the following readings from
+<a href="https://composingprograms.com">Composing Programs</a>:</p>
+<ul>
+<li><a href="https://composingprograms.com/3ed/compound-data/">2.3: Compound Data</a></li>
+</ul>
+<h1 id="required-questions">Required Questions</h1>
+<h2 id="data-classes">Data Classes</h2>
+<h3 id="q1-mobiles">Q1: Mobiles</h3>
+<p>This problem is based on one from Structure and Interpretation of Computer
+Programs <a href="https://mitp-content-server.mit.edu/books/content/sectbyfn/books_pres_0/6515/sicp.zip/full-text/book/book-Z-H-15.html#%25_sec_2.2.2">Section 2.2.2</a>.</p>
+<p>We are making a planetarium mobile. A <em>mobile</em> is a type of hanging sculpture. A
+binary mobile consists of two arms. Each arm is a rod of a certain length, from
+which hangs either a planet or another mobile.</p>
+<p>We will represent a binary mobile using the types below.</p>
+<ul>
+<li>A <code>Mobile</code> has both a <code>left</code> arm and a <code>right</code> arm.</li>
+<li>An <code>Arm</code> has a positive <code>length</code> and must have something hanging at its
+<code>end</code>, which is a <code>Structure</code>.</li>
+<li>A <code>Planet</code> has a positive <code>mass</code>, and nothing hanging from it.</li>
+<li>A <code>Structure</code> is either a <code>Mobile</code> or a <code>Planet</code>.</li>
+</ul>
+<p>These types have already been defined for you.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">type</span> <span class="n">Structure</span> <span class="o">=</span> <span class="n">Mobile</span> <span class="o">|</span> <span class="n">Planet</span>
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Mobile</span><span class="p">:</span>
+    <span class="n">left</span><span class="p">:</span> <span class="n">Arm</span>
+    <span class="n">right</span><span class="p">:</span> <span class="n">Arm</span>
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Arm</span><span class="p">:</span>
+    <span class="n">length</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">end</span><span class="p">:</span> <span class="n">Structure</span>
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Planet</span><span class="p">:</span>
+    <span class="n">mass</span><span class="p">:</span> <span class="nb">int</span>
+</code></pre></div></div>
+<h4 id="total-mass">Total Mass</h4>
+<p>Implement <code>total_mass</code>, which returns the total mass of a <code>Structure</code> <code>m</code>. The
+total mass of a <code>Planet</code> is its <code>mass</code>. The total mass of a <code>Mobile</code> is the
+total mass of everything hanging from its two arms (the rods themselves are
+weightless). Use <code>isinstance(m, Planet)</code> to check whether <code>m</code> is a <code>Planet</code>. The
+<code>examples</code> function constructs three <code>Mobile</code> instances that the doctests use.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">examples</span><span class="p">():</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">Mobile</span><span class="p">(</span><span class="n">Arm</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">Planet</span><span class="p">(</span><span class="mi">2</span><span class="p">)),</span>
+               <span class="n">Arm</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">Planet</span><span class="p">(</span><span class="mi">1</span><span class="p">)))</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="n">Mobile</span><span class="p">(</span><span class="n">Arm</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">Planet</span><span class="p">(</span><span class="mi">1</span><span class="p">)),</span>
+               <span class="n">Arm</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">Mobile</span><span class="p">(</span><span class="n">Arm</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">Planet</span><span class="p">(</span><span class="mi">3</span><span class="p">)),</span>
+                             <span class="n">Arm</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">Planet</span><span class="p">(</span><span class="mi">2</span><span class="p">)))))</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">Mobile</span><span class="p">(</span><span class="n">Arm</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">t</span><span class="p">),</span> <span class="n">Arm</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">u</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">t</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">total_mass</span><span class="p">(</span><span class="n">m</span><span class="p">:</span> <span class="n">Structure</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the total mass of m, a Planet or Mobile.</span>
+
+<span class="sd">    &gt;&gt;&gt; total_mass(Planet(5))</span>
+<span class="sd">    5</span>
+<span class="sd">    &gt;&gt;&gt; t, u, v = examples()</span>
+<span class="sd">    &gt;&gt;&gt; total_mass(t)</span>
+<span class="sd">    3</span>
+<span class="sd">    &gt;&gt;&gt; total_mass(u)</span>
+<span class="sd">    6</span>
+<span class="sd">    &gt;&gt;&gt; total_mass(v)</span>
+<span class="sd">    9</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>  <span class="c1"># replace the code below</span>
+    <span class="k">return</span> <span class="mi">0</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k total_mass"><pre><code>python3 -m pytest -k total_mass</code></pre></div>
+<h4 id="balanced">Balanced</h4>
+<p>Implement the <code>balanced</code> function, which returns whether a <code>Structure</code> <code>m</code> is
+<em>balanced</em>. A <code>Mobile</code> is <em>balanced</em> if <strong>both</strong> of the following conditions are
+met:</p>
+<ol>
+<li>The <em>torque</em> applied by its left arm is equal to the <em>torque</em> applied by its
+right arm. The <em>torque</em> of an arm is the length of the rod multiplied by the
+total mass hanging from that rod. For example, if the left arm has a length of
+<code>5</code>, and there is a <code>Mobile</code> hanging at the end of the left arm of total mass
+<code>10</code>, the torque on the left side of our <code>Mobile</code> is <code>50</code>.</li>
+<li>Each <code>Structure</code> hanging at the end of its arms is itself <em>balanced</em>.</li>
+</ol>
+<p>A <code>Planet</code> is always balanced, as there is nothing hanging from it.</p>
+<blockquote>
+<p><strong>Reminder:</strong> You may use the <code>total_mass</code> function above.</p>
+</blockquote>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">balanced</span><span class="p">(</span><span class="n">m</span><span class="p">:</span> <span class="n">Structure</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return whether m is balanced.</span>
+
+<span class="sd">    &gt;&gt;&gt; t, u, v = examples()</span>
+<span class="sd">    &gt;&gt;&gt; balanced(t)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; balanced(v)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; p = Mobile(Arm(3, t), Arm(2, u))</span>
+<span class="sd">    &gt;&gt;&gt; balanced(p)</span>
+<span class="sd">    False</span>
+<span class="sd">    &gt;&gt;&gt; balanced(Mobile(Arm(1, v), Arm(1, p)))</span>
+<span class="sd">    False</span>
+<span class="sd">    &gt;&gt;&gt; balanced(Mobile(Arm(1, p), Arm(1, v)))</span>
+<span class="sd">    False</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>  <span class="c1"># replace the code below</span>
+    <span class="k">return</span> <span class="kc">False</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k balanced"><pre><code>python3 -m pytest -k balanced</code></pre></div>
+<h2 id="linked-lists">Linked Lists</h2>
+<h3 id="q2-interleave">Q2: Interleave</h3>
+<p>Write <code>interleave(s, t)</code>, which takes two linked lists and returns a linked list
+with elements of <code>s</code> and <code>t</code> interleaved. In other words, the resulting list
+should have the first element of <code>s</code>, then the first element of <code>t</code>, then the
+second element of <code>s</code>, then the second element of <code>t</code>, and so on.</p>
+<p>If the two lists are not the same length, then the leftover elements of the
+longer list should appear at the end of the returned list.</p>
+<p>Do not use mutation, e.g. <code>s.rest = ...</code>.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">interleave</span><span class="p">[</span><span class="n">T</span><span class="p">](</span><span class="n">s</span><span class="p">:</span> <span class="n">LinkedList</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="n">t</span><span class="p">:</span> <span class="n">LinkedList</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">LinkedList</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Interleave linked lists s and t to produce a new linked list.</span>
+
+<span class="sd">    &gt;&gt;&gt; evens = Link(2, Link(4, Link(6, Link(8))))</span>
+<span class="sd">    &gt;&gt;&gt; odds = Link(1, Link(3))</span>
+<span class="sd">    &gt;&gt;&gt; print(interleave(odds, evens))</span>
+<span class="sd">    (1 2 3 4 6 8)</span>
+<span class="sd">    &gt;&gt;&gt; print(interleave(evens, odds))</span>
+<span class="sd">    (2 1 4 3 6 8)</span>
+<span class="sd">    &gt;&gt;&gt; print(interleave(odds, odds))</span>
+<span class="sd">    (1 1 3 3)</span>
+<span class="sd">    &gt;&gt;&gt; print(interleave((), odds))</span>
+<span class="sd">    (1 3)</span>
+<span class="sd">    &gt;&gt;&gt; print(Link(evens, Link(odds)))  # should not change</span>
+<span class="sd">    ((2 4 6 8) (1 3))</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>  <span class="c1"># replace the code below</span>
+    <span class="k">return</span> <span class="p">()</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k interleave"><pre><code>python3 -m pytest -k interleave</code></pre></div>
+<h3 id="q3-knapsack">Q3: Knapsack</h3>
+<p>You're a thief choosing among treasures of different weights and worths. You
+have a knapsack that can carry <code>max_weight</code> pounds, and you want to steal the
+subset of the treasures with the largest total worth.</p>
+<p>Each treasure is represented by a <code>Treasure</code> data class with a <code>description</code>, a
+<code>weight</code>, and a <code>worth</code>. Printing a treasure displays just its description. Here
+are some treasures and a <code>total_worth</code> function that sums the worth of the
+treasures in a linked list.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Treasure</span><span class="p">:</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">weight</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">worth</span><span class="p">:</span> <span class="nb">int</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">description</span>
+
+<span class="n">trophy</span> <span class="o">=</span> <span class="n">Treasure</span><span class="p">(</span><span class="s1">&#39;trophy&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">gem</span> <span class="o">=</span> <span class="n">Treasure</span><span class="p">(</span><span class="s1">&#39;gem&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+<span class="n">ring</span> <span class="o">=</span> <span class="n">Treasure</span><span class="p">(</span><span class="s1">&#39;ring&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">crown</span> <span class="o">=</span> <span class="n">Treasure</span><span class="p">(</span><span class="s1">&#39;crown&#39;</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
+<span class="n">vase</span> <span class="o">=</span> <span class="n">Treasure</span><span class="p">(</span><span class="s1">&#39;vase&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">orb</span> <span class="o">=</span> <span class="n">Treasure</span><span class="p">(</span><span class="s1">&#39;orb&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
+<span class="n">gift</span> <span class="o">=</span> <span class="n">Treasure</span><span class="p">(</span><span class="s1">&#39;gift&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">total_worth</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="n">LinkedList</span><span class="p">[</span><span class="n">Treasure</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the total worth of the treasures in linked list s.</span>
+
+<span class="sd">    &gt;&gt;&gt; total_worth(Link(trophy, Link(ring)))</span>
+<span class="sd">    8</span>
+<span class="sd">    &gt;&gt;&gt; total_worth(())</span>
+<span class="sd">    0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">Link</span><span class="p">):</span>
+        <span class="n">total</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="n">total</span> <span class="o">+</span> <span class="n">s</span><span class="o">.</span><span class="n">first</span><span class="o">.</span><span class="n">worth</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">rest</span>
+    <span class="k">return</span> <span class="n">total</span>
+</code></pre></div></div>
+<p>Implement <code>knapsack</code>, which takes a list of <code>treasures</code> and a <code>max_weight</code>. It
+returns a linked list of the treasures to steal, in the same order as they
+appear in <code>treasures</code>. Their total weight may not exceed <code>max_weight</code>, and
+their total worth should be as large as possible.</p>
+<p><em>Hint:</em> Compare the best linked list that includes the first treasure to the
+best one that leaves it behind.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">knapsack</span><span class="p">(</span><span class="n">treasures</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Treasure</span><span class="p">],</span> <span class="n">max_weight</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LinkedList</span><span class="p">[</span><span class="n">Treasure</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a linked list of treasures with the largest total worth that do not</span>
+<span class="sd">    exceed max_weight, in the same order as they appear in treasures.</span>
+
+<span class="sd">    &gt;&gt;&gt; print(knapsack([trophy, gem, ring], 6))</span>
+<span class="sd">    (trophy gem)</span>
+<span class="sd">    &gt;&gt;&gt; print(knapsack([trophy, gem, ring], 7))</span>
+<span class="sd">    (trophy gem ring)</span>
+<span class="sd">    &gt;&gt;&gt; print(knapsack([trophy, gem, ring, crown, vase], 8))</span>
+<span class="sd">    (trophy crown)</span>
+<span class="sd">    &gt;&gt;&gt; print(knapsack([crown, orb, trophy, vase], 10))</span>
+<span class="sd">    (orb trophy vase)</span>
+<span class="sd">    &gt;&gt;&gt; print(knapsack([gem, orb, ring, gift], 6))</span>
+<span class="sd">    (orb ring)</span>
+<span class="sd">    &gt;&gt;&gt; knapsack([crown], 3)</span>
+<span class="sd">    ()</span>
+<span class="sd">    &gt;&gt;&gt; knapsack([], 3)</span>
+<span class="sd">    ()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>  <span class="c1"># replace the code below</span>
+    <span class="k">return</span> <span class="p">()</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k knapsack"><pre><code>python3 -m pytest -k knapsack</code></pre></div>
+<h2 id="trees">Trees</h2>
+<h3 id="q4-finding-berries">Q4: Finding Berries!</h3>
+<p>The squirrels on campus need your help! There are a lot of trees on campus and
+the squirrels would like to know which ones contain berries. Define the function
+<code>berry_finder</code>, which takes in a tree and returns <code>True</code> if the tree contains a
+node labeled <code>'berry'</code> and <code>False</code> otherwise.</p>
+<blockquote>
+<p><strong>Hint</strong>:
+To iterate through each of the branches of a particular tree,
+you can consider using a <code>for</code> loop to get each branch.</p>
+</blockquote>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">berry_finder</span><span class="p">(</span><span class="n">t</span><span class="p">:</span> <span class="n">Tree</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return True if t contains the label &#39;berry&#39; and False otherwise.</span>
+
+<span class="sd">    &gt;&gt;&gt; scrat = Tree(&#39;berry&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; berry_finder(scrat)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; sproul = Tree(&#39;roots&#39;, [Tree(&#39;branch1&#39;, [Tree(&#39;leaf&#39;), Tree(&#39;berry&#39;)]), Tree(&#39;branch2&#39;)])</span>
+<span class="sd">    &gt;&gt;&gt; berry_finder(sproul)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; numbers = Tree(1, [Tree(2), Tree(3, [Tree(4), Tree(5)]), Tree(6, [Tree(7)])])</span>
+<span class="sd">    &gt;&gt;&gt; berry_finder(numbers)</span>
+<span class="sd">    False</span>
+<span class="sd">    &gt;&gt;&gt; t = Tree(1, [Tree(&#39;berry&#39;, [Tree(&#39;not berry&#39;)])])</span>
+<span class="sd">    &gt;&gt;&gt; berry_finder(t)</span>
+<span class="sd">    True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>  <span class="c1"># replace the code below</span>
+    <span class="k">return</span> <span class="kc">False</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k berry_finder"><pre><code>python3 -m pytest -k berry_finder</code></pre></div>
+<h3 id="q5-maximum-path-sum">Q5: Maximum Path Sum</h3>
+<p>Write a function that takes in a tree of numbers and returns the maximum sum of
+the labels along any <em>path from the root</em> of the tree. A <em>path from the root</em> is
+a sequence of nodes that starts at the root and moves from each node to one of
+its branches. The path can end at any node, not just a leaf, and it may include
+only the root.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">max_path_sum</span><span class="p">(</span><span class="n">t</span><span class="p">:</span> <span class="n">Tree</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the maximum sum of labels along any path that starts at the root.</span>
+
+<span class="sd">    &gt;&gt;&gt; t = Tree(1, [Tree(5, [Tree(-1), Tree(-3)]), Tree(4)])</span>
+<span class="sd">    &gt;&gt;&gt; max_path_sum(t) # 1, 5</span>
+<span class="sd">    6</span>
+<span class="sd">    &gt;&gt;&gt; u = Tree(5, [Tree(4, [Tree(1), Tree(3)]), Tree(-2, [Tree(10), Tree(-3)])])</span>
+<span class="sd">    &gt;&gt;&gt; max_path_sum(u) # 5, -2, 10</span>
+<span class="sd">    13</span>
+<span class="sd">    &gt;&gt;&gt; v = Tree(-3, [Tree(-1), Tree(-2, [Tree(8)])])</span>
+<span class="sd">    &gt;&gt;&gt; max_path_sum(v) # -3, -2, 8</span>
+<span class="sd">    3</span>
+<span class="sd">    &gt;&gt;&gt; w = Tree(-3, [Tree(-1), Tree(-2)])</span>
+<span class="sd">    &gt;&gt;&gt; max_path_sum(w) # -3</span>
+<span class="sd">    -3</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>  <span class="c1"># replace the code below</span>
+    <span class="k">return</span> <span class="mi">0</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k max_path_sum"><pre><code>python3 -m pytest -k max_path_sum</code></pre></div>
+<h2 id="submit">Submit</h2>
+<p>Run <strong>Provenance: Prepare Submission Bundle</strong> from
+the VS Code command palette to create your submission zip, and upload that zip
+<strong>to Gradescope</strong>. For a refresher on how to do this, refer to
+<a href="../../labs/lab00/#task-c-submit-the-assignment">Lab 00</a>.</p>
+{% endraw %}
