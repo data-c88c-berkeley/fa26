@@ -87,8 +87,8 @@ deadlines:
   label: Lab 7
   title: Linked Lists
   link: /labs/lab07/
-- when: Mon 10/19
-  day: '2026-10-19'
+- when: Mon 10/26
+  day: '2026-10-26'
   kind: hw
   label: Homework 5
   title: Recursive Data
