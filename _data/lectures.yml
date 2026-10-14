@@ -141,6 +141,9 @@ lectures:
       - title: "YouTube"
         link: https://www.youtube.com/watch?v=Bqpe1iyq5vE&list=PLH902kY1ixw8
   - title: "Iterators"          # Wed 11/04
+    readings:
+      - title: "2.8"
+        link: https://composingprograms.com/3ed/lazy-evaluation/
     videos:
       - title: "YouTube"
         link: https://www.youtube.com/watch?v=On-kFyFp8HY&list=PL6BsET-8jgYW7stiut93PHxGP6_QgBzVQ
