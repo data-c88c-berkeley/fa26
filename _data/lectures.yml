@@ -142,10 +142,8 @@ lectures:
         link: https://www.youtube.com/watch?v=Bqpe1iyq5vE&list=PLH902kY1ixw8
   - title: "Iterators"          # Wed 11/04
     videos:
-      - title: "Iterators"
+      - title: "YouTube"
         link: https://www.youtube.com/watch?v=On-kFyFp8HY&list=PL6BsET-8jgYW7stiut93PHxGP6_QgBzVQ
-      - title: "Generators"
-        link: https://www.youtube.com/watch?v=DyXPnQuaa0w&list=PL6BsET-8jgYXnY-7vDJXIv2N5xW98rJTZ
   # Week 12
   - title: "Midterm 2 Review"   # Mon 11/09
   - title: "Holiday"            # Wed 11/11 (Veterans Day)
