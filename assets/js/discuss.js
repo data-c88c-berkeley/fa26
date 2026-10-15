@@ -472,13 +472,13 @@
     return run;
   }
 
-  // The code from the questions this one may call, as JSON for the harness
-  // to run before the student's own: first the earlier editors of a code
-  // file split among several questions (data-file, e.g. the Interval class
-  // before add_interval), then the questions named in data-uses. A member's
-  // pane shows their code rather than yours, so fall back to your own saved
-  // answer there.
-  function usedCode(q) {
+  // The code from the questions this one may call, to run before the
+  // student's own (Verify's harness and the Visualize link both do): first
+  // the earlier editors of a code file split among several questions
+  // (data-file, e.g. the Interval class before add_interval), then the
+  // questions named in data-uses. A member's pane shows their code rather
+  // than yours, so fall back to your own saved answer there.
+  function usedSources(q) {
     var code = [];
     var names = [];
     var file = q.wrapper && q.wrapper.dataset.file;
@@ -498,7 +498,11 @@
         : (api(dep) ? api(dep).getText() : '');
       if (text) code.push(clampCode(text));
     });
-    return JSON.stringify(code);
+    return code;
+  }
+
+  function usedCode(q) {
+    return JSON.stringify(usedSources(q));
   }
 
   function runCheck(qid) {
@@ -640,6 +644,9 @@
     var q = questions[qid];
     var parts = [];
     if (q.lib) parts.push(q.lib);     // Link, the tree ADT: as Verify does
+    // The code this one builds on, also as Verify does: otherwise the
+    // diagram stops at a NameError.
+    parts = parts.concat(usedSources(q));
     parts.push(api(q).getText());
     var calls = doctestCalls(api(q).original);
     if (calls) parts.push('# doctests\n' + calls);
