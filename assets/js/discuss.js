@@ -171,6 +171,20 @@
 
   function api(q) { return q.wrapper && q.wrapper.cmEditor; }
 
+  // The imports an editor hides because they only serve annotations
+  // (render.hide_annotation_imports): `from collections.abc import Iterator`
+  // must still run before the code, or its first def raises NameError.
+  function prelude(q) {
+    return (q.wrapper && q.wrapper.dataset.prelude) || '';
+  }
+
+  // What runs before an editor's code: the shared lib (data-lib), then the
+  // hidden imports. In that order because a lib may open with a __future__
+  // import, which must come first.
+  function libCode(q) {
+    return [q.lib, prelude(q)].filter(Boolean).join('\n\n');
+  }
+
   function showingMember(q) { return !!(q.pane && q.pane.showing); }
 
   function questionFor(wrapper) {
@@ -496,7 +510,8 @@
       var text = showingMember(dep)
         ? (answers[name] || {}).code || ''
         : (api(dep) ? api(dep).getText() : '');
-      if (text) code.push(clampCode(text));
+      if (text) code.push(clampCode(
+        prelude(dep) ? prelude(dep) + '\n\n' + text : text));
     });
     return code;
   }
@@ -513,7 +528,7 @@
     q.running = true;
     button.disabled = true;
     button.textContent = workerReady ? 'Checking…' : 'Loading Python…';
-    runInWorker(api(q).original, api(q).getText(), q.lib, usedCode(q)).then(function (result) {
+    runInWorker(api(q).original, api(q).getText(), libCode(q), usedCode(q)).then(function (result) {
       var status = result.ok ? 'green' : 'red';
       var marks = history(answers[qid]) + (result.ok ? PASS : FAIL);
       if (marks.length > MAX_HISTORY) { // invisible middle marks give way
@@ -643,7 +658,8 @@
   function tutorCode(qid) {
     var q = questions[qid];
     var parts = [];
-    if (q.lib) parts.push(q.lib);     // Link, the tree ADT: as Verify does
+    var lib = libCode(q);             // Link, the tree ADT: as Verify does
+    if (lib) parts.push(lib);
     // The code this one builds on, also as Verify does: otherwise the
     // diagram stops at a NameError.
     parts = parts.concat(usedSources(q));
