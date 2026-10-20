@@ -87,6 +87,12 @@ deadlines:
   label: Lab 7
   title: Linked Lists
   link: /labs/lab07/
+- when: Fri 10/23
+  day: '2026-10-23'
+  kind: lab
+  label: Lab 8
+  title: Mid-Semester Survey
+  link: /labs/lab08/
 - when: Mon 10/26
   day: '2026-10-26'
   kind: hw

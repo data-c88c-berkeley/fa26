@@ -24,7 +24,8 @@ labs:
 - slug: lab07
   title: Linked Lists (due Fri 10/16)
 - skip: true
-- skip: true
+- slug: lab08
+  title: Mid-Semester Survey (due Fri 10/23)
 - skip: true
 - title: Mutation (due Fri 10/30)
 - skip: true
