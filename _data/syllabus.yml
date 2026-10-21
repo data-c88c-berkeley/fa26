@@ -13,6 +13,9 @@ extra_days_col2:
   - date: 2026-10-19
     label: exam
     title: "Midterm 1 (in the CBTF)"
+  - date: 2026-11-02
+    label: exam
+    title: "Midterm 1 Retake (in the CBTF, Mon 11/2 - Thu 11/5)"
   - date: 2026-11-12
     label: exam
     title: "Midterm 2 (8pm-10pm)"

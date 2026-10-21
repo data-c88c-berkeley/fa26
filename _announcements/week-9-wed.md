@@ -8,6 +8,7 @@ date: 2026-10-21
     - Two [Practice Midterms](https://us.prairielearn.com/pl/course_instance/230628) are available on PrairieLearn
     - Covers course content through Lecture 12: Linked Lists on Wednesday 10/7
     - Questions may involve implementing functions and predicting output (What Would Python Display?)
+    - Retake will be 11/2 - 11/5. Signups open Monday 10/26 @ 8am.
 - Homework 5 is due Monday 10/26 @ 11:59pm.
     - Quiz 5 will be on the Count Berries problem, and is available as a
       [Practice Quiz](https://us.prairielearn.com/pl/course_instance/230628/assessment/2739007) on PrairieLearn.
