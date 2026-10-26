@@ -1,0 +1,121 @@
+---
+title: "Homework 6: List Mutation"
+layout: assignment
+nav_exclude: true
+excerpt_separator: ""
+due: "Monday 11/02"
+---
+
+{% raw %}
+<header class="assignment-header"><h1>Homework 6: List Mutation</h1><ul class="assignment-facts"><li><strong>Due:</strong> Monday 11/02 @ 11:59pm</li><li><strong>Points:</strong> 1</li><li><strong>Download:</strong> <a href="hw06.zip">hw06.zip</a></li></ul></header>
+<p class="assignment-intro">To receive credit, you must solve each problem and then complete a short checkoff interview about your solution. You may use Preceptor for the interview or come to office hours to be interviewed by a member of the course staff. If the interviews are not working, please still submit your working code on time or request an extension by the deadline. <strong>Staff will be doing in-person checkoffs for up to 3 business days after the assignment deadline (including any approved extension)</strong>. If a checkoff happens more than 3 business days after the regular deadline, staff may ask to confirm your extended deadline via Flextensions. You will submit a Provenance bundle that includes a record of how you used VS Code, including interactions with Preceptor. Please do not use AI tools other than Preceptor for this assignment.</p>
+<p><strong>Readings:</strong> This homework relies on the following readings from
+<a href="https://composingprograms.com">Composing Programs</a>:</p>
+<ul>
+<li><a href="https://composingprograms.com/3ed/mutable-data/">2.4: Mutable Data</a></li>
+</ul>
+<h1 id="required-questions">Required Questions</h1>
+<h2 id="q1-deep-map">Q1: Deep Map</h2>
+<p><strong>Definition:</strong> A <em>nested list of numbers</em> is a list that contains numbers and
+lists. It may contain only numbers, only lists, or a mixture of both. The lists
+must also be <em>nested lists of numbers</em>. For example: <code>[1, [2, [3]], 4]</code>,
+<code>[1, 2, 3]</code>, and <code>[[1, 2], [], [3, 4]]</code> are all <em>nested lists of numbers</em>.</p>
+<p>Write a function <code>deep_map</code> that takes two arguments: a one-argument function <code>f</code> and a nested list of numbers <code>s</code>. It modifies <code>s</code> <strong>in place</strong> by replacing
+each number in <code>s</code> with the result of calling <code>f</code> on that number.</p>
+<p><strong>Important:</strong> <code>deep_map</code> returns <code>None</code> and should not create any new lists.</p>
+<blockquote>
+<p><strong>Hint:</strong> <code>type(a) == list</code> and <code>isinstance(a, list)</code> will evaluate to <code>True</code> if <code>a</code> is a list.</p>
+</blockquote>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">deep_map</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Replace all non-list elements x with f(x) in the nested list s.</span>
+
+<span class="sd">    &gt;&gt;&gt; six = [1, 2, [3, [4], 5], 6]</span>
+<span class="sd">    &gt;&gt;&gt; deep_map(lambda x: x * x, six)</span>
+<span class="sd">    &gt;&gt;&gt; six</span>
+<span class="sd">    [1, 4, [9, [16], 25], 36]</span>
+<span class="sd">    &gt;&gt;&gt; # Check that you&#39;re not making new lists</span>
+<span class="sd">    &gt;&gt;&gt; s = [3, [1, [4, [1]]]]</span>
+<span class="sd">    &gt;&gt;&gt; s1 = s[1]</span>
+<span class="sd">    &gt;&gt;&gt; s2 = s1[1]</span>
+<span class="sd">    &gt;&gt;&gt; s3 = s2[1]</span>
+<span class="sd">    &gt;&gt;&gt; deep_map(lambda x: x + 1, s)</span>
+<span class="sd">    &gt;&gt;&gt; s</span>
+<span class="sd">    [4, [2, [5, [2]]]]</span>
+<span class="sd">    &gt;&gt;&gt; s1 is s[1]</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; s2 is s1[1]</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; s3 is s2[1]</span>
+<span class="sd">    True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k deep_map"><pre><code>python3 -m pytest -k deep_map</code></pre></div>
+<h2 id="q2-all-odd-sums">Q2: All Odd Sums</h2>
+<p>Implement <code>all_odd_sums</code>, which takes a linked list of integers <code>s</code>. It returns
+a list of all the different <strong>odd</strong> sums that can be formed by adding together
+some of the items in <code>s</code>. The returned list should have no repeats and be sorted
+in ascending order.</p>
+<p>The built-in <code>sorted</code> function takes a list and returns a list of the same items
+sorted in ascending order.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lib.link</span><span class="w"> </span><span class="kn">import</span> <span class="n">Link</span><span class="p">,</span> <span class="n">LinkedList</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">all_odd_sums</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="n">LinkedList</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return all odd sums of some of the items in s, in ascending order.</span>
+
+<span class="sd">    &gt;&gt;&gt; all_odd_sums(Link(1, Link(5, Link(3))))  # sums are 0, 1, 3, 4, 5, 6, 8, 9</span>
+<span class="sd">    [1, 3, 5, 9]</span>
+<span class="sd">    &gt;&gt;&gt; all_odd_sums(Link(3, Link(5, Link(4))))  # sums are 0, 3, 4, 5, 7, 8, 9, 12</span>
+<span class="sd">    [3, 5, 7, 9]</span>
+<span class="sd">    &gt;&gt;&gt; all_odd_sums(Link(2, Link(1, Link(3))))  # 3 appears only once</span>
+<span class="sd">    [1, 3, 5]</span>
+<span class="sd">    &gt;&gt;&gt; all_odd_sums(Link(2, Link(4)))</span>
+<span class="sd">    []</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sums</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">f</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="n">LinkedList</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">total</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Append to sums each unique odd total + (a sum of some items in s).&quot;&quot;&quot;</span>
+        <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+    <span class="n">f</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">sums</span><span class="p">)</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k all_odd_sums"><pre><code>python3 -m pytest -k all_odd_sums</code></pre></div>
+<h2 id="q3-adder">Q3: Adder</h2>
+<p>Implement <code>adder</code>, which takes two lists <code>x</code> and <code>y</code> that contain the digits of
+positive numbers. It mutates <code>x</code> to contain the digits of the sum of the numbers represented by <code>x</code> and <code>y</code>, then returns <code>x</code>. It does not change <code>y</code>.</p>
+<details class="hint"><summary>Hint</summary><div>
+<p>First insert 0s at the front of <code>x</code> until it is at least as long as <code>y</code>. Then,
+add digits from right to left, <a href="https://en.wikipedia.org/wiki/Carry_(arithmetic)">carrying a 1</a> as needed.</p>
+</div></details>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">adder</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">y</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Add y into x, where x and y are lists of digits representing positive numbers.</span>
+
+<span class="sd">    &gt;&gt;&gt; a = [3, 4, 5]</span>
+<span class="sd">    &gt;&gt;&gt; adder(a, [5, 5])           #  345 +    55 =   400</span>
+<span class="sd">    [4, 0, 0]</span>
+<span class="sd">    &gt;&gt;&gt; adder(a, [8, 3, 4])        #  400 +   834 =  1234</span>
+<span class="sd">    [1, 2, 3, 4]</span>
+<span class="sd">    &gt;&gt;&gt; adder(a, [3, 3, 3, 3, 3])  # 1234 + 33333 = 34567</span>
+<span class="sd">    [3, 4, 5, 6, 7]</span>
+<span class="sd">    &gt;&gt;&gt; a</span>
+<span class="sd">    [3, 4, 5, 6, 7]</span>
+<span class="sd">    &gt;&gt;&gt; b = [9, 9, 9, 4, 5]</span>
+<span class="sd">    &gt;&gt;&gt; adder(b, [5, 5])           # 99945 +    55 = 100000</span>
+<span class="sd">    [1, 0, 0, 0, 0, 0]</span>
+<span class="sd">    &gt;&gt;&gt; adder([5, 5], b)           #    55 + 100000 = 100055</span>
+<span class="sd">    [1, 0, 0, 0, 5, 5]</span>
+<span class="sd">    &gt;&gt;&gt; b                          # y is not changed</span>
+<span class="sd">    [1, 0, 0, 0, 0, 0]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="nb">max</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">9</span> <span class="ow">and</span> <span class="nb">min</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;x and y should contain only digits&#39;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+    <span class="k">return</span> <span class="n">x</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k adder"><pre><code>python3 -m pytest -k adder</code></pre></div>
+<h2 id="submit">Submit</h2>
+<p>Run <strong>Provenance: Prepare Submission Bundle</strong> from
+the VS Code command palette to create your submission zip, and upload that zip
+<strong>to Gradescope</strong>. For a refresher on how to do this, refer to
+<a href="../../labs/lab00/#task-c-submit-the-assignment">Lab 00</a>.</p>
+{% endraw %}
