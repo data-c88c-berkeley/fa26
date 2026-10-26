@@ -99,3 +99,9 @@ deadlines:
   label: Homework 5
   title: Recursive Data
   link: /hw/hw05/
+- when: Fri 10/30
+  day: '2026-10-30'
+  kind: lab
+  label: Lab 9
+  title: Mutation
+  link: /labs/lab09/

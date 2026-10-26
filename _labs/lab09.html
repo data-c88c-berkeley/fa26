@@ -1,0 +1,188 @@
+---
+title: "Lab 9: Mutation"
+layout: assignment
+nav_exclude: true
+excerpt_separator: ""
+due: "Friday 10/30"
+---
+
+{% raw %}
+<header class="assignment-header"><h1>Lab 9: Mutation</h1><ul class="assignment-facts"><li><strong>Due:</strong> Friday 10/30 @ 11:59pm</li><li><strong>Points:</strong> 1</li><li><strong>Download:</strong> <a href="lab09.zip">lab09.zip</a></li></ul></header>
+<h1 id="attendance">Attendance</h1>
+<p>You need to submit the lab problems in addition to attending to get credit for lab. Students in mega lab only need to submit the lab problems. Preceptor interviews are highly recommended but <strong>not required</strong> for lab submissions.</p>
+<p>If you are in regular lab, your TA will come around during lab to check you in. If you didn't attend for a good reason (such as being sick), fill out this form (within 2 weeks of your lab): <a href="https://forms.gle/QsRLAvLnn5xoJgdv9">attendance form</a>.</p>
+<h1 id="required-questions">Required Questions</h1>
+<h2 id="mutability">Mutability</h2>
+<p>Consult the drop-down if you need a refresher on mutability. It's okay to skip
+directly to the questions and refer back here should you get stuck.</p>
+<details class="hint"><summary>Mutability</summary><div>
+<p>Some objects in Python, such as lists and dictionaries, are <strong>mutable</strong>,
+meaning that their contents or state can be changed. Other objects, such as
+numeric types, tuples, and strings, are <strong>immutable</strong>, meaning they cannot be
+changed once they are created.</p>
+<p>The two most common mutation operations for lists are item assignment and the
+<code>append</code> method.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; s = [1, 3, 4]
+&gt;&gt;&gt; t = s  # A second name for the same list
+&gt;&gt;&gt; t[0] = 2  # this changes the first element of the list to 2, affecting both s and t
+&gt;&gt;&gt; s
+[2, 3, 4]
+&gt;&gt;&gt; s.append(5)  # this adds 5 to the end of the list, affecting both s and t
+&gt;&gt;&gt; t
+[2, 3, 4, 5]
+</code></pre></div></div>
+<p>There are many other list mutation methods:</p>
+<ul>
+<li><code>append(elem)</code>:
+Add <code>elem</code> to the end of the list. Return <code>None</code>.</li>
+<li><code>extend(s)</code>:
+Add all elements of iterable <code>s</code> to the end of the list. Return <code>None</code>.</li>
+<li><code>insert(i, elem)</code>:
+Insert <code>elem</code> at index <code>i</code>. If <code>i</code> is greater than or equal to the length
+of the list, then <code>elem</code> is inserted at the end. This does not replace any
+existing elements, but only adds the new element <code>elem</code>. Return <code>None</code>.</li>
+<li><code>remove(elem)</code>:
+Remove the first occurrence of <code>elem</code> in list. Return <code>None</code>.
+Errors if <code>elem</code> is not in the list.</li>
+<li><code>pop(i)</code>:
+Remove and return the element at index <code>i</code>.</li>
+<li><code>pop()</code>:
+Remove and return the last element.</li>
+</ul>
+<p>Dictionaries also have item assignment (often used) and <code>pop</code> (rarely used).</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; d = {2: 3, 4: 16}
+&gt;&gt;&gt; d[2] = 4
+&gt;&gt;&gt; d[3] = 9
+&gt;&gt;&gt; d
+{2: 4, 4: 16, 3: 9}
+&gt;&gt;&gt; d.pop(4)
+16
+&gt;&gt;&gt; d
+{2: 4, 3: 9}
+</code></pre></div></div>
+</div></details>
+<h3 id="q1-wwpd-list-mutation">Q1: WWPD: List Mutation</h3>
+<p>Predict what Python will display when the following lines are entered into an
+interactive session, then unlock the test to check your answers. Type <code>FUNCTION</code>
+if you believe the answer is a function, <code>ERROR</code> if it errors, and <code>NOTHING</code> if
+nothing is displayed:</p>
+<div class="pytest-command" data-command="python3 -m pytest -k list_mutation_wwpd --unlock"><pre><code>python3 -m pytest -k list_mutation_wwpd --unlock</code></pre></div>
+<details class="unlock-examples" open>
+<summary>Unlocking Examples</summary>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; s = [6, 7, 8]
+&gt;&gt;&gt; s.append(6)
+&gt;&gt;&gt; s
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; s.insert(0, 9)
+&gt;&gt;&gt; s
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; x = s.pop(1)
+&gt;&gt;&gt; s
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; s.remove(x)
+&gt;&gt;&gt; s
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; a, b = s, s[:]
+&gt;&gt;&gt; a is s
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; b == s
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; b is s
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; a.pop()
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; a + b
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; s = [3]
+&gt;&gt;&gt; s.extend([4, 5])
+&gt;&gt;&gt; s
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; a
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; s.extend([s.append(9), s.append(10)])
+&gt;&gt;&gt; s
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+</details>
+<h3 id="q2-insert-items">Q2: Insert Items</h3>
+<p>Write a function that takes in a list <code>s</code>, a value <code>before</code>, and a value
+<code>after</code>. It modifies <code>s</code> in place by inserting <code>after</code> just after each value
+equal to <code>before</code> in <code>s</code>. It returns <code>s</code>.</p>
+<p><strong>Important:</strong> No new lists should be created.</p>
+<blockquote>
+<p><strong>Note:</strong> If the values passed into <code>before</code> and <code>after</code> are equal, make
+sure you're not creating an infinitely long list while iterating through it.
+If you find that your code is taking more than a few seconds to run, the
+function may be in an infinite loop of inserting new values.</p>
+</blockquote>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">insert_items</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">before</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">after</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Insert after into s following each occurrence of before and then return s.</span>
+
+<span class="sd">    &gt;&gt;&gt; test_s = [1, 5, 8, 5, 2, 3]</span>
+<span class="sd">    &gt;&gt;&gt; new_s = insert_items(test_s, 5, 7)</span>
+<span class="sd">    &gt;&gt;&gt; new_s</span>
+<span class="sd">    [1, 5, 7, 8, 5, 7, 2, 3]</span>
+<span class="sd">    &gt;&gt;&gt; test_s</span>
+<span class="sd">    [1, 5, 7, 8, 5, 7, 2, 3]</span>
+<span class="sd">    &gt;&gt;&gt; new_s is test_s</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; double_s = [1, 2, 1, 2, 3, 3]</span>
+<span class="sd">    &gt;&gt;&gt; double_s = insert_items(double_s, 3, 4)</span>
+<span class="sd">    &gt;&gt;&gt; double_s</span>
+<span class="sd">    [1, 2, 1, 2, 3, 4, 3, 4]</span>
+<span class="sd">    &gt;&gt;&gt; large_s = [1, 4, 8]</span>
+<span class="sd">    &gt;&gt;&gt; large_s2 = insert_items(large_s, 4, 4)</span>
+<span class="sd">    &gt;&gt;&gt; large_s2</span>
+<span class="sd">    [1, 4, 4, 8]</span>
+<span class="sd">    &gt;&gt;&gt; large_s3 = insert_items(large_s2, 4, 6)</span>
+<span class="sd">    &gt;&gt;&gt; large_s3</span>
+<span class="sd">    [1, 4, 6, 4, 6, 8]</span>
+<span class="sd">    &gt;&gt;&gt; large_s3 is large_s</span>
+<span class="sd">    True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k insert_items"><pre><code>python3 -m pytest -k insert_items</code></pre></div>
+<h3 id="q3-group-by">Q3: Group By</h3>
+<p>Write a function that takes in a list <code>s</code> and a function <code>fn</code>, and returns a
+dictionary that groups the elements of <code>s</code> based on the result of applying
+<code>fn</code>.</p>
+<ul>
+<li>The dictionary should have one key for each unique result of applying <code>fn</code>
+to elements of <code>s</code>.</li>
+<li>The value for each key should be a list of all elements in <code>s</code> that, when
+passed to <code>fn</code>, produce that key (what it evaluates to).</li>
+</ul>
+<p>In other words, for each element <code>e</code> in <code>s</code>, determine <code>fn(e)</code> and add <code>e</code> to
+the list corresponding to <code>fn(e)</code> in the dictionary.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">group_by</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">fn</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a dictionary of lists that together contain the elements of s.</span>
+<span class="sd">    The key for each list is the value that fn returns when called on any of the</span>
+<span class="sd">    values of that list.</span>
+
+<span class="sd">    &gt;&gt;&gt; group_by([12, 23, 14, 45], lambda p: p // 10)</span>
+<span class="sd">    {1: [12, 14], 2: [23], 4: [45]}</span>
+<span class="sd">    &gt;&gt;&gt; group_by(range(-3, 4), lambda x: x * x)</span>
+<span class="sd">    {9: [-3, 3], 4: [-2, 2], 1: [-1, 1], 0: [0]}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">grouped</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">____</span> <span class="ow">in</span> <span class="n">____</span><span class="p">:</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">____</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">grouped</span><span class="p">:</span>
+            <span class="n">____</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">grouped</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">____</span>
+    <span class="k">return</span> <span class="n">grouped</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k group_by"><pre><code>python3 -m pytest -k group_by</code></pre></div>
+<h1 id="submit-assignment">Submit Assignment</h1>
+<p>Submit this assignment by running
+<strong>Provenance: Prepare Submission Bundle</strong> from the VS Code command palette and
+uploading the resulting zip <strong>to Gradescope</strong>. The zip already contains the
+files you've edited.
+<a href="../../labs/lab00/#task-c-submit-the-assignment">Lab 00</a> has detailed
+instructions.</p>
+<p>Your responses to WWPD questions are not submitted, and they do not need to
+be. Lab credit is based on the code writing questions.</p>
+{% endraw %}
