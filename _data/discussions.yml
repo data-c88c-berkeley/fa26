@@ -35,8 +35,8 @@ discussions:
 - skip: true
 - skip: true
 - skip: true
+- title: Iterators
+- skip: true
+- skip: true
+- skip: true
 - title: SQL
-- skip: true
-- skip: true
-- skip: true
-- title: SQL, continued
