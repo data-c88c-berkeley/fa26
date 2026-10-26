@@ -26,7 +26,8 @@ homework:
 - slug: hw06
   title: List Mutation (due Mon 11/2)
 - skip: true
-- title: Classes (due Mon 11/9)
+- slug: hw07
+  title: Classes (due Mon 11/9)
 - skip: true
 - skip: true
 - skip: true

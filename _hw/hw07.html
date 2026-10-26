@@ -1,0 +1,189 @@
+---
+title: "Homework 7: Classes"
+layout: assignment
+nav_exclude: true
+excerpt_separator: ""
+due: "Monday 11/09"
+---
+
+{% raw %}
+<header class="assignment-header"><h1>Homework 7: Classes</h1><ul class="assignment-facts"><li><strong>Due:</strong> Monday 11/09 @ 11:59pm</li><li><strong>Points:</strong> 1</li><li><strong>Download:</strong> <a href="hw07.zip">hw07.zip</a></li></ul></header>
+<p class="assignment-intro">To receive credit, you must solve each problem and then complete a short checkoff interview about your solution. You may use Preceptor for the interview or come to office hours to be interviewed by a member of the course staff. If the interviews are not working, please still submit your working code on time or request an extension by the deadline. <strong>Staff will be doing in-person checkoffs for up to 3 business days after the assignment deadline (including any approved extension)</strong>. If a checkoff happens more than 3 business days after the regular deadline, staff may ask to confirm your extended deadline via Flextensions. You will submit a Provenance bundle that includes a record of how you used VS Code, including interactions with Preceptor. Please do not use AI tools other than Preceptor for this assignment.</p>
+<p><strong>Readings:</strong> This homework relies on the following readings from
+<a href="https://composingprograms.com">Composing Programs</a>:</p>
+<ul>
+<li><a href="https://composingprograms.com/3ed/object-oriented-programming/">2.5: Object-Oriented Programming</a></li>
+</ul>
+<h1 id="required-questions">Required Questions</h1>
+<h2 id="q1-free-checking">Q1: Free Checking</h2>
+<p>Let's improve the <code>Account</code> class from lecture, which models a bank account that
+can process deposits and withdrawals.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span><span class="w"> </span><span class="nc">Account</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An account has a balance and a holder.</span>
+
+<span class="sd">    &gt;&gt;&gt; a = Account(&#39;John&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; a.deposit(10)</span>
+<span class="sd">    10</span>
+<span class="sd">    &gt;&gt;&gt; a.balance</span>
+<span class="sd">    10</span>
+<span class="sd">    &gt;&gt;&gt; a.interest</span>
+<span class="sd">    0.02</span>
+<span class="sd">    &gt;&gt;&gt; a.time_to_retire(10.25)  # 10 -&gt; 10.2 -&gt; 10.404</span>
+<span class="sd">    2</span>
+<span class="sd">    &gt;&gt;&gt; a.balance                # time_to_retire should not change the balance</span>
+<span class="sd">    10</span>
+<span class="sd">    &gt;&gt;&gt; a.time_to_retire(11)     # 10 -&gt; 10.2 -&gt; ... -&gt; 11.040808032</span>
+<span class="sd">    5</span>
+<span class="sd">    &gt;&gt;&gt; a.time_to_retire(100)</span>
+<span class="sd">    117</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">max_withdrawal</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">interest</span> <span class="o">=</span> <span class="mf">0.02</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account_holder</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">balance</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">holder</span> <span class="o">=</span> <span class="n">account_holder</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">deposit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">amount</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">balance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">balance</span> <span class="o">+</span> <span class="n">amount</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">balance</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">withdraw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">amount</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">amount</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">balance</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Insufficient funds&quot;</span>
+        <span class="k">if</span> <span class="n">amount</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_withdrawal</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Can&#39;t withdraw that amount&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">balance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">balance</span> <span class="o">-</span> <span class="n">amount</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">balance</span>
+</code></pre></div></div>
+<p><strong>First</strong>, add a <code>time_to_retire</code> method to the <code>Account</code> class. This method
+takes an <code>amount</code> and returns the number of years until the current <code>balance</code>
+grows to at least <code>amount</code>, assuming that the bank adds the interest (the
+current <code>balance</code> multiplied by the <code>interest</code> rate) to the <code>balance</code> at the end
+of each year.</p>
+<blockquote>
+<p><strong>Important</strong>: Calling <code>time_to_retire</code> should not change the account balance.</p>
+</blockquote>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="k">def</span><span class="w"> </span><span class="nf">time_to_retire</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">amount</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the number of years until balance would grow to amount.&quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">balance</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">amount</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">interest</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre></div></div>
+<p><strong>Second</strong>, implement the <code>FreeChecking</code> class, which is like <code>Account</code> except
+that it charges a withdrawal fee <code>withdraw_fee</code> after <code>free_withdrawals</code>
+withdrawals. If a withdrawal is unsuccessful, no fee is charged, but it still
+counts toward the number of free withdrawals remaining.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span><span class="w"> </span><span class="nc">FreeChecking</span><span class="p">(</span><span class="n">Account</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A bank account that charges for withdrawals, but the first two are free!</span>
+
+<span class="sd">    &gt;&gt;&gt; ch = FreeChecking(&#39;Jack&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; ch.balance = 20</span>
+<span class="sd">    &gt;&gt;&gt; ch.withdraw(100)  # First one&#39;s free, even though it was unsuccessful</span>
+<span class="sd">    &#39;Insufficient funds&#39;</span>
+<span class="sd">    &gt;&gt;&gt; ch.withdraw(3)    # Second withdrawal is also free</span>
+<span class="sd">    17</span>
+<span class="sd">    &gt;&gt;&gt; ch.balance</span>
+<span class="sd">    17</span>
+<span class="sd">    &gt;&gt;&gt; ch.withdraw(3)    # Now there is a fee, since free_withdrawals is 2</span>
+<span class="sd">    13</span>
+<span class="sd">    &gt;&gt;&gt; ch.withdraw(3)</span>
+<span class="sd">    9</span>
+<span class="sd">    &gt;&gt;&gt; ch2 = FreeChecking(&#39;John&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; ch2.balance = 10</span>
+<span class="sd">    &gt;&gt;&gt; ch2.withdraw(3)   # No fee</span>
+<span class="sd">    7</span>
+<span class="sd">    &gt;&gt;&gt; ch.withdraw(3)    # ch still charges a fee</span>
+<span class="sd">    5</span>
+<span class="sd">    &gt;&gt;&gt; ch.withdraw(5)    # Not enough to cover fee + withdraw</span>
+<span class="sd">    &#39;Insufficient funds&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">withdraw_fee</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">free_withdrawals</span> <span class="o">=</span> <span class="mi">2</span>
+
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k checking"><pre><code>python3 -m pytest -k checking</code></pre></div>
+<h2 id="q2-cucumber">Q2: Cucumber</h2>
+<p>Cucumber is a card game. Cards are positive integers (no suits). A <code>Cucumber</code>
+game has a number of <code>players</code>, numbered 0 through <code>players - 1</code>: 0, 1, 2, and 3
+in a 4-player game.</p>
+<p>A <code>Round</code> is created with its <code>starter</code> player and the <code>Cucumber</code> game it is played in.
+In each <code>Round</code>, the players each <code>play</code> one card, starting with the <code>starter</code>
+and in ascending order (player 0 follows player 3 in a 4-player game). If the
+<code>card</code> played is as high as or higher than the highest card played so far, the
+player who played it takes control. Once every player has played one card, the
+round is complete, and its winner is the last player who took control. If a
+player tries to play out of turn or after the round is over, the card is not
+played, and <code>play</code> returns an error message instead, which <code>play_round</code> prints.</p>
+<p>Complete the <code>Round</code> class, adding instance attributes as needed.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span><span class="w"> </span><span class="nc">Cucumber</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A game of Cucumber that records the winner of each completed round.</span>
+
+<span class="sd">    Each (who, card) pair in cards indicates who plays and what card they play.</span>
+
+<span class="sd">    &gt;&gt;&gt; g = Cucumber(4)</span>
+<span class="sd">    &gt;&gt;&gt; g.play_round(3, [(3, 4), (0, 8), (1, 8), (2, 5)])</span>
+<span class="sd">    &gt;&gt;&gt; g.winners</span>
+<span class="sd">    [1]</span>
+<span class="sd">    &gt;&gt;&gt; g.play_round(1, [(3, 5), (1, 4), (2, 5), (0, 8), (3, 7), (0, 6), (1, 7)])</span>
+<span class="sd">    It is not your turn, player 3</span>
+<span class="sd">    It is not your turn, player 0</span>
+<span class="sd">    The round is over, player 1</span>
+<span class="sd">    &gt;&gt;&gt; g.winners</span>
+<span class="sd">    [1, 3]</span>
+<span class="sd">    &gt;&gt;&gt; g.play_round(3, [(3, 7), (2, 5), (0, 9)]) # Round is never completed</span>
+<span class="sd">    It is not your turn, player 2</span>
+<span class="sd">    &gt;&gt;&gt; g.winners</span>
+<span class="sd">    [1, 3]</span>
+
+<span class="sd">    &gt;&gt;&gt; h = Cucumber(3)</span>
+<span class="sd">    &gt;&gt;&gt; h.play_round(2, [(2, 5), (0, 6), (1, 4), (2, 9)])</span>
+<span class="sd">    The round is over, player 2</span>
+<span class="sd">    &gt;&gt;&gt; h.winners</span>
+<span class="sd">    [0]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_players</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">winners</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">players</span> <span class="o">=</span> <span class="n">num_players</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">play_round</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">starter</span><span class="p">,</span> <span class="n">cards</span><span class="p">):</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">Round</span><span class="p">(</span><span class="n">starter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">who</span><span class="p">,</span> <span class="n">card</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">:</span>
+            <span class="n">error</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">play</span><span class="p">(</span><span class="n">who</span><span class="p">,</span> <span class="n">card</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">error</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">winner</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">winners</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">winner</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Round</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;One round of Cucumber.&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">starter</span><span class="p">,</span> <span class="n">game</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">starter</span> <span class="o">=</span> <span class="n">starter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">next_player</span> <span class="o">=</span> <span class="n">starter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">winner</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">play</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">who</span><span class="p">,</span> <span class="n">card</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Play card for player who, or return an error string if who can&#39;t play.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_complete</span><span class="p">():</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;The round is over, player </span><span class="si">{</span><span class="n">who</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">if</span> <span class="n">who</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_player</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;It is not your turn, player </span><span class="si">{</span><span class="n">who</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">next_player</span> <span class="o">=</span> <span class="n">_____</span>
+        <span class="k">if</span> <span class="n">_____</span><span class="p">:</span>
+            <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_complete</span><span class="p">():</span>
+            <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_complete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether every player has played once in this round.&quot;&quot;&quot;</span>
+        <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k Cucumber"><pre><code>python3 -m pytest -k Cucumber</code></pre></div>
+<h2 id="submit">Submit</h2>
+<p>Run <strong>Provenance: Prepare Submission Bundle</strong> from
+the VS Code command palette to create your submission zip, and upload that zip
+<strong>to Gradescope</strong>. For a refresher on how to do this, refer to
+<a href="../../labs/lab00/#task-c-submit-the-assignment">Lab 00</a>.</p>
+{% endraw %}

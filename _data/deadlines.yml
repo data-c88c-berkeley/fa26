@@ -111,3 +111,9 @@ deadlines:
   label: Homework 6
   title: List Mutation
   link: /hw/hw06/
+- when: Mon 11/9
+  day: '2026-11-09'
+  kind: hw
+  label: Homework 7
+  title: Classes
+  link: /hw/hw07/
