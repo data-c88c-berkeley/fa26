@@ -1,0 +1,169 @@
+---
+title: "Discussion 9: Classes"
+layout: assignment
+nav_exclude: true
+excerpt_separator: ""
+---
+
+{% raw %}
+<header class="assignment-header"><h1>Discussion 9: Classes<a class="print-button" href="print.html" title="Printable version" aria-label="Printable version">🖨️</a></h1></header>
+<h2 id="attendance">Attendance</h2>
+<p>Your TA will come around during discussion to check you in. You can start on
+the worksheet before being checked in; you don't need to wait for your TA to
+get started.</p>
+<p>If you didn't attend for a good reason (such as being sick), fill out this
+form (within 2 weeks of your discussion):
+<a href="https://forms.gle/QsRLAvLnn5xoJgdv9">attendance form</a></p>
+<h2 id="getting-started">Getting Started</h2>
+<p>In honor of our discussion topic today (Classes), please share your favorite
+class (other than this one) that you are taking this semester. Make sure you
+know each others' names by saying yours.</p>
+<h2 id="object-oriented-programming">Object-Oriented Programming</h2>
+<p>A productive approach to defining new classes is to determine what instance
+attributes each object should have and what class attributes each class should
+have. First, describe the type of each attribute and how it will be used, then
+try to implement the class's methods in terms of those attributes.</p>
+<h3 id="q1-smart-fridge">Q1: Smart Fridge</h3>
+<p>The <code>SmartFridge</code> class is used by smart refrigerators to track which items are
+in the fridge and let owners know when an item has run out.</p>
+<p>The class internally uses a dictionary to store items, where each key is an item
+name and each value is the current quantity. The <code>add_item</code> method adds the
+given quantity of the given item and reports the current quantity. You may
+assume <code>use_item</code> is only called on items already in the fridge; it uses up the
+given quantity of that item. If the quantity would fall to or below zero, it
+should use only <em>up to</em> the remaining quantity and remind the owner to buy more
+of that item.</p>
+<p>Finish the <code>SmartFridge</code> class definition so that its <code>add_item</code> and <code>use_item</code>
+methods work as specified by the doctests.</p>
+<blockquote>
+<p>You may find Python's formatted string literals, or
+<a href="https://docs.python.org/3/tutorial/inputoutput.html">f-strings</a>, useful:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; feeling = &#x27;love&#x27;
+&gt;&gt;&gt; course = &#x27;61A!&#x27;
+&gt;&gt;&gt; f&#x27;I {feeling} {course}&#x27;
+&#x27;I love 61A!&#x27;
+</code></pre></div></div>
+</blockquote>
+<div class="code-editor" data-language="python" data-question="smart_fridge">
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span><span class="w"> </span><span class="nc">SmartFridge</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A fridge that tracks how much of each item it holds.</span>
+
+<span class="sd">    &gt;&gt;&gt; fridgey = SmartFridge()</span>
+<span class="sd">    &gt;&gt;&gt; fridgey.add_item(&#39;Mayo&#39;, 1)</span>
+<span class="sd">    &#39;I now have 1 Mayo&#39;</span>
+<span class="sd">    &gt;&gt;&gt; fridgey.add_item(&#39;Mayo&#39;, 2)</span>
+<span class="sd">    &#39;I now have 3 Mayo&#39;</span>
+<span class="sd">    &gt;&gt;&gt; fridgey.use_item(&#39;Mayo&#39;, 2.5)</span>
+<span class="sd">    &#39;I have 0.5 Mayo left&#39;</span>
+<span class="sd">    &gt;&gt;&gt; fridgey.use_item(&#39;Mayo&#39;, 0.5)</span>
+<span class="sd">    &#39;Oh no, we need more Mayo!&#39;</span>
+<span class="sd">    &gt;&gt;&gt; fridgey.add_item(&#39;Eggs&#39;, 12)</span>
+<span class="sd">    &#39;I now have 12 Eggs&#39;</span>
+<span class="sd">    &gt;&gt;&gt; fridgey.use_item(&#39;Eggs&#39;, 15)</span>
+<span class="sd">    &#39;Oh no, we need more Eggs!&#39;</span>
+<span class="sd">    &gt;&gt;&gt; fridgey.add_item(&#39;Eggs&#39;, 1)</span>
+<span class="sd">    &#39;I now have 1 Eggs&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">items</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">quantity</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">use_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">quantity</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre></div></div>
+</div>
+<div class="discuss-check" data-question="smart_fridge"></div>
+<h3 id="q2-vending-machine">Q2: Vending Machine</h3>
+<p>In this question you'll create a <code>VendingMachine</code> class that represents a vending
+machine for some product. Fill in the <code>VendingMachine</code> class methods so that the
+following interactions work as described.</p>
+<p>A <code>VendingMachine</code> object returns strings describing its interactions. Study the
+doctests carefully to understand the expected behavior of each method:</p>
+<ul>
+<li><code>__init__(self, product, price)</code>: A vending machine sells a single <code>product</code> at
+a fixed <code>price</code>. It starts with a stock of 0 and a balance of $0.</li>
+<li><code>restock(self, n)</code>: Add <code>n</code> to the stock and report the new stock level.</li>
+<li><code>add_funds(self, n)</code>: If out of stock, refuse the money and return it.
+Otherwise, add <code>n</code> to the current balance and report it.</li>
+<li><code>vend(self)</code>: Vend the product if there is enough stock and balance, giving
+change if the balance exceeds the price. Otherwise, explain what's needed.</li>
+</ul>
+<div class="code-editor" data-language="python" data-question="vending_machine">
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span><span class="w"> </span><span class="nc">VendingMachine</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A vending machine that vends some product for some price.</span>
+
+<span class="sd">    &gt;&gt;&gt; v = VendingMachine(&#39;candy&#39;, 10)</span>
+<span class="sd">    &gt;&gt;&gt; v.vend()</span>
+<span class="sd">    &#39;Nothing left to vend. Please restock.&#39;</span>
+<span class="sd">    &gt;&gt;&gt; v.add_funds(15)</span>
+<span class="sd">    &#39;Nothing left to vend. Please restock. Here is your $15.&#39;</span>
+<span class="sd">    &gt;&gt;&gt; v.restock(2)</span>
+<span class="sd">    &#39;Current candy stock: 2&#39;</span>
+<span class="sd">    &gt;&gt;&gt; v.vend()</span>
+<span class="sd">    &#39;Please add $10 more funds.&#39;</span>
+<span class="sd">    &gt;&gt;&gt; v.add_funds(7)</span>
+<span class="sd">    &#39;Current balance: $7&#39;</span>
+<span class="sd">    &gt;&gt;&gt; v.vend()</span>
+<span class="sd">    &#39;Please add $3 more funds.&#39;</span>
+<span class="sd">    &gt;&gt;&gt; v.add_funds(5)</span>
+<span class="sd">    &#39;Current balance: $12&#39;</span>
+<span class="sd">    &gt;&gt;&gt; v.vend()</span>
+<span class="sd">    &#39;Here is your candy and $2 change.&#39;</span>
+<span class="sd">    &gt;&gt;&gt; v.add_funds(10)</span>
+<span class="sd">    &#39;Current balance: $10&#39;</span>
+<span class="sd">    &gt;&gt;&gt; v.vend()</span>
+<span class="sd">    &#39;Here is your candy.&#39;</span>
+<span class="sd">    &gt;&gt;&gt; v.add_funds(15)</span>
+<span class="sd">    &#39;Nothing left to vend. Please restock. Here is your $15.&#39;</span>
+
+<span class="sd">    &gt;&gt;&gt; w = VendingMachine(&#39;soda&#39;, 2)</span>
+<span class="sd">    &gt;&gt;&gt; w.restock(3)</span>
+<span class="sd">    &#39;Current soda stock: 3&#39;</span>
+<span class="sd">    &gt;&gt;&gt; w.restock(3)</span>
+<span class="sd">    &#39;Current soda stock: 6&#39;</span>
+<span class="sd">    &gt;&gt;&gt; w.add_funds(2)</span>
+<span class="sd">    &#39;Current balance: $2&#39;</span>
+<span class="sd">    &gt;&gt;&gt; w.vend()</span>
+<span class="sd">    &#39;Here is your soda.&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">product</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">price</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the product and its price, as well as other instance attributes.&quot;&quot;&quot;</span>
+        <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">restock</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add n to the stock and return a message about the updated stock level.</span>
+
+<span class="sd">        E.g., Current candy stock: 3</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_funds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;If the machine is out of stock, return a message informing the user to restock</span>
+<span class="sd">        (and return their n dollars).</span>
+
+<span class="sd">        E.g., Nothing left to vend. Please restock. Here is your $4.</span>
+
+<span class="sd">        Otherwise, add n to the balance and return a message about the updated balance.</span>
+
+<span class="sd">        E.g., Current balance: $4</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">vend</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Dispense the product if there is sufficient stock and funds and</span>
+<span class="sd">        return a message. Update the stock and balance accordingly.</span>
+
+<span class="sd">        E.g., Here is your candy and $2 change.</span>
+
+<span class="sd">        If not, return a message suggesting how to correct the problem.</span>
+
+<span class="sd">        E.g., Nothing left to vend. Please restock.</span>
+<span class="sd">              Please add $3 more funds.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre></div></div>
+</div>
+<div class="discuss-check" data-question="vending_machine"></div>
+{% endraw %}

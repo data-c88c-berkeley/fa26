@@ -30,7 +30,8 @@ labs:
 - slug: lab09
   title: Mutation (due Fri 10/30)
 - skip: true
-- title: Classes (due Fri 11/6)
+- slug: lab10
+  title: Classes (due Fri 11/6)
 - skip: true
 - skip: true
 - skip: true

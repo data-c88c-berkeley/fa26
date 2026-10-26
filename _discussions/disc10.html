@@ -1,0 +1,264 @@
+---
+title: "Discussion 10: Classes & Inheritance"
+layout: assignment
+nav_exclude: true
+excerpt_separator: ""
+---
+
+{% raw %}
+<header class="assignment-header"><h1>Discussion 10: Classes &amp; Inheritance<a class="print-button" href="print.html" title="Printable version" aria-label="Printable version">🖨️</a></h1></header>
+<h2 id="attendance">Attendance</h2>
+<p>Your TA will come around during discussion to check you in. You can start on
+the worksheet before being checked in; you don't need to wait for your TA to
+get started.</p>
+<p>If you didn't attend for a good reason (such as being sick), fill out this
+form (within 2 weeks of your discussion):
+<a href="https://forms.gle/QsRLAvLnn5xoJgdv9">attendance form</a></p>
+<h2 id="getting-started">Getting Started</h2>
+<p>Say your name and share a favorite place on the Berkeley campus or surrounding
+city that you've discovered. Try to pick a place that others might not have been
+yet. (But if the room you're in now is your favorite place on campus, that's ok
+too.)</p>
+<details class="hint"><summary>Hint</summary><div>
+<p><a href="https://www.campus-maps.com/university-of-california-berkeley/mccone-hall/">McCone Hall</a> has a nice view from the 5th floor balcony.</p>
+</div></details>
+<h2 id="classes">Classes</h2>
+<h3 id="q1-keyboard">Q1: Keyboard</h3>
+<p><strong>Overview:</strong> A keyboard has a button for every letter of the alphabet. When a
+button is pressed, it outputs its letter by calling an <code>output</code> function (such
+as <code>print</code>). Whether that letter is uppercase or lowercase depends on how many
+times the <em>caps lock</em> key has been pressed.</p>
+<p><strong>First</strong>, implement the <code>Button</code> class, which takes a lowercase <code>letter</code> (a
+string) and a one-argument <code>output</code> function, such as <code>Button('c', print)</code>.</p>
+<p>The <code>press</code> method of a <code>Button</code> calls its <code>output</code> attribute (a function) on
+its <code>letter</code> attribute: either uppercase if <code>caps_lock</code> has been pressed an odd
+number of times or lowercase otherwise. The <code>press</code> method also increments
+<code>pressed</code> and returns the button that was pressed. <em>Hint</em>: <code>'hi'.upper()</code>
+evaluates to <code>'HI'</code>.</p>
+<p><strong>Second</strong>, implement the <code>Keyboard</code> class. A <code>Keyboard</code> has a dictionary called
+<code>keys</code> containing a <code>Button</code> (with its <code>letter</code> as its key) for each letter in
+<code>LOWERCASE_LETTERS</code>. It also has a list of the letters <code>typed</code>, which may be a
+mix of uppercase and lowercase letters.</p>
+<p>The <code>type</code> method takes a string <code>word</code> containing only lowercase letters. It
+invokes the <code>press</code> method of the <code>Button</code> in <code>keys</code> for each letter in <code>word</code>,
+which adds a letter (either lowercase or uppercase depending on <code>caps_lock</code>) to
+the <code>Keyboard</code>'s <code>typed</code> list. <strong>Important:</strong> Do not use <code>upper</code> or <code>letter</code> in
+your implementation of <code>type</code>; just call <code>press</code> instead. Do not use <code>append</code> in
+your implementation of <code>type</code> either; you must mutate the list <code>typed</code> only
+using <code>press</code>.</p>
+<p>Read the doctests and talk about:</p>
+<ul>
+<li>Why it's possible to press a button repeatedly with <code>.press().press().press()</code>.</li>
+<li>Why pressing a button repeatedly sometimes prints on only one line and sometimes prints multiple lines.</li>
+<li>Why <code>bored.typed</code> has 10 elements at the end.</li>
+</ul>
+<p><strong>Discussion Time</strong>: Before anyone types anything, have a conversation
+describing the type of each attribute and how it will be used. Start with
+<code>Button</code>: how will <code>letter</code> and <code>output</code> be used? Then discuss <code>Keyboard</code>: how
+will <code>typed</code> and <code>keys</code> be used? How will new letters be added to the list
+called <code>typed</code> each time a <code>Button</code> in <code>keys</code> is pressed? Call the staff if
+you're not sure! Once everyone understands the answers to these questions, you
+can try writing the code together.</p>
+<div class="code-editor" data-language="python" data-question="button" data-file="keyboard">
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">LOWERCASE_LETTERS</span> <span class="o">=</span> <span class="s1">&#39;abcdefghijklmnopqrstuvwxyz&#39;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">CapsLock</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pressed</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">press</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pressed</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Button</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A button on a keyboard.</span>
+
+<span class="sd">    &gt;&gt;&gt; f = lambda c: print(c, end=&#39;&#39;)  # The end=&#39;&#39; argument avoids a new line</span>
+<span class="sd">    &gt;&gt;&gt; k, e, y = Button(&#39;k&#39;, f), Button(&#39;e&#39;, f), Button(&#39;y&#39;, f)</span>
+<span class="sd">    &gt;&gt;&gt; s = e.press().press().press()</span>
+<span class="sd">    eee</span>
+<span class="sd">    &gt;&gt;&gt; caps = Button.caps_lock</span>
+<span class="sd">    &gt;&gt;&gt; t = [x.press() for x in [k, e, y, caps, e, e, k, caps, e, y, e, caps, y, e, e]]</span>
+<span class="sd">    keyEEKeyeYEE</span>
+<span class="sd">    &gt;&gt;&gt; u = Button(&#39;a&#39;, print).press().press().press()</span>
+<span class="sd">    A</span>
+<span class="sd">    A</span>
+<span class="sd">    A</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">caps_lock</span> <span class="o">=</span> <span class="n">CapsLock</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">letter</span><span class="p">,</span> <span class="n">output</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="n">letter</span> <span class="ow">in</span> <span class="n">LOWERCASE_LETTERS</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">letter</span> <span class="o">=</span> <span class="n">letter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="n">output</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pressed</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">press</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Call output on letter (maybe uppercased), then return this button.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pressed</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre></div></div>
+</div>
+<div class="discuss-check" data-question="button"></div>
+<details class="hint"><summary>Button Hint: Uppercasing</summary><div>
+<p>Since <code>self.letter</code> is always lowercase, use <code>self.letter.upper()</code> to produce
+the uppercase version.</p>
+</div></details>
+<details class="hint"><summary>Button Hint: Caps Lock</summary><div>
+<p>The number of times <code>caps_lock</code> has been pressed is either
+<code>self.caps_lock.pressed</code> or <code>Button.caps_lock.pressed</code>.</p>
+</div></details>
+<details class="hint"><summary>Button Hint: Output</summary><div>
+<p>The <code>output</code> attribute is a function that can be called:
+<code>self.output(self.letter)</code> or <code>self.output(self.letter.upper())</code>. You do not
+need to return the result.</p>
+</div></details>
+<div class="code-editor" data-language="python" data-question="keyboard" data-file="keyboard">
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span><span class="w"> </span><span class="nc">Keyboard</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A keyboard.</span>
+
+<span class="sd">    &gt;&gt;&gt; Button.caps_lock.pressed = 0  # Reset the caps_lock key</span>
+<span class="sd">    &gt;&gt;&gt; bored = Keyboard()</span>
+<span class="sd">    &gt;&gt;&gt; bored.type(&#39;hello&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; bored.typed</span>
+<span class="sd">    [&#39;h&#39;, &#39;e&#39;, &#39;l&#39;, &#39;l&#39;, &#39;o&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; bored.keys[&#39;l&#39;].pressed</span>
+<span class="sd">    2</span>
+
+<span class="sd">    &gt;&gt;&gt; Button.caps_lock.press()</span>
+<span class="sd">    &gt;&gt;&gt; bored.type(&#39;hello&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; bored.typed</span>
+<span class="sd">    [&#39;h&#39;, &#39;e&#39;, &#39;l&#39;, &#39;l&#39;, &#39;o&#39;, &#39;H&#39;, &#39;E&#39;, &#39;L&#39;, &#39;L&#39;, &#39;O&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; bored.keys[&#39;l&#39;].pressed</span>
+<span class="sd">    4</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">typed</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">keys</span> <span class="o">=</span> <span class="o">...</span>  <span class="c1"># Try a dictionary comprehension!</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">word</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Press the button for each letter in word.&quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="nb">all</span><span class="p">([</span><span class="n">w</span> <span class="ow">in</span> <span class="n">LOWERCASE_LETTERS</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">word</span><span class="p">]),</span> <span class="s1">&#39;word must be all lowercase&#39;</span>
+        <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre></div></div>
+</div>
+<div class="discuss-check" data-question="keyboard"></div>
+<details class="hint"><summary>Keyboard Hint: Keys</summary><div>
+<p>The keys can be created using a dictionary comprehension:
+<code>self.keys = {c: Button(c, ...) for c in LOWERCASE_LETTERS}</code>. The call to
+<code>Button</code> should take <code>c</code> and <strong>an output function that appends to <code>self.typed</code></strong>,
+so that every time one of these buttons is pressed, it appends a letter to
+<code>self.typed</code>.</p>
+</div></details>
+<details class="hint"><summary>Keyboard Hint: Type</summary><div>
+<p>Call the <code>press</code> method of <code>self.keys[w]</code> for each <code>w</code> in <code>word</code>. When you call
+<code>press</code>, the <code>Button</code> is already set up (in the <code>Keyboard.__init__</code> method) to
+output to the <code>typed</code> list of this <code>Keyboard</code>.</p>
+</div></details>
+<p><strong>Description Time</strong>: Describe how new letters are added to <code>typed</code> each time a
+<code>Button</code> in <code>keys</code> is pressed. Instead of just reading your code, say what it
+does (e.g., &quot;When the button of a keyboard is pressed ...&quot;). One short sentence
+is enough.</p>
+<h2 id="inheritance">Inheritance</h2>
+<p>To avoid redefining attributes and methods for similar classes, we can write a
+single <strong>base class</strong> from which more specialized classes <strong>inherit</strong>. For
+example, we can write a class called <code>Pet</code> and define <code>Dog</code> as a <strong>subclass</strong> of
+<code>Pet</code>:</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span><span class="w"> </span><span class="nc">Pet</span><span class="p">:</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_alive</span> <span class="o">=</span> <span class="kc">True</span>    <span class="c1"># It&#39;s alive!!!</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">owner</span> <span class="o">=</span> <span class="n">owner</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">eat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">thing</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot; ate a &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">thing</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;!&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">talk</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Dog</span><span class="p">(</span><span class="n">Pet</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">talk</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">talk</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;This Dog says woof!&#39;</span><span class="p">)</span>
+</code></pre></div></div>
+<p>Inheritance represents a hierarchical relationship between two or more classes
+where one class <strong>is a</strong> more specific version of the other: a dog <strong>is a</strong> pet.
+(We use &quot;<strong>is a</strong>&quot; to describe this sort of relationship in OOP languages, not
+to refer to the Python <code>is</code> operator.)</p>
+<p>Since <code>Dog</code> inherits from <code>Pet</code>, the <code>Dog</code> class also inherits the <code>Pet</code> class's
+methods, so we don't have to redefine <code>__init__</code> or <code>eat</code>. We do want each <code>Dog</code>
+to <code>talk</code> in a <code>Dog</code>-specific way, so we <strong>override</strong> the <code>talk</code> method.</p>
+<p>We can use <code>super()</code> to refer to the superclass of <code>self</code>, and access any
+superclass method as if we were an instance of the superclass. For example,
+<code>super().talk()</code> in the <code>Dog</code> class calls the <code>talk</code> method from the <code>Pet</code>
+class, but passes in the <code>Dog</code> instance as <code>self</code>.</p>
+<h3 id="q2-bear">Q2: Bear</h3>
+<p>Implement the <code>SleepyBear</code> and <code>WinkingBear</code> classes so that calling their
+<code>print</code> method matches the doctests. Use as little code as possible and try not
+to repeat any logic from <code>Eye</code> or <code>Bear</code>. Each blank can be filled with just two
+short lines.</p>
+<div class="code-editor" data-language="python" data-question="parent-class" data-file="bear">
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span><span class="w"> </span><span class="nc">Eye</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An eye.</span>
+
+<span class="sd">    &gt;&gt;&gt; Eye().draw()</span>
+<span class="sd">    &#39;0&#39;</span>
+<span class="sd">    &gt;&gt;&gt; print(Eye(False).draw(), Eye(True).draw())</span>
+<span class="sd">    0 -</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">closed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">closed</span> <span class="o">=</span> <span class="n">closed</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;-&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;0&#39;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Bear</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A bear.</span>
+
+<span class="sd">    &gt;&gt;&gt; Bear().print()</span>
+<span class="sd">    ? 0o0?</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nose_and_mouth</span> <span class="o">=</span> <span class="s1">&#39;o&#39;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">next_eye</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Eye</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">print</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">left</span><span class="p">,</span> <span class="n">right</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_eye</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_eye</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;? &#39;</span> <span class="o">+</span> <span class="n">left</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">nose_and_mouth</span> <span class="o">+</span> <span class="n">right</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;?&#39;</span><span class="p">)</span>
+</code></pre></div></div>
+</div>
+<div class="code-editor" data-language="python" data-question="child-class" data-file="bear">
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span><span class="w"> </span><span class="nc">SleepyBear</span><span class="p">(</span><span class="n">Bear</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A bear with closed eyes.</span>
+
+<span class="sd">    &gt;&gt;&gt; SleepyBear().print()</span>
+<span class="sd">    ? -o-?</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">WinkingBear</span><span class="p">(</span><span class="n">Bear</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A bear whose left eye is different from its right eye.</span>
+
+<span class="sd">    &gt;&gt;&gt; WinkingBear().print()</span>
+<span class="sd">    ? -o0?</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">next_eye</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre></div></div>
+</div>
+<div class="discuss-check" data-question="child-class"></div>
+<details class="hint"><summary>Hint: Inheritance</summary><div>
+<p>A subclass can override a method like <code>next_eye</code> just by defining it again. If the
+subclass defines its own method, but still needs the parent's version, you can
+call the parent's method with <code>super().method_name(...)</code>.</p>
+</div></details>
+{% endraw %}

@@ -1,0 +1,244 @@
+---
+title: "Lab 10: Classes"
+layout: assignment
+nav_exclude: true
+excerpt_separator: ""
+due: "Friday 11/06"
+---
+
+{% raw %}
+<header class="assignment-header"><h1>Lab 10: Classes</h1><ul class="assignment-facts"><li><strong>Due:</strong> Friday 11/06 @ 11:59pm</li><li><strong>Points:</strong> 1</li><li><strong>Download:</strong> <a href="lab10.zip">lab10.zip</a></li></ul></header>
+<h1 id="attendance">Attendance</h1>
+<p>You need to submit the lab problems in addition to attending to get credit for lab. Students in mega lab only need to submit the lab problems. Preceptor interviews are highly recommended but <strong>not required</strong> for lab submissions.</p>
+<p>If you are in regular lab, your TA will come around during lab to check you in. If you didn't attend for a good reason (such as being sick), fill out this form (within 2 weeks of your lab): <a href="https://forms.gle/QsRLAvLnn5xoJgdv9">attendance form</a>.</p>
+<h1 id="required-questions">Required Questions</h1>
+<h2 id="review">Review</h2>
+<p>Consult the drop-downs if you need a refresher on object-oriented programming
+(OOP) or inheritance. It's okay to skip directly to the questions and refer back
+here should you get stuck.</p>
+<details class="hint"><summary>OOP</summary><div>
+<p><strong>Object-oriented programming</strong> (OOP) uses objects and classes to organize
+programs. Here's an example of a class:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>class Car:
+    max_tires = 4
+
+    def __init__(self, color):
+        self.tires = Car.max_tires
+        self.color = color
+
+    def drive(self):
+        if self.tires &lt; Car.max_tires:
+            return self.color + &#x27; car cannot drive!&#x27;
+        return self.color + &#x27; car goes vroom!&#x27;
+
+    def pop_tire(self):
+        if self.tires &gt; 0:
+            self.tires -= 1
+</code></pre></div></div>
+<p><strong>Class</strong>: The type of an object. The <code>Car</code> class describes the characteristics
+of all <code>Car</code> objects.</p>
+<p><strong>Object</strong>: A single instance of a class. In Python, a new object is created by
+calling a class.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; ferrari = Car(&#x27;red&#x27;)
+</code></pre></div></div>
+<p>Here, <code>ferrari</code> is a name bound to a <code>Car</code> object.</p>
+<p><strong>Class attribute</strong>: A variable that belongs to a class and is accessed via dot
+notation. The <code>Car</code> class has a <code>max_tires</code> attribute.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; Car.max_tires
+4
+</code></pre></div></div>
+<p><strong>Instance attribute</strong>: A variable that belongs to a particular object. Each
+<code>Car</code> object has a <code>tires</code> attribute and a <code>color</code> attribute. Like class
+attributes, instance attributes are accessed via dot notation.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; ferrari.color
+&#x27;red&#x27;
+&gt;&gt;&gt; ferrari.tires
+4
+&gt;&gt;&gt; ferrari.color = &#x27;green&#x27;
+&gt;&gt;&gt; ferrari.color
+&#x27;green&#x27;
+</code></pre></div></div>
+<p><strong>Method</strong>: A function that belongs to an object and is called via dot notation.
+By convention, the first parameter of a method is <code>self</code>.</p>
+<p>When one of an object's methods is called, the object is implicitly provided as
+the argument for <code>self</code>. For example, the <code>drive</code> method of the <code>ferrari</code> object
+is called with empty parentheses because <code>self</code> is implicitly bound to the
+<code>ferrari</code> object.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; ferrari = Car(&#x27;red&#x27;)
+&gt;&gt;&gt; ferrari.drive()
+&#x27;red car goes vroom!&#x27;
+</code></pre></div></div>
+<p>We can also call the original <code>Car.drive</code> function. The original function does
+not belong to any particular <code>Car</code> object, so we must provide an explicit
+argument for <code>self</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; ferrari = Car(&#x27;red&#x27;)
+&gt;&gt;&gt; Car.drive(ferrari)
+&#x27;red car goes vroom!&#x27;
+</code></pre></div></div>
+<p><strong><code>__init__</code></strong>: A special function that is called automatically when a new
+instance of a class is created. To evaluate the expression <code>Car('red')</code>, Python
+creates a new <code>Car</code> object, then calls the <code>__init__</code> function of the <code>Car</code>
+class with <code>self</code> bound to the new object and <code>color</code> bound to <code>'red'</code>.</p>
+</div></details>
+<details class="hint"><summary>Inheritance</summary><div>
+<p>To avoid redefining attributes and methods for similar classes, we can write a
+single <strong>base class</strong> from which more specialized classes <strong>inherit</strong>. For
+example, we can write a class called <code>Pet</code> and define <code>Dog</code> as a <strong>subclass</strong> of
+<code>Pet</code>:</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span><span class="w"> </span><span class="nc">Pet</span><span class="p">:</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_alive</span> <span class="o">=</span> <span class="kc">True</span>    <span class="c1"># It&#39;s alive!!!</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">owner</span> <span class="o">=</span> <span class="n">owner</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">eat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">thing</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot; ate a &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">thing</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;!&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">talk</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Dog</span><span class="p">(</span><span class="n">Pet</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">talk</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">talk</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;This Dog says woof!&#39;</span><span class="p">)</span>
+</code></pre></div></div>
+<p>Inheritance represents a hierarchical relationship between two or more classes
+where one class <strong>is a</strong> more specific version of the other: a dog <strong>is a</strong> pet.
+(We use &quot;<strong>is a</strong>&quot; to describe this sort of relationship in OOP languages, not
+to refer to the Python <code>is</code> operator.)</p>
+<p>Since <code>Dog</code> inherits from <code>Pet</code>, the <code>Dog</code> class also inherits the <code>Pet</code> class's
+methods, so we don't have to redefine <code>__init__</code> or <code>eat</code>. We do want each <code>Dog</code>
+to <code>talk</code> in a <code>Dog</code>-specific way, so we <strong>override</strong> the <code>talk</code> method.</p>
+<p>We can use <code>super()</code> to refer to the superclass of <code>self</code>, and access any
+superclass method as if we were an instance of the superclass. For example,
+<code>super().talk()</code> in the <code>Dog</code> class calls the <code>talk</code> method from the <code>Pet</code>
+class, but passes in the <code>Dog</code> instance as <code>self</code>.</p>
+</div></details>
+<h2 id="classes">Classes</h2>
+<h3 id="q1-wwpd-inheritance-and-class-attributes">Q1: WWPD: Inheritance and Class Attributes</h3>
+<p>Predict what Python will display when the following lines are entered into an
+interactive session, then unlock the test to check your answers. Type <code>FUNCTION</code>
+if you believe the answer is a function, <code>ERROR</code> if it errors, and <code>NOTHING</code> if
+nothing is displayed:</p>
+<div class="pytest-command" data-command="python3 -m pytest -k inheritance_wwpd --unlock"><pre><code>python3 -m pytest -k inheritance_wwpd --unlock</code></pre></div>
+<details class="unlock-examples" open>
+<summary>Unlocking Examples</summary>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; class A:
+...     x, y = 0, 0
+...     def __init__(self):
+...         return
+&gt;&gt;&gt; class B(A):
+...     def __init__(self):
+...         return
+&gt;&gt;&gt; class C(A):
+...     def __init__(self):
+...         return
+&gt;&gt;&gt; print(A.x, B.x, C.x)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; B.x = 2
+&gt;&gt;&gt; print(A.x, B.x, C.x)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; A.x += 1
+&gt;&gt;&gt; print(A.x, B.x, C.x)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; obj = C()
+&gt;&gt;&gt; obj.y = 1
+&gt;&gt;&gt; C.y == obj.y
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; A.y = obj.y
+&gt;&gt;&gt; print(A.y, B.y, C.y, obj.y)
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+</details>
+<blockquote>
+<p>Remember that looking up an attribute on an instance first checks the
+instance's own attributes, then its class, then that class's base classes.
+Assigning to an attribute through an instance or a class only changes that
+instance or class.</p>
+</blockquote>
+<h3 id="q2-mint">Q2: Mint</h3>
+<p>A mint is a place where coins are made. In this question, you'll implement a
+<code>Mint</code> class that can output a <code>Coin</code> with the correct year and worth.</p>
+<ul>
+<li>Each <code>Mint</code> instance has a <code>year</code> stamp. The <code>update</code> method sets the <code>year</code>
+stamp of the instance to the <code>present_year</code> class attribute of the <code>Mint</code>
+<em>class</em>.</li>
+<li>The <code>create</code> method takes a subclass of <code>Coin</code> (<em>not</em> an instance!), then
+creates and returns an instance of that subclass stamped with the <code>Mint</code>'s
+year (which may differ from <code>Mint.present_year</code> if it has not been updated).</li>
+<li>A <code>Coin</code>'s <code>worth</code> method returns the <code>cents</code> value of the coin plus one extra
+cent for each year of age beyond 50. A coin's age can be determined by
+subtracting the coin's year from the <code>present_year</code> class attribute of the
+<code>Mint</code> class.</li>
+</ul>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span><span class="w"> </span><span class="nc">Mint</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A mint creates coins by stamping on years.</span>
+
+<span class="sd">    The update method sets the mint&#39;s stamp to Mint.present_year.</span>
+
+<span class="sd">    &gt;&gt;&gt; mint = Mint()</span>
+<span class="sd">    &gt;&gt;&gt; mint.year</span>
+<span class="sd">    2026</span>
+<span class="sd">    &gt;&gt;&gt; dime = mint.create(Dime)</span>
+<span class="sd">    &gt;&gt;&gt; dime.year</span>
+<span class="sd">    2026</span>
+<span class="sd">    &gt;&gt;&gt; Mint.present_year = 2106  # Time passes</span>
+<span class="sd">    &gt;&gt;&gt; nickel = mint.create(Nickel)</span>
+<span class="sd">    &gt;&gt;&gt; nickel.year     # The mint has not updated its stamp yet</span>
+<span class="sd">    2026</span>
+<span class="sd">    &gt;&gt;&gt; nickel.worth()  # 5 cents + (80 - 50 years)</span>
+<span class="sd">    35</span>
+<span class="sd">    &gt;&gt;&gt; mint.update()   # The mint&#39;s year is updated to 2106</span>
+<span class="sd">    &gt;&gt;&gt; Mint.present_year = 2181     # More time passes</span>
+<span class="sd">    &gt;&gt;&gt; mint.create(Dime).worth()    # 10 cents + (75 - 50 years)</span>
+<span class="sd">    35</span>
+<span class="sd">    &gt;&gt;&gt; Mint().create(Dime).worth()  # A new mint has the current year</span>
+<span class="sd">    10</span>
+<span class="sd">    &gt;&gt;&gt; dime.worth()     # 10 cents + (155 - 50 years)</span>
+<span class="sd">    115</span>
+<span class="sd">    &gt;&gt;&gt; Dime.cents = 20  # Upgrade all dimes!</span>
+<span class="sd">    &gt;&gt;&gt; dime.worth()     # 20 cents + (155 - 50 years)</span>
+<span class="sd">    125</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">present_year</span> <span class="o">=</span> <span class="mi">2026</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coin</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Coin&#39;</span><span class="p">:</span>
+        <span class="c1"># Hint: coin is a class, such as Nickel or Dime, not an instance!</span>
+        <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Coin</span><span class="p">:</span>
+    <span class="n">cents</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># will be provided by subclasses, but not by Coin itself</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">year</span> <span class="o">=</span> <span class="n">year</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">worth</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">cents</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Nickel</span><span class="p">(</span><span class="n">Coin</span><span class="p">):</span>
+    <span class="n">cents</span> <span class="o">=</span> <span class="mi">5</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Dime</span><span class="p">(</span><span class="n">Coin</span><span class="p">):</span>
+    <span class="n">cents</span> <span class="o">=</span> <span class="mi">10</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k Mint"><pre><code>python3 -m pytest -k Mint</code></pre></div>
+<h1 id="submit-assignment">Submit Assignment</h1>
+<p>Submit this assignment by running
+<strong>Provenance: Prepare Submission Bundle</strong> from the VS Code command palette and
+uploading the resulting zip <strong>to Gradescope</strong>. The zip already contains the
+files you've edited.
+<a href="../../labs/lab00/#task-c-submit-the-assignment">Lab 00</a> has detailed
+instructions.</p>
+<p>Your responses to WWPD questions are not submitted, and they do not need to
+be. Lab credit is based on the code writing questions.</p>
+{% endraw %}
