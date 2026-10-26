@@ -16,4 +16,4 @@ quizzes:
   - skip: true                      # Mon 11/09 (week 12: Midterm 2)
   - title: "Classes"                # Mon 11/16 (week 13)
   - skip: true                      # Mon 11/23 (no quiz in week 14)
-  - title: "SQL"                    # Mon 11/30 (week 15)
+  - title: "Iterators"              # Mon 11/30 (week 15)

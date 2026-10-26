@@ -140,24 +140,24 @@ lectures:
     videos:
       - title: "YouTube"
         link: https://www.youtube.com/watch?v=Bqpe1iyq5vE&list=PLH902kY1ixw8
-  - title: "Iterators"          # Wed 11/04
+  - title: "Object Examples"    # Wed 11/04
+  # Week 12
+  - title: "Midterm 2 Review"   # Mon 11/09
+  - title: "Holiday"            # Wed 11/11 (Veterans Day)
+    nonumber: true
+  # Week 13
+  - title: "Iterators"          # Mon 11/16
     readings:
       - title: "2.8"
         link: https://composingprograms.com/3ed/lazy-evaluation/
     videos:
       - title: "YouTube"
         link: https://www.youtube.com/watch?v=On-kFyFp8HY&list=PL6BsET-8jgYW7stiut93PHxGP6_QgBzVQ
-  # Week 12
-  - title: "Midterm 2 Review"   # Mon 11/09
-  - title: "Holiday"            # Wed 11/11 (Veterans Day)
-    nonumber: true
-  # Week 13
-  - title: "Tables"             # Mon 11/16
-  - title: "SQL"                # Wed 11/18
+  - title: "Tables"             # Wed 11/18
   # Week 14
-  - title: "Aggregation"        # Mon 11/23
+  - title: "SQL"                # Mon 11/23
   - title: "Holiday"            # Wed 11/25 (Non-instructional day)
     nonumber: true
   # Week 15
-  - title: "Ethics"             # Mon 11/30
-  - title: "Conclusion"         # Wed 12/02
+  - title: "Aggregation"        # Mon 11/30
+  - title: "Ethics"             # Wed 12/02
