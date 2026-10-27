@@ -11,6 +11,9 @@
 //     (cmEditor.original), never its current contents, so editing or
 //     deleting them cannot fake a pass. A failed verify cools the button
 //     down for 30 seconds, and a reload does not cut the wait short.
+//     A Gleam question's widget (render.gleam_check_box) carries its test
+//     module instead, and Verify compiles the code with the Gleam compiler
+//     (in WebAssembly, from the Gleam playground) and runs those tests.
 //   * Visualize: a link beside Reset that opens a Python Tutor diagram of
 //     the code (plus the doctests as calls) in a new tab. A discussion can
 //     turn it off with `visualize: false` (data-visualize on each widget).
@@ -46,6 +49,7 @@
 
   var SERVER = 'https://discuss.cs61a.org';
   var PYODIDE_URL = 'https://cdn.jsdelivr.net/pyodide/v0.28.2/full/pyodide.js';
+  var GLEAM_PLAYGROUND = 'https://playground.gleam.run/';
   var POLL_MS = 1000;        // group sync cadence
   var SAVE_MS = 2000;        // debounce for saving/sharing edits
   var STALE_AFTER = 3;       // failed polls before the offline notice
@@ -428,38 +432,160 @@
     '};',
   ].join('\n');
 
-  var worker = null;
-  var workerReady = null;    // promise for a loaded worker
+  // ── Verify for Gleam (the playground's compiler, in a Web Worker) ───────
+
+  // The Gleam playground (playground.gleam.run, served with CORS open) hosts
+  // everything a check needs: compiler.js, its wrapper around the compiler
+  // built for WebAssembly; stdlib.js, the stdlib's sources, which the
+  // compiler checks imports against; and precompiled/, the prelude and stdlib
+  // compiled to JavaScript, which compiled code imports. This follows the
+  // playground's own worker.js, with a question's tests run in place of main.
+  //
+  // The function below is the worker's source (see ensureWorker), so it must
+  // not use anything else in this file.
+  function gleamWorker(base) {
+    var project = null;
+    var written = [];        // the modules the last verify wrote
+    var ready = Promise.all([
+      import(base + 'compiler.js'), import(base + 'stdlib.js'),
+    ]).then(function (loaded) {
+      return loaded[0].default().then(function (compiler) {
+        var stdlib = loaded[1].default;
+        project = compiler.newProject();
+        Object.keys(stdlib).forEach(function (name) {
+          project.writeModule(name, stdlib[name]);
+        });
+        // Load the precompiled modules now, so that a verify finds them in
+        // the module map and only compiling and testing count toward its
+        // time limit.
+        return Promise.all(['gleam'].concat(Object.keys(stdlib)).map(
+          function (name) { return import(base + 'precompiled/' + name + '.mjs'); }));
+      });
+    }).then(function () {
+      postMessage('ready');
+    }, function () {
+      postMessage('failed');
+    });
+
+    // A compiled module as a URL to import: its imports of the question's
+    // own modules point at those (LOCAL: name -> URL), the rest at the
+    // precompiled stdlib, as in the playground's loadProgram.
+    function moduleUrl(js, local) {
+      // If echo has been used then add the import to the dict module that
+      // the compiler would have added if the stdlib had have been present.
+      if (js.indexOf('return value instanceof $stdlib$dict.default;') >= 0) {
+        js = 'import * as $stdlib$dict from "./dict.mjs";\n' + js;
+      }
+      js = js.replace(/from\s+"\.\/(.+?)\.mjs"/g, function (match, name) {
+        return 'from "' + (local[name] || base + 'precompiled/' + name + '.mjs') + '"';
+      });
+      return 'data:text/javascript;base64,' +
+        btoa(unescape(encodeURIComponent(js)));
+    }
+
+    function check(data) {
+      // Every module stays in the compiler's file system, so empty the last
+      // verify's: a stale one that no longer compiles would fail this one.
+      written.forEach(function (name) { project.writeModule(name, ''); });
+      written = [data.module, data.testModule];
+      project.writeModule(data.module, data.code);
+      project.writeModule(data.testModule, data.test);
+      try {
+        project.compilePackage('javascript');
+      } catch (error) {
+        return { ok: false, compileError: String(error) };
+      }
+      project.takeWarnings();
+      var local = {};
+      local[data.module] = moduleUrl(
+        project.readCompiledJavaScript(data.module), local);
+      return import(moduleUrl(project.readCompiledJavaScript(data.testModule),
+                              local)).then(function (tests) {
+        var failed = false;
+        var error = null;
+        data.tests.forEach(function (name) {
+          try {
+            tests[name]();
+          } catch (e) {
+            failed = true;
+            // A test's own failed assert is a wrong answer, not an error.
+            if (e && e.gleam_error === 'assert' && e.module === data.testModule) return;
+            if (!error) {
+              error = {
+                name: (e && e.name) || 'Error',
+                message: String((e && e.message) || e),
+                gleam: (e && e.gleam_error) || null,
+                module: (e && e.module) || null,
+                line: (e && e.line) || null,
+              };
+            }
+          }
+        });
+        return { ok: !failed, error: error };
+      });
+    }
+
+    self.onmessage = function (event) {
+      ready.then(function () { return check(event.data); }).then(
+        function (result) { postMessage(JSON.stringify(result)); },
+        function (error) {
+          postMessage(JSON.stringify({ ok: false, crash: String(error) }));
+        });
+    };
+  }
+
+  // ── Running checks in workers ─────────────────────────────────────────────
+
+  // One worker per language, loaded on its first Verify. A worker posts
+  // "ready" once loaded (or "failed": the Gleam one cannot load its
+  // compiler), then one JSON result per message.
+  var RUNTIMES = {
+    python: { src: WORKER_SRC, options: {} },
+    gleam: {
+      src: '(' + gleamWorker.toString() + ')(' +
+        JSON.stringify(GLEAM_PLAYGROUND) + ');',
+      options: { type: 'module' },
+    },
+  };
+  var workers = {};          // language -> {worker, ready: promise}
   var runQueue = Promise.resolve(); // verifies run one at a time
 
-  function ensureWorker() {
-    if (workerReady) return workerReady;
+  function loaded(language) {
+    return !!workers[language];
+  }
+
+  function ensureWorker(language) {
+    if (workers[language]) return workers[language].ready;
+    var runtime = RUNTIMES[language];
     var w = new Worker(URL.createObjectURL(
-      new Blob([WORKER_SRC], { type: 'text/javascript' })));
-    worker = w;
-    workerReady = new Promise(function (resolve, reject) {
+      new Blob([runtime.src], { type: 'text/javascript' })), runtime.options);
+    var entry = { worker: w, ready: null };
+    workers[language] = entry;
+    entry.ready = new Promise(function (resolve, reject) {
       w.onmessage = function (event) {
         if (event.data === 'ready') resolve(w);
+        if (event.data === 'failed') reject(new Error(language + ' load failed'));
       };
-      w.onerror = function () { reject(new Error('pyodide load failed')); };
+      w.onerror = function () { reject(new Error(language + ' load failed')); };
     }).catch(function (error) {
-      workerReady = null;    // allow a retry on the next click
-      worker = null;
+      if (workers[language] === entry) delete workers[language]; // retry next click
       w.terminate();
       throw error;
     });
-    return workerReady;
+    return entry.ready;
   }
 
-  function runInWorker(canonical, student, lib, deps) {
+  // Post MESSAGE to the LANGUAGE worker and resolve with its parsed result.
+  function runInWorker(language, message) {
     var run = runQueue.then(function () {
-      return ensureWorker().then(function (w) {
+      return ensureWorker(language).then(function (w) {
         return new Promise(function (resolve) {
           // Discard the worker; the next verify loads a fresh one. Used for
           // a run that runs too long or crashes the runtime (e.g. exhausts
           // its memory) — either way the page itself is never touched.
           function scrap(result) {
-            if (worker === w) { worker = null; workerReady = null; }
+            var entry = workers[language];
+            if (entry && entry.worker === w) delete workers[language];
             w.terminate();
             resolve(result);
           }
@@ -475,15 +601,146 @@
             clearTimeout(timer);
             scrap({ ok: false, output: 'runner error' });
           };
-          w.postMessage({
-            canonical: clampCode(canonical), student: clampCode(student),
-            lib: lib || '', deps: deps || '[]',
-          });
+          w.postMessage(message);
         });
       });
     });
     runQueue = run.then(function () {}, function () {});
     return run;
+  }
+
+  function runPython(q) {
+    return runInWorker('python', {
+      canonical: clampCode(api(q).original), student: clampCode(api(q).getText()),
+      lib: libCode(q) || '', deps: usedCode(q) || '[]',
+    });
+  }
+
+  // An editor's line in a Gleam widget's module template (render.
+  // GLEAM_EDITOR_LINE).
+  var GLEAM_EDITOR_LINE = /^\/\/ @discuss-editor (\S+)$/;
+
+  // The module a Gleam question's code belongs to: the template with each
+  // editor's line replaced by its code — yours for this question and the
+  // ones before it, the published listing for later ones (which may still
+  // hold a todo, and that compiles) and, given LISTINGS, for the earlier
+  // ones too. The layout records the module lines each editor fills, to
+  // report line numbers the way the editor numbers them, and `edited`
+  // whether an earlier editor's code differs from its listing.
+  function gleamModule(qid, listings) {
+    var lines = [];
+    var layout = [];
+    var edited = false;
+    var here = order.indexOf(qid);
+    questions[qid].gleam.template.split('\n').forEach(function (line) {
+      var match = GLEAM_EDITOR_LINE.exec(line);
+      var dep = match && questions[match[1]];
+      if (!dep || !api(dep)) {
+        lines.push(line);
+        return;
+      }
+      var text;
+      var at = order.indexOf(match[1]);
+      if (at > here || (listings && at < here)) text = api(dep).original;
+      else if (showingMember(dep)) {
+        text = (answers[match[1]] || {}).code || api(dep).original;
+      } else text = api(dep).getText();
+      if (at < here && text !== api(dep).original) edited = true;
+      var chunk = text.split('\n');
+      layout.push({ key: match[1], start: lines.length + 1,
+                    end: lines.length + chunk.length });
+      lines.push.apply(lines, chunk);
+    });
+    return { code: lines.join('\n'), layout: layout, edited: edited };
+  }
+
+  // Line LINE of the assembled module as the student sees it: "line 3" of
+  // this question's editor, "line 3 of compose" in another, or '' outside
+  // every editor.
+  function gleamWhere(qid, layout, line) {
+    for (var i = 0; i < layout.length; i++) {
+      var chunk = layout[i];
+      if (line >= chunk.start && line <= chunk.end) {
+        return 'line ' + (line - chunk.start + 1) +
+          (chunk.key === qid ? '' : ' of ' + chunk.key);
+      }
+    }
+    return '';
+  }
+
+  // A compiler error in one line, like the last line Python prints for a
+  // SyntaxError: the first diagnostic's title, where it is, and its
+  // explanation (or, lacking one, the label under the code), e.g.
+  // "Unknown variable on line 2: The name `y` is not in scope here."
+  function gleamCompileError(qid, text, data, layout) {
+    var first = text.split(/\n(?=error)/)[0];
+    var title = (first.match(/^error: (.*)/) || [null, 'Compile error'])[1];
+    var where = '';
+    var at = first.match(/\/src\/(\S+)\.gleam:(\d+):\d+/);
+    if (at && at[1] === data.module) where = gleamWhere(qid, layout, +at[2]);
+    var label = (first.match(/│[ \t]*\^+[ \t]*(.*)$/m) || [])[1] || '';
+    var explanation = first.split(/\n[ \t]*\n/).filter(function (part) {
+      return part.trim() && !/[│┌]|^\s*(error|Hint):/.test(part);
+    })[0] || '';
+    var detail = explanation.trim().replace(/\s+/g, ' ') || label.trim();
+    return title + (where ? ' on ' + where : '') +
+      (at && at[1] === data.testModule ? ' in the tests' : '') +
+      (detail ? ': ' + detail : '');
+  }
+
+  // An error a test run raised (other than a test's failed assert), e.g.
+  // "Line 4: `todo` expression evaluated. This code has not yet been
+  // implemented." or "RangeError: Maximum call stack size exceeded".
+  function gleamRunError(qid, error, data, layout) {
+    var where = error.module === data.module && error.line
+      ? gleamWhere(qid, layout, error.line) : '';
+    var message = error.gleam ? error.message : error.name + ': ' + error.message;
+    return where ? where.charAt(0).toUpperCase() + where.slice(1) + ': ' + message
+      : message;
+  }
+
+  // Whether a compiler error is in this question's own editor.
+  function gleamOwnError(qid, text, data, layout) {
+    var at = text.split(/\n(?=error)/)[0].match(/\/src\/(\S+)\.gleam:(\d+):\d+/);
+    if (!at || at[1] !== data.module) return false;
+    return layout.some(function (chunk) {
+      return chunk.key === qid && +at[2] >= chunk.start && +at[2] <= chunk.end;
+    });
+  }
+
+  // Compile and test the question's module. Like Python's harness, which
+  // runs the earlier editors forgivingly, a mistake in an earlier editor
+  // (an unfinished compose) must not block checking this one: when the
+  // module does not compile and the error is not in this question's own
+  // code, it is compiled again with the earlier editors' published
+  // listings, and that run decides. (A syntax error can surface outside
+  // the editor that caused it, past an unclosed brace, so anywhere but
+  // this editor counts.)
+  function runGleam(qid) {
+    var q = questions[qid];
+    function attempt(listings) {
+      var built = gleamModule(qid, listings);
+      var data = {
+        module: q.gleam.module, code: clampCode(built.code),
+        testModule: q.gleam.testModule, test: q.gleam.test, tests: q.gleam.tests,
+      };
+      return runInWorker('gleam', data).then(function (result) {
+        if (result.compileError) {
+          if (!listings && built.edited &&
+              !gleamOwnError(qid, result.compileError, data, built.layout)) {
+            return attempt(true);
+          }
+          return { ok: false, detail: result.compileError,
+                   error: gleamCompileError(qid, result.compileError, data, built.layout) };
+        }
+        if (result.error) {
+          return { ok: false, error: gleamRunError(qid, result.error, data, built.layout) };
+        }
+        if (result.crash) return { ok: false, error: result.crash };
+        return result;
+      });
+    }
+    return attempt(false);
   }
 
   // The code from the questions this one may call, to run before the
@@ -527,8 +784,10 @@
     var cooldownMs = 0;  // set by a failed run
     q.running = true;
     button.disabled = true;
-    button.textContent = workerReady ? 'Checking…' : 'Loading Python…';
-    runInWorker(api(q).original, api(q).getText(), libCode(q), usedCode(q)).then(function (result) {
+    var language = q.gleam ? 'gleam' : 'python';
+    button.textContent = loaded(language) ? 'Checking…'
+      : q.gleam ? 'Loading Gleam…' : 'Loading Python…';
+    (q.gleam ? runGleam(qid) : runPython(q)).then(function (result) {
       var status = result.ok ? 'green' : 'red';
       var marks = history(answers[qid]) + (result.ok ? PASS : FAIL);
       if (marks.length > MAX_HISTORY) { // invisible middle marks give way
@@ -538,11 +797,13 @@
       // An exception is named next to the button, to the right of the
       // marks (its type and one-line message, from the harness: a
       // SyntaxError or NameError in the code, or the first one an example
-      // raised). Beyond that only the outcome is reported (the
-      // button color and ❌ mark), not the failing doctests: working out
-      // what went wrong is the exercise.
+      // raised; for Gleam, a compiler error or one a test raised, with the
+      // compiler's full report on hover). Beyond that only the outcome is
+      // reported (the button color and ❌ mark), not the failing doctests
+      // or tests: working out what went wrong is the exercise.
       if (q.output) {
         q.output.textContent = result.error || '';
+        q.output.title = result.detail || '';
         q.output.hidden = !result.error;
       }
       record(qid, api(q).getText(), status, marks);
@@ -554,8 +815,9 @@
       if (!result.ok) cooldownMs = result.error ? ERROR_COOLDOWN_MS : COOLDOWN_MS;
     }).catch(function () {
       if (q.output) {
-        q.output.textContent =
-          'Could not load the Python runtime; check your connection and try again.';
+        q.output.textContent = 'Could not load the ' +
+          (q.gleam ? 'Gleam compiler' : 'Python runtime') +
+          '; check your connection and try again.';
         q.output.hidden = false;
       }
     }).then(function () {
@@ -730,6 +992,13 @@
     q.lib = box.dataset.lib || '';
     q.uses = (box.dataset.uses || '').split(/\s+/).filter(Boolean);
     q.noVisualize = box.dataset.visualize === 'false';
+    if (box.dataset.language === 'gleam') {
+      q.gleam = {
+        module: box.dataset.module, template: box.dataset.template || '',
+        testModule: box.dataset.testModule, test: box.dataset.test || '',
+        tests: (box.dataset.tests || '').split(/\s+/).filter(Boolean),
+      };
+    }
     q.check = button;
     q.marks = marks;
     q.output = output;

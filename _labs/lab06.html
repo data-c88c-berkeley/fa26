@@ -180,6 +180,32 @@ together. A string can be sliced.</p>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">fruit</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;s&#39;</span>
     <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">buy</span><span class="p">(</span><span class="n">fruits_to_buy</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">prices</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">total_amount</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Print ways to buy some of each fruit so that the sum of prices is amount.</span>
+
+<span class="sd">    &gt;&gt;&gt; prices = {&#39;oranges&#39;: 4, &#39;apples&#39;: 3, &#39;bananas&#39;: 2, &#39;kiwis&#39;: 9}</span>
+<span class="sd">    &gt;&gt;&gt; buy([&#39;apples&#39;, &#39;oranges&#39;, &#39;bananas&#39;], prices, 12)  # We can only buy apple, orange, and banana, but not kiwi</span>
+<span class="sd">    &lt;2 apples&gt;&lt;1 orange&gt;&lt;1 banana&gt;</span>
+<span class="sd">    &gt;&gt;&gt; buy([&#39;apples&#39;, &#39;oranges&#39;, &#39;bananas&#39;], prices, 16)</span>
+<span class="sd">    &lt;2 apples&gt;&lt;1 orange&gt;&lt;3 bananas&gt;</span>
+<span class="sd">    &lt;2 apples&gt;&lt;2 oranges&gt;&lt;1 banana&gt;</span>
+<span class="sd">    &gt;&gt;&gt; buy([&#39;apples&#39;, &#39;kiwis&#39;], prices, 36)</span>
+<span class="sd">    &lt;3 apples&gt;&lt;3 kiwis&gt;</span>
+<span class="sd">    &lt;6 apples&gt;&lt;2 kiwis&gt;</span>
+<span class="sd">    &lt;9 apples&gt;&lt;1 kiwi&gt;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="n">fruits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">amount</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">cart</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">fruits</span> <span class="o">==</span> <span class="p">[]</span> <span class="ow">and</span> <span class="n">amount</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">cart</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">fruits</span> <span class="ow">and</span> <span class="n">amount</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">fruit</span> <span class="o">=</span> <span class="n">fruits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">price</span> <span class="o">=</span> <span class="n">____</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">____</span><span class="p">:</span>
+                <span class="c1"># Hint: The display function will help you add fruit to the cart.</span>
+                <span class="n">add</span><span class="p">(</span><span class="n">____</span><span class="p">,</span> <span class="n">____</span><span class="p">,</span> <span class="n">____</span><span class="p">)</span>
+    <span class="n">add</span><span class="p">(</span><span class="n">fruits_to_buy</span><span class="p">,</span> <span class="n">total_amount</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
 </code></pre></div></div>
 <div class="pytest-command" data-command="python3 -m pytest -k display"><pre><code>python3 -m pytest -k display</code></pre></div>
 <h3 id="q3-buying-fruit">Q3: Buying Fruit</h3>
