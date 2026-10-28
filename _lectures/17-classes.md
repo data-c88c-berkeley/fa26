@@ -1,5 +1,5 @@
 ---
-title: Clases
+title: Classes
 slug: classes
 number: 17
 date: 2026-10-26
