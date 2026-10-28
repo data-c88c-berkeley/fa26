@@ -15,5 +15,5 @@ date: 2026-10-28
    - We will release Midterm 1 as a practice test on 10/28
    - There will be a walkthrough of midterm 1 from 3-5pm on Friday 10/30, in
      UAB100
-- Midterm 2 is November 12th @ 8pm
+- Midterm 2 is 8-10pm November 12th
    - There will be a review session from 3-5pm on Friday 11/6, in UAB 100
