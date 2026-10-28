@@ -329,7 +329,7 @@ pre.wwpd .wwpd-answer {
    off the wrapper's edge: the wrapper carries no padding of its own (the
    listing's inset is copied onto the editor element instead). */
 /* The row under an editor: Reset, and (on discussion pages) the Discuss
-   app's Visualize link beside it, styled alike. */
+   app's Visualize or Playground link beside it, styled alike. */
 .code-editor-actions {
   display: flex;
   justify-content: flex-end;
@@ -339,7 +339,8 @@ pre.wwpd .wwpd-answer {
 }
 
 .code-editor-reset,
-.discuss-visualize {
+.discuss-visualize,
+.discuss-playground {
   /* A button and a link, boxed alike: the link would otherwise take the
      listing's line-height and size its border outside its box. */
   display: inline-block;
@@ -360,7 +361,9 @@ pre.wwpd .wwpd-answer {
 .code-editor-reset:hover:enabled,
 .code-editor-reset:focus-visible,
 .discuss-visualize:hover,
-.discuss-visualize:focus-visible {
+.discuss-visualize:focus-visible,
+.discuss-playground:hover,
+.discuss-playground:focus-visible {
   opacity: 1;
 }
 

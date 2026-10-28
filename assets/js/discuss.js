@@ -17,6 +17,10 @@
 //   * Visualize: a link beside Reset that opens a Python Tutor diagram of
 //     the code (plus the doctests as calls) in a new tab. A discussion can
 //     turn it off with `visualize: false` (data-visualize on each widget).
+//   * Playground: a Gleam question's link beside Reset that opens the
+//     Gleam playground in a new tab on the module Verify compiles, then
+//     the question's tests in a main, each assert preceded by an echo of
+//     the value it checks.
 //   * Saved answers: edits, outcomes, and the verify history are kept in
 //     localStorage per page and restored on the next visit. The server
 //     never stores answers.
@@ -158,7 +162,7 @@
   // ── Questions: editors and Verify widgets ─────────────────────────────────
 
   // qid -> {wrapper, check, marks, output, pane, ownState, cooldownUntil,
-  // visualize}.
+  // visualize, playground}.
   // The editor handle is wrapper.cmEditor once mounted; pane appears when
   // the group first has another member (see buildPanes).
   var questions = {};
@@ -200,7 +204,8 @@
     if (!questions[qid]) {
       questions[qid] = { wrapper: null, check: null, marks: null,
                          output: null, pane: null, ownState: 'gray',
-                         cooldownUntil: 0, visualize: null };
+                         cooldownUntil: 0, visualize: null,
+                         playground: null };
       order.push(qid);
     }
     var q = questions[qid];
@@ -259,6 +264,7 @@
     setStatus(qid, (saved && saved.status) || 'gray');
     showMarks(qid);
     buildVisualize(qid);
+    buildPlayground(qid);
     if (OBSERVER) handle.setReadOnly(true);
   }
 
@@ -969,6 +975,111 @@
     q.visualize = link;
   }
 
+  // ── Playground (Gleam, in a new tab) ──────────────────────────────────────
+
+  // A link beside Reset in a Gleam question's action row, to the Gleam
+  // playground with the module Verify compiles (your code up to this
+  // question, the published listings after it) followed by the question's
+  // tests in a main, which the playground runs. The playground reads its
+  // code from the URL fragment the way its own share links write it:
+  // {version: 1, content: code} as JSON, compressed with lz-string, which is
+  // loaded when the first link is built (until then a link opens an empty
+  // playground).
+  var PLAYGROUND_URL = 'https://playground.gleam.run/';
+  var LZ_STRING_URL =
+    'https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js';
+
+  // The left side of the assert that starts on line I of LINES (it may
+  // continue on more deeply indented lines), or null for any other line or
+  // an assert that is not an `==`.
+  function assertLeftSide(lines, i) {
+    var indent = /^(\s*)assert\s/.exec(lines[i]);
+    if (!indent) return null;
+    var statement = lines[i];
+    for (var j = i + 1; j < lines.length &&
+         /^\s*/.exec(lines[j])[0].length > indent[1].length; j++) {
+      statement += ' ' + lines[j].trim();
+    }
+    var compared = statement.trim().replace(/^assert\s+/, '')
+      .split(/\s+as\s+"/)[0];
+    var at = compared.lastIndexOf(' == ');
+    return at < 0 ? null : compared.slice(0, at);
+  }
+
+  // The test file's helpers, then a main holding the lines of this
+  // question's tests, with `echo left` above each `assert left == right`
+  // (a failed assert shows only its message there). The playground runs one file and calls only
+  // main, so the other tests go, and so do the test file's import of the
+  // module and any import the module already has.
+  function playgroundTests(q, moduleCode) {
+    var helpers = [];
+    var main = [];
+    var test = null;           // the test function these lines are in
+    var skipping = false;      // in a dropped import's {…}
+    var lines = q.gleam.test.split('\n');
+    lines.forEach(function (line, i) {
+      var start = /^pub fn (\w+)\(\)[^{]*\{$/.exec(line);
+      var path = (/^import ([\w\/]+)/.exec(line) || [])[1];
+      if (skipping) {
+        skipping = line.charAt(0) !== '}';
+      } else if (start) {
+        test = start[1];
+      } else if (test) {
+        if (line === '}') test = null;
+        else if (q.gleam.tests.indexOf(test) >= 0) {
+          var left = assertLeftSide(lines, i);
+          if (left) main.push(/^\s*/.exec(line)[0] + 'echo ' + left);
+          main.push(line);
+        }
+      } else if (path && (path === q.gleam.module ||
+                 new RegExp('^import ' + path + '\\b', 'm').test(moduleCode))) {
+        skipping = /\{[^}]*$/.test(line);
+      } else {
+        helpers.push(line);
+      }
+    });
+    return helpers.join('\n').trim() +
+      '\n\npub fn main() {\n' + main.join('\n') + '\n}\n';
+  }
+
+  function playgroundUrl(qid) {
+    if (!window.LZString) return PLAYGROUND_URL;
+    var code = gleamModule(qid).code;
+    code = clampCode(code + '\n\n' + playgroundTests(questions[qid], code));
+    return PLAYGROUND_URL + '#' + window.LZString.compressToBase64(
+      JSON.stringify({ version: 1, content: code.replace(/\n{3,}/g, '\n\n') }));
+  }
+
+  // Built once a Gleam question has both its editor and its Verify widget,
+  // and rebuilt as it is followed, like Visualize (see freshenLink).
+  function buildPlayground(qid) {
+    var q = questions[qid];
+    if (OBSERVER || q.playground || !q.gleam || !api(q)) return;
+    var actions = q.wrapper.querySelector('.code-editor-actions');
+    if (!actions) return;
+    if (!window.LZString &&
+        !document.querySelector('script[src="' + LZ_STRING_URL + '"]')) {
+      var script = document.createElement('script');
+      script.src = LZ_STRING_URL;
+      document.head.appendChild(script);
+    }
+    var link = document.createElement('a');
+    link.className = 'discuss-playground';
+    link.href = PLAYGROUND_URL;
+    link.target = '_blank';
+    link.rel = 'noopener';
+    link.textContent = 'Playground';
+    link.title = 'Run this code and its tests in the Gleam playground ' +
+                 '(opens a new tab)';
+    ['pointerdown', 'focus', 'click'].forEach(function (event) {
+      link.addEventListener(event, function () {
+        if (!showingMember(q)) link.href = playgroundUrl(qid);
+      });
+    });
+    actions.prepend(link);
+    q.playground = link;
+  }
+
   document.querySelectorAll('.discuss-check').forEach(function (box) {
     var qid = checkTarget(box);
     if (!qid) return;
@@ -1004,6 +1115,7 @@
     q.output = output;
     q.notes = notes;
     buildVisualize(qid);
+    buildPlayground(qid);
     showMarks(qid);
     // A cooldown that a reload interrupted picks up where it left off.
     if (!OBSERVER && cooldowns[qid] > Date.now()) startCooldown(qid, cooldowns[qid]);
