@@ -231,7 +231,7 @@ take the Data C88C final exam in the next final exam slot: 3pm-6pm Wednesday
 
 Exam Study Guides:
 - [Midterm 1]({% link assets/study-guides/c88c-midterm-1-study-guide.pdf %})
-- Midterm 2 (to be posted)
+- [Midterm 2]({% link assets/study-guides/c88c-midterm-2-study-guide.pdf %})
 - Final (to be posted)
 
 ### Excused Exams & Incompletes
