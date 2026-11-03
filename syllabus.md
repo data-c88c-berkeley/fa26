@@ -326,8 +326,9 @@ broken down as follows:
 - The final exam, worth 60 points (paper-based)
 - Quizzes, worth 10 points (computer-based; only the best 5 quiz scores, out of 8 total quizzes, are counted)
 - Homework, worth 10 points
-- Two projects, worth 50 points
+- Two projects, worth 45 points
 - Lab, worth 10 points
+- 5 free points (These were originally listed as project points, but now they're free)
 
 Lab 0 is not graded. Attending a lab and fully completing the lab assignment earns one lab point, up to a maximum of 10. Students in the mega lab must complete lab assignments (but need not attend for credit).
 
