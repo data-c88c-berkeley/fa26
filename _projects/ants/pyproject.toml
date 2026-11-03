@@ -1,0 +1,9 @@
+[project]
+name = "ants"
+version = "0.1.0"
+description = "Server for the Ants Vs. SomeBees GUI: runs the game engine and streams events to the browser over a WebSocket."
+requires-python = ">=3.11"
+dependencies = [
+    "flask>=3.0.1",
+    "flask-socketio>=5.3.6",
+]

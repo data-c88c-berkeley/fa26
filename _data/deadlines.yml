@@ -123,3 +123,24 @@ deadlines:
   label: Homework 7
   title: Classes
   link: /hw/hw07/
+- when: Mon 11/9
+  day: '2026-11-09'
+  kind: proj
+  label: Project 2
+  title: Ants Vs. SomeBees
+  link: /projects/ants/
+  what: checkpoint 1
+- when: Fri 11/13
+  day: '2026-11-13'
+  kind: proj
+  label: Project 2
+  title: Ants Vs. SomeBees
+  link: /projects/ants/
+  what: checkpoint 2
+- when: Mon 11/16
+  day: '2026-11-16'
+  kind: proj
+  label: Project 2
+  title: Ants Vs. SomeBees
+  link: /projects/ants/
+  note: 1 bonus point for submitting by Sun 11/15

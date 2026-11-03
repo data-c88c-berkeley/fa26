@@ -1,0 +1,1621 @@
+---
+title: "Ants Vs. SomeBees"
+layout: assignment
+nav_exclude: true
+excerpt_separator: ""
+due: "Monday 11/16"
+earlydue: "Sunday 11/15"
+---
+
+{% raw %}
+<header class="assignment-header"><h1>Ants Vs. SomeBees</h1><ul class="assignment-facts"><li><strong>Due:</strong> Monday 11/16 @ 11:59pm</li><li><strong>Points:</strong> 25</li><li><strong>Download:</strong> <a href="ants.zip">ants.zip</a></li></ul></header>
+<p class="assignment-intro">To receive credit, you must solve each problem and then complete a short checkoff interview about your solution. You may use Preceptor for the interview or come to office hours to be interviewed by a member of the course staff. If the interviews are not working, please still submit your working code on time or request an extension by the deadline. <strong>Staff will be doing in-person checkoffs for up to 3 business days after the assignment deadline (including any approved extension)</strong>. If a checkoff happens more than 3 business days after the regular deadline, staff may ask to confirm your extended deadline via Flextensions. You will submit a Provenance bundle that includes a record of how you used VS Code, including interactions with Preceptor. Please do not use AI tools other than Preceptor for this assignment.</p>
+<style>
+table.ant {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  border: 1px solid #000;
+}
+
+table.ant td {
+  border: 1px solid #000;
+  text-align: center;
+  vertical-align: middle;
+}
+
+table.ant img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
+</style>
+<img src="assets/splash.png" alt="Ants vs. SomeBees" style="width: 90%; height: auto;" />
+<blockquote>
+<cite>
+  The bees are coming!<br>
+  Create a better soldier<br>
+  With inherit-ants.
+</cite>
+</blockquote>
+<blockquote>
+<p><strong>Important submission note:</strong> For full credit:</p>
+<ul>
+<li>Submit with Phase 1 complete by <strong>Monday 11/09</strong>, worth 1 pt.</li>
+<li>Submit with Phase 1 and Phase 2 complete by <strong>Friday 11/13</strong>, worth 1 pt.</li>
+<li>Submit the complete project by <strong>Monday 11/16</strong>.</li>
+</ul>
+<p>Try to attempt the problems in order, including running the tests for each problem
+as you progress, since some later problems will depend on earlier problems in their implementation.</p>
+<p>You may complete the project with a partner.</p>
+<p>You can get 1 bonus point by submitting the entire project by <strong>Sunday 11/15</strong>.
+You can receive extensions on the project deadline and checkpoint
+deadline, but not on the early deadline, unless you're a DSP student with an
+accommodation for assignment extensions.</p>
+</blockquote>
+<h2 id="introduction">Introduction</h2>
+<p>In this project, you will create a <a href="https://secure.wikimedia.org/wikipedia/en/wiki/Tower_defense">tower defense</a> game called Ants Vs.
+SomeBees. You populate your colony with the bravest ants you
+can muster. Your ants must protect their queen from the evil bees invading
+your territory. Irritate the bees enough by throwing leaves at them, and they
+will be vanquished. Fail to pester the airborne intruders adequately, and your
+queen will succumb to the bees' wrath. This game is inspired by PopCap Games'
+<a href="https://www.ea.com/studios/popcap/plants-vs-zombies">Plants Vs. Zombies</a>.</p>
+<p>This project uses an object-oriented programming paradigm,
+focusing on material from <a href="https://composingprograms.com/pages/25-object-oriented-programming.html">Chapter 2.5</a> of Composing Programs. The
+project also involves understanding, extending, and testing a large program.</p>
+<h2 id="download-starter-files">Download starter files</h2>
+<p>To get started, download all of the project code as a <a href="ants.zip">zip archive</a>.
+Below is a list of all the files you will see in the archive once unzipped.
+For the project, you'll only be making changes to <a href="ants.py.html"><code>ants.py</code></a>.</p>
+<ul>
+<li><a href="ants.py.html"><code>ants.py</code></a>: The game logic of Ants Vs. SomeBees</li>
+<li><a href="ants_plans.py.html"><code>ants_plans.py</code></a>: The details of each difficulty level</li>
+<li><a href="gui.py.html"><code>gui.py</code></a>: A graphical user interface (GUI) for Ants Vs. SomeBees</li>
+<li><a href="ucb.py.html"><code>ucb.py</code></a>: Utility functions for CS 61A</li>
+<li><code>tests</code>: The pytest-grader test suite</li>
+<li><a href="pyproject.toml.html"><code>pyproject.toml</code></a> and <a href="uv.lock.html"><code>uv.lock</code></a>: The GUI's dependencies (Flask), installed automatically the first time you run <code>uv run python gui.py</code></li>
+<li><code>static</code>: A directory of images and files used by <a href="gui.py.html"><code>gui.py</code></a></li>
+<li><code>templates</code>: A directory of HTML templates used by <a href="gui.py.html"><code>gui.py</code></a></li>
+</ul>
+<p>You may notice some files other than the ones listed above too—those are needed for the test runner and portions of the GUI work. Please do not modify any files other than <a href="ants.py.html"><code>ants.py</code></a>.</p>
+<h2 id="the-game">The Game</h2>
+<p>A game of Ants Vs. SomeBees consists of a series of turns. In each turn, new
+bees may enter the ant colony. Then, new ants are placed to defend their colony.
+Finally, all insects (ants, then bees) take individual actions. Bees either try
+to move toward the end of the tunnel or sting ants in their way. Ants perform a
+different action depending on their type, such as collecting more food or
+throwing leaves at the bees. The game ends either when a bee reaches the end of
+the tunnel (ants lose), the bees destroy a <code>QueenAnt</code> if it exists (ants lose),
+or the entire bee fleet has been vanquished (ants win).</p>
+<img src="assets/screenshot.gif" alt="Ants vs. SomeBees gameplay" style="width: 100%; height: auto;" />
+<h3 id="core-concepts">Core concepts</h3>
+<p><strong>The Colony</strong>. This is where the game takes place. The colony consists of
+several <code>Place</code>s that are chained together to form tunnels through which the
+bees travel. The colony also has some quantity of food which can be expended in
+order to place an ant in a tunnel.</p>
+<p><strong>Places</strong>. A place links to another place to form a tunnel. The player can
+put a single ant into each place. However, there can be many bees in a single
+place.</p>
+<p><strong>The Hive</strong>. This is the place where bees originate. Bees exit the beehive to
+enter the ant colony.</p>
+<p><strong>Ants</strong>. The player places an ant into the colony by selecting from the
+available ant types at the top of the screen.
+Each type of ant takes a different action and requires a different
+amount of colony food to place. The two most basic ant types are the <code>HarvesterAnt</code>,
+which adds one food to the colony during each turn, and the <code>ThrowerAnt</code>, which
+throws a leaf at a bee each turn. You will be implementing many more!</p>
+<p><strong>Bees</strong>. Each turn, a bee either advances to the next place in the tunnel if no
+ant is in its way, or it stings the ant in its way. Bees win when at least one
+bee reaches the end of a tunnel. In addition to the orange bees, there are
+yellow wasps that do double damage and a green boss bee that is quite difficult
+to vanquish.</p>
+<h3 id="core-classes">Core classes</h3>
+<p>The concepts described above each have a corresponding class that encapsulates
+the logic for that concept. Here is a summary of the main classes involved in
+this game:</p>
+<ul>
+<li><strong><code>GameState</code></strong>: Represents the colony and some state information about the game,
+including how much food is available, how much time has elapsed, where the
+<code>AntHomeBase</code> is, and all the <code>Place</code>s in the game.</li>
+<li><strong><code>Place</code></strong>: Represents a single place that holds insects. At most one <code>Ant</code> can
+be in a single place, but there can be many <code>Bee</code>s in a single place. <code>Place</code> objects have an
+<code>exit</code> to the left and an <code>entrance</code> to the right, which are also places.
+Bees travel through a tunnel by moving to each <code>Place</code>'s <code>exit</code> to reach the next <code>Place</code>.</li>
+<li><strong><code>Hive</code></strong>: Represents the place where <code>Bee</code>s start out (on the right of the tunnel).</li>
+<li><strong><code>AntHomeBase</code></strong>: Represents the place <code>Ant</code>s are defending (on the left of the tunnel). If <code>Bee</code>s get here, they win :(</li>
+<li><strong><code>Insect</code></strong>: A base class for <code>Ant</code> and <code>Bee</code>. Each insect has a <code>health</code>
+attribute representing its remaining health and a <code>place</code> attribute representing the <code>Place</code> where
+it is currently located. During each turn, every active <code>Insect</code> in the game
+performs its <code>action</code>.</li>
+<li><strong><code>Ant</code></strong>: Represents ants. Each <code>Ant</code> subclass has special attributes or a
+special <code>action</code> that distinguish it from other <code>Ant</code> types. For example, a
+<code>HarvesterAnt</code> gets food for the colony and a <code>ThrowerAnt</code> attacks <code>Bee</code>s.
+Each ant type also has a <code>food_cost</code> attribute that indicates how much it
+costs to deploy one unit of that type of ant.</li>
+<li><strong><code>Bee</code></strong>: Represents bees. Each turn, a bee moves to the <code>exit</code> of
+its current <code>Place</code> if the <code>Place</code> is not <code>blocked</code> by an ant. Otherwise, it stings the
+ant occupying its current <code>Place</code>.</li>
+</ul>
+<h3 id="game-layout">Game Layout</h3>
+<p>Below is a visualization of a GameState.</p>
+<img src="assets/colony-drawing.png" alt="Diagram of the ant colony" style="width: 100%; height: auto;" />
+<p>To help visualize how all the classes fit together,
+<a href="assets/ants_diagram.pdf">here</a> is a diagram of all of the classes and their
+inheritance relationships.</p>
+<!-- ## Getting Started Videos
+
+These videos may provide some helpful direction for tackling the coding
+problems on the project.
+
+<blockquote><p>To see these videos, you should be logged into your berkeley.edu email.</p></blockquote>
+
+
+            <iframe width="560" height="315" src="https://youtube.com/embed/videoseries?list=PLx38hZJ5RLZdH1AQFUuP-ixu7nAEK4OLP"
+                frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" aria-label = "ants-getstarted"
+                allowfullscreen></iframe><p><a href='https://youtu.be/playlist?list=PLx38hZJ5RLZdH1AQFUuP-ixu7nAEK4OLP'> YouTube link </a></p> -->
+<h2 id="phase-1-basic-gameplay">Phase 1: Basic gameplay</h2>
+<p>In the first phase you will complete the implementation that will allow for
+basic gameplay with the two basic <code>Ant</code>s: the <code>HarvesterAnt</code> and the
+<code>ThrowerAnt</code>.</p>
+<!-- ### Problem 0 (0 pt)
+
+If you get stuck while answering these questions, you can try reading through
+`ants.py` again or asking questions on Ed.
+
+> **A note on unlocking tests**:
+> If you'd like to review the unlocking questions
+> after you have completed the unlocking test,
+> you can navigate to
+> the `tests` folder (within the `ants` folder).
+> For example, after unlocking Problem 0,
+> you can review the unlocking test at `tests/00.py`. -->
+<h3 id="problem-1-1-pt">Problem 1 (1 pt)</h3>
+<p><strong>Part A</strong>: Currently, there is no cost
+for placing any type of <code>Ant</code>, and so there is no challenge to the
+game. The base class <code>Ant</code> has a <code>food_cost</code> of
+zero. Override this class attribute for <code>HarvesterAnt</code> and <code>ThrowerAnt</code>
+according to the &quot;Food Cost&quot; column in the table below.</p>
+<table class="ant">
+  <tr>
+    <td><b>Class</b></td>
+    <td><b>Food Cost</b></td>
+    <td><b>Initial Health</b></td>
+  </tr>
+  <tr>
+    <td><img src="assets/ants/Harvester.gif" /> <br> <code>HarvesterAnt</code></td>
+    <td>2</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td><img src="assets/ants/Thrower.gif" /> <br> <code>ThrowerAnt</code></td>
+    <td>3</td>
+    <td>1</td>
+  </td>
+</table>
+<p><strong>Part B</strong>: Now that placing an <code>Ant</code> costs food, we need to be able to gather more food!
+To fix this issue, implement the <code>HarvesterAnt</code> class. A <code>HarvesterAnt</code> is a
+type of <code>Ant</code> that increases <code>gamestate.food</code> by 1 as its <code>action</code>.</p>
+<div class="pytest-command" data-command="python3 -m pytest -k q01 --unlock"><pre><code>python3 -m pytest -k q01 --unlock</code></pre></div>
+<details class="unlock-examples">
+<summary>Unlocking Examples</summary>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; from ants import *
+&gt;&gt;&gt; from ants_plans import *
+&gt;&gt;&gt; Ant.food_cost
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; HarvesterAnt.food_cost
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; ThrowerAnt.food_cost
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; beehive = Hive(make_test_assault_plan())
+&gt;&gt;&gt; gamestate = GameState(beehive, ant_types(), dry_layout, (1, 9))
+&gt;&gt;&gt; gamestate.food = 4
+&gt;&gt;&gt; harvester = HarvesterAnt()
+&gt;&gt;&gt; gamestate.food
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; harvester.action(gamestate) # Executing harvester&#x27;s action method. This symbolizes the ant taking one turn.
+&gt;&gt;&gt; gamestate.food
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; harvester.action(gamestate) # Harvester&#x27;s action is executed again.
+&gt;&gt;&gt; gamestate.food
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+</details>
+<div class="pytest-command" data-command="python3 -m pytest -k q01"><pre><code>python3 -m pytest -k q01</code></pre></div>
+<!--
+
+        <button id='toggle-1' class='btn btn-outline btn-lg alwaystoggle toggle'>
+        Hint Video<noscript> (enable JavaScript)</noscript>
+        </button>
+        <div class="solution toggle-1">
+<br>
+
+            <iframe width="560" height="315" src="https://youtube.com/embed/eypJ2SgZrhw"
+                frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" aria-label = "ants-problem1"
+                allowfullscreen></iframe><p><a href='https://youtu.be/eypJ2SgZrhw'> YouTube link </a></p>
+</div>
+-->
+<h3 id="problem-2-1-pt">Problem 2 (1 pt)</h3>
+<p>In this problem, you'll complete <code>Place.__init__</code> by adding code that tracks entrances. Right
+now, a <code>Place</code> keeps track only of its <code>exit</code>. We would like a <code>Place</code> to keep
+track of its <code>entrance</code> as well. A <code>Place</code> needs to track only one <code>entrance</code>.
+Tracking entrances will be useful when an <code>Ant</code> needs to see what <code>Bee</code>s are in
+front of it in the tunnel.</p>
+<p>However, simply passing an entrance to a <code>Place</code> constructor will be
+problematic; we would need to have both the <code>exit</code> and the <code>entrance</code> before
+creating a <code>Place</code>! (It's a <a href="https://en.wikipedia.org/wiki/Chicken_or_the_egg">chicken or the
+egg</a>
+problem.) To get around this problem, we will keep track of entrances in the
+following way instead. <code>Place.__init__</code> should use this logic:</p>
+<ul>
+<li>A newly created <code>Place</code> always starts with its <code>entrance</code> set to <code>None</code>.</li>
+<li>If the <code>Place</code> has an <code>exit</code>, then the <code>exit</code>'s <code>entrance</code> is set to
+that <code>Place</code>.</li>
+</ul>
+<blockquote>
+<p><strong>Hint:</strong> Remember that when the <code>__init__</code> method is called, the first parameter,
+<code>self</code>, is bound to the newly created object.</p>
+</blockquote>
+<!-- hack for separate blockquotes -->
+<blockquote>
+<p><strong>Hint:</strong> Try drawing out two <code>Place</code>s next to each other if things get confusing.
+In the GUI, a place's <code>entrance</code> is to its right while the <code>exit</code> is to its left.</p>
+</blockquote>
+<!-- hack for separate blockquotes -->
+<blockquote>
+<p><strong>Hint:</strong> Remember that <code>Place</code>s are not stored in a list, so you can't index into anything to access them. This means that you <strong>can't</strong> do something like <code>colony[index + 1]</code> to access an adjacent <code>Place</code>. How <em>can</em> you move from one place to another?</p>
+</blockquote>
+<img src="assets/colony-drawing.png" alt="Diagram of the ant colony" style="width: 100%; height: auto;" />
+<div class="pytest-command" data-command="python3 -m pytest -k q02 --unlock"><pre><code>python3 -m pytest -k q02 --unlock</code></pre></div>
+<details class="unlock-examples">
+<summary>Unlocking Examples</summary>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; from ants import *
+&gt;&gt;&gt; from ants_plans import *
+&gt;&gt;&gt; beehive, layout = Hive(make_test_assault_plan()), dry_layout
+&gt;&gt;&gt; dimensions = (1, 3)
+&gt;&gt;&gt; gamestate = GameState(beehive, ant_types(), layout, dimensions)
+&gt;&gt;&gt; place0 = Place(&#x27;place_0&#x27;)
+&gt;&gt;&gt; print(place0.exit)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; print(place0.entrance)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; place1 = Place(&#x27;place_1&#x27;, place0)
+&gt;&gt;&gt; place1.exit is place0
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; place0.entrance is place1
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+</details>
+<div class="pytest-command" data-command="python3 -m pytest -k q02"><pre><code>python3 -m pytest -k q02</code></pre></div>
+<!--
+
+        <button id='toggle-2' class='btn btn-outline btn-lg alwaystoggle toggle'>
+        Hint Video<noscript> (enable JavaScript)</noscript>
+        </button>
+        <div class="solution toggle-2">
+<br>
+
+            <iframe width="560" height="315" src="https://youtube.com/embed/VO_oTlLtJFk"
+                frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" aria-label = "ants-problem2"
+                allowfullscreen></iframe><p><a href='https://youtu.be/VO_oTlLtJFk'> YouTube link </a></p>
+</div>
+-->
+<h3 id="problem-3-2-pt">Problem 3 (2 pt)</h3>
+<p>In order for a <code>ThrowerAnt</code> to throw a leaf, it must know which <code>Bee</code> to hit.
+The provided implementation of the <code>nearest_bee</code> method in the <code>ThrowerAnt</code>
+class only allows <code>ThrowerAnt</code>s to hit <code>Bee</code>s in the same <code>Place</code>. Your job is to fix it
+so that a <code>ThrowerAnt</code> will <code>throw_at</code> the nearest <code>Bee</code> in front of it <strong>that is not still in the <code>Hive</code>.</strong>
+This includes <code>Bee</code>s that are in the same <code>Place</code> as a <code>ThrowerAnt</code></p>
+<blockquote>
+<p><strong>Hint:</strong> All <code>Place</code>s have an <code>is_hive</code> attribute, which is set to <code>True</code> when that
+place is the <code>Hive</code> and <code>False</code> otherwise.</p>
+</blockquote>
+<p>Change <code>nearest_bee</code> so that it returns a random <code>Bee</code> from the nearest <code>Place</code> that
+contains <code>Bee</code>s. Your implementation should follow this logic:</p>
+<ul>
+<li>Start from the <code>ThrowerAnt</code>'s current <code>Place</code>.</li>
+<li>If the <code>Place</code> contains one or more <code>Bee</code>s, return a random one. Otherwise, check the next <code>Place</code> in front of it (stored as the current <code>Place</code>'s entrance).</li>
+<li>Repeat this process until a <code>Bee</code> is found and returned. If no <code>Bee</code> is available to attack, return <code>None</code>.</li>
+<li>Ensure that <code>Bee</code>s in the <code>Hive</code> are never returned by <code>nearest_bee</code>.</li>
+</ul>
+<blockquote>
+<p><strong>Hint:</strong>: The <code>random_bee</code> function provided in <a href="ants.py.html"><code>ants.py</code></a> returns a random
+<code>Bee</code> from a list of <code>Bee</code>s or <code>None</code> if the list is empty.</p>
+</blockquote>
+<!-- hack for separate blockquotes -->
+<blockquote>
+<p><strong>Hint:</strong>: As a reminder, if there are no <code>Bee</code>s present at a <code>Place</code>,
+then the <code>bees</code> attribute of that <code>Place</code> instance will be an empty list.</p>
+</blockquote>
+<!-- hack for separate blockquotes -->
+<blockquote>
+<p><strong>Hint:</strong>: Having trouble visualizing the test cases?
+Try drawing them out on paper!
+The sample diagram provided in <a href="#game-layout">Game Layout</a> shows the first test case for this problem.</p>
+</blockquote>
+<div class="pytest-command" data-command="python3 -m pytest -k q03 --unlock"><pre><code>python3 -m pytest -k q03 --unlock</code></pre></div>
+<details class="unlock-examples">
+<summary>Unlocking Examples</summary>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; from ants import *
+&gt;&gt;&gt; beehive, layout = Hive(AssaultPlan()), dry_layout
+&gt;&gt;&gt; dimensions = (1, 9)
+&gt;&gt;&gt; gamestate = GameState(beehive, ant_types(), layout, dimensions)
+&gt;&gt;&gt; thrower = ThrowerAnt()
+&gt;&gt;&gt; ant_place = gamestate.places[&quot;tunnel_0_0&quot;]
+&gt;&gt;&gt; ant_place.add_insect(thrower)
+&gt;&gt;&gt; near_bee = Bee(2) # A Bee with 2 health
+&gt;&gt;&gt; far_bee = Bee(3)  # A Bee with 3 health
+&gt;&gt;&gt; hive_bee = Bee(4) # A Bee with 4 health
+&gt;&gt;&gt; hive_place = gamestate.beehive
+&gt;&gt;&gt; hive_place.is_hive # Check if this place is the Hive
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; hive_place.add_insect(hive_bee)
+&gt;&gt;&gt; thrower.nearest_bee() is hive_bee # Bees in the Hive can never be attacked
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; near_place = gamestate.places[&#x27;tunnel_0_3&#x27;]
+&gt;&gt;&gt; far_place = gamestate.places[&#x27;tunnel_0_6&#x27;]
+&gt;&gt;&gt; near_place.is_hive # Check if this place is the Hive
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; near_place.add_insect(near_bee)
+&gt;&gt;&gt; far_place.add_insect(far_bee)
+&gt;&gt;&gt; nearest_bee = thrower.nearest_bee()
+&gt;&gt;&gt; thrower.place is ant_place    # Don&#x27;t change self.place!
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; nearest_bee is far_bee
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; nearest_bee is near_bee
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; nearest_bee.health
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; thrower.action(gamestate)    # Attack! ThrowerAnts do 1 damage
+&gt;&gt;&gt; near_bee.health
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; far_bee.health
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; thrower.place is ant_place    # Don&#x27;t change self.place!
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+</details>
+<div class="pytest-command" data-command="python3 -m pytest -k q03"><pre><code>python3 -m pytest -k q03</code></pre></div>
+<!--
+
+        <button id='toggle-3' class='btn btn-outline btn-lg alwaystoggle toggle'>
+        Hint Video<noscript> (enable JavaScript)</noscript>
+        </button>
+        <div class="solution toggle-3">
+<br>
+
+            <iframe width="560" height="315" src="https://youtube.com/embed/8eRQC-devOQ"
+                frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" aria-label = "ants-problem3"
+                allowfullscreen></iframe><p><a href='https://youtu.be/8eRQC-devOQ'> YouTube link </a></p>
+</div>
+-->
+<h3 id="playing-the-game">Playing the game</h3>
+<p>After implementing <code>nearest_bee</code>, a <code>ThrowerAnt</code> should be able to <code>throw_at</code> a
+<code>Bee</code> in front of it that is not still in the <code>Hive</code>.</p>
+<p>Now you're ready to try what you've built. To start a graphical game, run:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>uv run python gui.py
+</code></pre></div></div>
+<p>The first time you run this, <code>uv</code> will automatically download and install the
+GUI's dependencies (Flask); later runs start immediately. After you start the
+graphical version, the game is (usually) available at http://127.0.0.1:31415/.</p>
+<p>The game has several options that you will use throughout the project,
+which you can view with <code>uv run python gui.py --help</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>usage: gui.py [-h] [-d DIFFICULTY] [-w] [--food FOOD]
+
+Play Ants vs. SomeBees
+
+optional arguments:
+  -h, --help     show this help message and exit
+  -d DIFFICULTY  sets difficulty of game (test/easy/normal/hard/extra-hard)
+  -w, --water    loads a full layout with water
+  --food FOOD    number of food to start with when testing
+</code></pre></div></div>
+<p>You can refresh the webpage to restart the game, but if you changed your code,
+you need to terminate <a href="gui.py.html"><code>gui.py</code></a> and run it again. To terminate <a href="gui.py.html"><code>gui.py</code></a>, you can
+hit <code>Ctrl + C</code> on the terminal.</p>
+<p>You cannot have multiple tabs of this same Ants GUI open simultaneously or they
+will all error.</p>
+<h2 id="checkpoint-1-submission">Checkpoint 1 Submission</h2>
+<p>Check to make sure that you completed all the problems in Phase 1:</p>
+<div class="pytest-command" data-command="python3 -m pytest --score"><pre><code>python3 -m pytest --score</code></pre></div>
+<p>When you run pytest, you'll still see that some tests are locked
+because you haven't completed the whole project yet. You'll get full credit for
+the checkpoint if you correctly complete all the problems up to this point.</p>
+<p>Once you are satisfied, submit the checkpoint: run <strong>Provenance: Prepare Submission Bundle</strong> from the VS Code command palette and upload the zip it creates to the Ants Checkpoint 1 assignment <strong>on Gradescope.</strong>
+Be sure to submit before the checkpoint deadline of Monday 11/09.
+For a refresher on how to create and submit your zip with Provenance, refer to <a href="../../labs/lab00/#task-c-submit-the-assignment">Lab 00</a>.</p>
+<!-- You can add a partner to your Gradescope submission by clicking on **Group Members** and entering their email address.
+Only one partner needs to submit to Gradescope. -->
+<p>Each partner must submit the version of the project that they typed to Gradescope.</p>
+<p><strong>Congratulations! You have finished Phase 1 of this project!</strong></p>
+<h2 id="phase-2-more-ants">Phase 2: More Ants!</h2>
+<p>Now that you've implemented basic gameplay with two types of <code>Ant</code>s, let's
+add some flavor to the ways ants can attack bees. In this problem and on, you'll be
+implementing several different <code>Ant</code>s with different attack strategies.</p>
+<p><strong>After you implement each <code>Ant</code> subclass in these sections, you'll need to set its
+<code>implemented</code> class attribute to <code>True</code></strong> so that that type of ant will show up in the
+GUI. Feel free to try out the game with each new ant to test the functionality!</p>
+<p>With all following ants from now on, try <code>uv run python gui.py</code> to play against a
+full swarm of bees in a multi-tunnel layout and try <code>-d hard</code> or
+<code>-d extra-hard</code> if you want a real challenge! If the bees are too numerous to
+vanquish, you might need to create some new ants.</p>
+<!-- ### Phase 2 Hint Videos
+
+        <button id='toggle-4' class='btn btn-outline btn-lg alwaystoggle toggle'>
+        Hint Video<noscript> (enable JavaScript)</noscript>
+        </button>
+        <div class="solution toggle-4">
+
+            <iframe width="560" height="315" src="https://youtube.com/embed/Do5iMHk1avU"
+                frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" aria-label = "ants-phase2"
+                allowfullscreen></iframe><p><a href='https://youtu.be/Do5iMHk1avU'> YouTube link </a></p>
+</div> -->
+<h3 id="problem-4-2-pt">Problem 4 (2 pt)</h3>
+<p>A <code>ThrowerAnt</code> is a powerful threat to the bees, but it has a high <code>food_cost</code>.
+In this problem, you'll implement two subclasses of <code>ThrowerAnt</code> that are less
+costly but have constraints on the distance they can throw:</p>
+<ul>
+<li>
+<p>The <code>LongThrower</code> can only <code>throw_at</code> a <code>Bee</code> that is found after following
+at least 5 <code>entrance</code> transitions. In other words, it cannot hit <code>Bee</code>s that are in the same
+<code>Place</code> as it or in the first 4 <code>Place</code>s in front of it. If there are two
+<code>Bee</code>s, one too close to the <code>LongThrower</code> and the other within its range,
+the <code>LongThrower</code> should only throw at the farther <code>Bee</code>, which is within its range, instead of trying to hit the closer <code>Bee</code>.</p>
+</li>
+<li>
+<p>The <code>ShortThrower</code> can only <code>throw_at</code> a <code>Bee</code> that is found after following
+at most 3 <code>entrance</code> transitions. In other words, it cannot throw at any <code>Bee</code>s further than 3
+<code>Place</code>s in front of it.</p>
+</li>
+</ul>
+<p>Neither of these specialized throwers can <code>throw_at</code> a <code>Bee</code> that is exactly 4
+<code>Place</code>s away.</p>
+<table class="ant">
+  <tr>
+    <td><b>Class</b></td>
+    <td><b>Food Cost</b></td>
+    <td><b>Initial Health</b></td>
+  </tr>
+  <tr>
+    <td><img src="assets/ants/Short.gif" /> <br>
+      <code>ShortThrower</code></td>
+    <td>2</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td><img src="assets/ants/Long.gif" /> <br> <code>LongThrower</code></td>
+    <td>2</td>
+    <td>1</td>
+  </tr>
+</table>
+<p>To implement these new throwing ants, your <code>ShortThrower</code> and <code>LongThrower</code> classes
+should inherit the <code>nearest_bee</code> method from the base <code>ThrowerAnt</code> class.</p>
+<p>Next, modify the <code>nearest_bee</code> method in <code>ThrowerAnt</code> to reference the <code>min_reach</code> and <code>max_reach</code> attributes, and only return a <code>Bee</code> from a <code>Place</code> if that <code>Place</code> is within range of the provided bounds. This is necessary because the range of <code>Place</code>s in which the <code>ShortThrower</code> and <code>LongThrower</code> ants can <code>throw_at</code> a <code>Bee</code> is limited by a <code>max_reach</code> and a <code>min_reach</code>, respectively.</p>
+<p>Make sure to give these <code>min_reach</code> and <code>max_reach</code> attributes appropriate
+values in the <code>ThrowerAnt</code> class so that the behavior of <code>ThrowerAnt</code> is
+unchanged. Then, implement the subclasses <code>LongThrower</code> and <code>ShortThrower</code>
+with appropriately constrained ranges.</p>
+<p>You should <strong>not</strong> need to repeat any code between <code>ThrowerAnt</code>,
+<code>ShortThrower</code>, and <code>LongThrower</code>.</p>
+<blockquote>
+<p><strong>Important:</strong>
+Make sure your class attributes are called <code>max_reach</code> and <code>min_reach</code>
+The tests directly reference these attribute names, and will error
+if you use another name for these attributes.</p>
+</blockquote>
+<!-- hack for separate blockquotes -->
+<blockquote>
+<p><strong>Hint:</strong> <code>float('inf')</code> returns an infinite positive value represented as a
+float that can be compared with other numbers.</p>
+</blockquote>
+<!-- hack for separate blockquotes -->
+<blockquote>
+<p><strong>Hint:</strong> <code>min_reach</code> and <code>max_reach</code> should mark an inclusive range.</p>
+</blockquote>
+<p>Don't forget to set the <code>implemented</code> class attribute of <code>LongThrower</code> and
+<code>ShortThrower</code> to <code>True</code>.</p>
+<div class="pytest-command" data-command="python3 -m pytest -k q04 --unlock"><pre><code>python3 -m pytest -k q04 --unlock</code></pre></div>
+<details class="unlock-examples" open>
+<summary>Unlocking Examples</summary>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; from ants import *
+&gt;&gt;&gt; beehive, layout = Hive(AssaultPlan()), dry_layout
+&gt;&gt;&gt; dimensions = (1, 9)
+&gt;&gt;&gt; gamestate = GameState(beehive, ant_types(), layout, dimensions)
+&gt;&gt;&gt; ShortThrower.food_cost
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; LongThrower.food_cost
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; short_t = ShortThrower()
+&gt;&gt;&gt; long_t = LongThrower()
+&gt;&gt;&gt; short_t.health
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; long_t.health
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+</details>
+<p>After writing code, test your implementation (rerun the tests for 03 to make sure they still work):</p>
+<div class="pytest-command" data-command="python3 -m pytest -k q03"><pre><code>python3 -m pytest -k q03</code></pre></div>
+<div class="pytest-command" data-command="python3 -m pytest -k q04"><pre><code>python3 -m pytest -k q04</code></pre></div>
+<!--
+
+        <button id='toggle-5' class='btn btn-outline btn-lg alwaystoggle toggle'>
+        Hint Video<noscript> (enable JavaScript)</noscript>
+        </button>
+        <div class="solution toggle-5">
+<br>
+
+            <iframe width="560" height="315" src="https://youtube.com/embed/MmnodaJn8wQ"
+                frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" aria-label = "ants-problem4"
+                allowfullscreen></iframe><p><a href='https://youtu.be/MmnodaJn8wQ'> YouTube link </a></p>
+</div>
+-->
+<p>👩🏽‍💻👨🏿‍💻 <a href="/articles/pair-programming">Pair programming?</a></p>
+<p>Remember to alternate between driver and navigator roles.
+The driver controls the keyboard;
+the navigator watches, asks questions, and suggests ideas.</p>
+<h3 id="problem-5-3-pt">Problem 5 (3 pt)</h3>
+<p>Implement the <code>FireAnt</code>, which does damage when it receives damage. Specifically,
+if it is damaged by <code>amount</code> health units, it does a damage of
+<code>amount</code> to all <code>Bee</code>s in its place (this is called <em>reflected damage</em>).
+If it dies, it does an additional amount of damage, as specified by its <code>damage</code> attribute,
+to all the <code>Bee</code>s in its place. The default value for the <code>damage</code> attribute in the <code>FireAnt</code> class is <code>3</code>.</p>
+<p>To implement this, override <code>FireAnt</code>'s <code>reduce_health</code> method.
+Your overriden method should call the <code>reduce_health</code> method inherited from
+the superclass (<code>Ant</code>) <em>which inherits from its superclass <code>Insect</code></em> to reduce the current <code>FireAnt</code> instance's <code>health</code>.
+Calling the <em>inherited</em> <code>reduce_health</code> method on a <code>FireAnt</code> instance reduces
+the insect's <code>health</code> by the given <code>amount</code> and removes the insect from its
+place if its <code>health</code> reaches zero or lower.</p>
+<blockquote>
+<p><strong>Hint:</strong>
+Do <em>not</em> call <code>self.reduce_health</code>,
+or you'll end up stuck in a recursive loop. (Can you see why?)</p>
+</blockquote>
+<p>However, your method needs to also include the <em>reflective damage</em> logic:</p>
+<ul>
+<li>Determine the <em>reflective damage</em> amount:
+start with the <code>amount</code> inflicted on the <code>FireAnt</code>,
+and then add <code>damage</code> if the ant's <code>health</code> has dropped to or below 0.</li>
+<li>For each <code>Bee</code> in the place, damage them with the total <em>reflective damage</em> amount by
+calling its appropriate <code>reduce_health</code> method.</li>
+</ul>
+<blockquote>
+<p><strong>Important:</strong>
+Remember that when any <code>Ant</code> loses all its health, it is removed from its <code>Place</code>,
+so pay careful attention to the order of your logic in <code>reduce_health</code>.</p>
+</blockquote>
+<table class="ant">
+  <tr>
+    <td><b>Class</b></td>
+    <td><b>Food Cost</b></td>
+    <td><b>Initial Health</b></td>
+  </tr>
+  <tr>
+    <td><img src="assets/ants/Fire.gif" /> <br> <code>FireAnt</code></td>
+    <td>5</td>
+    <td>3</td>
+  </td>
+</table>
+<blockquote>
+<p><strong>Important</strong>: Damaging a bee may cause it to be removed from its place; when an insect dies, it is removed from its current place. If you
+iterate over a list, but change the contents of that list at the same time,
+you <a href="https://docs.python.org/3/tutorial/controlflow.html#for-statements">may not visit all the elements</a>.
+This can be prevented by making a copy of the list.
+You can either use a list slice, or use the built-in <code>list</code> function to make sure
+the original list is not affected.</p>
+</blockquote>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;&gt; s = [1,2,3,4]
+&gt;&gt;&gt; s[:]
+[1, 2, 3, 4]
+&gt;&gt;&gt; list(s)
+[1, 2, 3, 4]
+&gt;&gt;&gt; (s[:] is not s) and (list(s) is not s)
+True
+</code></pre></div></div>
+<p>Once you've finished implementing the <code>FireAnt</code>, give it a class attribute
+<code>implemented</code> with the value <code>True</code>.</p>
+<blockquote>
+<p><strong>Note:</strong>
+Even though you are overriding the superclass's <code>reduce_health</code> function
+(<code>Ant.reduce_health</code>),
+you can still use this method in your implementation by calling it.</p>
+</blockquote>
+<div class="pytest-command" data-command="python3 -m pytest -k q05 --unlock"><pre><code>python3 -m pytest -k q05 --unlock</code></pre></div>
+<details class="unlock-examples">
+<summary>Unlocking Examples</summary>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; from ants import *
+&gt;&gt;&gt; beehive, layout = Hive(AssaultPlan()), dry_layout
+&gt;&gt;&gt; dimensions = (1, 9)
+&gt;&gt;&gt; gamestate = GameState(beehive, ant_types(), layout, dimensions)
+&gt;&gt;&gt; fire = FireAnt()
+&gt;&gt;&gt; FireAnt.food_cost
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; fire.health
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; from ants import *
+&gt;&gt;&gt; beehive, layout = Hive(AssaultPlan()), dry_layout
+&gt;&gt;&gt; dimensions = (1, 9)
+&gt;&gt;&gt; gamestate = GameState(beehive, ant_types(), layout, dimensions)
+&gt;&gt;&gt; place = gamestate.places[&#x27;tunnel_0_4&#x27;]
+&gt;&gt;&gt; fire = FireAnt(health=1)
+&gt;&gt;&gt; place.add_insect(fire)        # Add a FireAnt with 1 health
+&gt;&gt;&gt; place.add_insect(Bee(3))      # Add a Bee with 3 health
+&gt;&gt;&gt; place.add_insect(Bee(5))      # Add a Bee with 5 health
+&gt;&gt;&gt; len(place.bees)               # How many bees are there?
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; place.bees[0].action(gamestate)  # The first Bee attacks FireAnt
+&gt;&gt;&gt; fire.health
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; fire.place is None
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; len(place.bees)               # How many bees are left?
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; place.bees[0].health           # What is the health of the remaining Bee?
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; from ants import *
+&gt;&gt;&gt; beehive, layout = Hive(AssaultPlan()), dry_layout
+&gt;&gt;&gt; dimensions = (1, 9)
+&gt;&gt;&gt; gamestate = GameState(beehive, ant_types(), layout, dimensions)
+&gt;&gt;&gt; place = gamestate.places[&#x27;tunnel_0_4&#x27;]
+&gt;&gt;&gt; ant = FireAnt(health=1)           # Create a FireAnt with 1 health
+&gt;&gt;&gt; place.add_insect(ant)      # Add a FireAnt to place
+&gt;&gt;&gt; ant.place is place
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; place.remove_insect(ant)   # Remove FireAnt from place
+&gt;&gt;&gt; ant.place is place         # Is the ant&#x27;s place still that place?
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+</details>
+<div class="pytest-command" data-command="python3 -m pytest -k q05"><pre><code>python3 -m pytest -k q05</code></pre></div>
+<!--
+
+        <button id='toggle-6' class='btn btn-outline btn-lg alwaystoggle toggle'>
+        Hint Video<noscript> (enable JavaScript)</noscript>
+        </button>
+        <div class="solution toggle-6">
+<br>
+
+            <iframe width="560" height="315" src="https://youtube.com/embed/JgnWW7m-TW4"
+                frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" aria-label = "ants-problem5"
+                allowfullscreen></iframe><p><a href='https://youtu.be/JgnWW7m-TW4'> YouTube link </a></p>
+</div>
+-->
+<p>You can also test your program by playing a game or two! A <code>FireAnt</code> should
+destroy all co-located <code>Bee</code>s when it is stung. To start a game with ten food
+(for easy testing):</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>uv run python gui.py --food 10
+</code></pre></div></div>
+<h3 id="problem-6-1-pt">Problem 6 (1 pt)</h3>
+<p>We are going to add some protection to our glorious home base by implementing
+the <code>WallAnt</code>, an ant that does nothing each turn. A <code>WallAnt</code> is
+useful because it has a large <code>health</code> value.</p>
+<table class="ant">
+  <tr>
+    <td><b>Class</b></td>
+    <td><b>Food Cost</b></td>
+    <td><b>Initial Health</b></td>
+  </tr>
+  <tr>
+    <td><img src="assets/ants/Wall.gif" /> <br> <code>WallAnt</code></td>
+    <td>4</td>
+    <td>4</td>
+  </td>
+</table>
+<p>Unlike with previous ants, we have not provided you with a class statement.
+Implement the <code>WallAnt</code> class from scratch. Give it a class attribute <code>name</code>
+with the value <code>'Wall'</code> (so that the graphics work) and a class attribute
+<code>implemented</code> with the value <code>True</code> (so that you can use it in a game).</p>
+<blockquote>
+<p><strong>Hint:</strong>: Make sure you implement the <code>__init__</code> method too
+so the <code>WallAnt</code> starts off with the appropriate amount of <code>health</code>!</p>
+</blockquote>
+<div class="pytest-command" data-command="python3 -m pytest -k q06"><pre><code>python3 -m pytest -k q06</code></pre></div>
+<h3 id="problem-7-3-pt">Problem 7 (3 pt)</h3>
+<p>Implement the <code>HungryAnt</code>, which will select a random <code>Bee</code> from its <code>Place</code> and
+deal damage to the <code>Bee</code> equal to the <code>Bee</code>'s health, eating it whole. After
+eating a <code>Bee</code>, a <code>HungryAnt</code> must spend 3 turns chewing before being able to
+eat again. While the <code>HungryAnt</code> is chewing, it is not able to eat (deal damage
+to) any <code>Bee</code>s. If there is no <code>Bee</code> in its place available to eat, the
+<code>HungryAnt</code> will do nothing.</p>
+<p>We have not provided you with a class header.
+Implement the <code>HungryAnt</code> class from scratch. Give it a class attribute <code>name</code>
+with the value <code>'Hungry'</code> (so that the graphics work) and a class attribute
+<code>implemented</code> with the value <code>True</code> (so that you can use it in a game).</p>
+<blockquote>
+<p><strong>Hint:</strong>
+When a <code>Bee</code> is eaten, its <code>health</code> should be reduced by its <code>health</code>.</p>
+</blockquote>
+<table class="ant">
+  <tr>
+    <td><b>Class</b></td>
+    <td><b>Food Cost</b></td>
+    <td><b>Initial Health</b></td>
+  </tr>
+  <tr>
+    <td><img src="assets/ants/Hungry.gif" /> <br> <code>HungryAnt</code></td>
+    <td>4</td>
+    <td>1</td>
+  </td>
+</table>
+<p>Give <code>HungryAnt</code> a <code>chew_cooldown</code> <strong>class</strong> attribute that stores the number of
+turns that it will take a <code>HungryAnt</code> to chew (set to 3). Also, give each
+<code>HungryAnt</code> an <strong>instance</strong> attribute <code>cooldown</code> that counts the number of turns
+it has left to chew, initialized to 0, since it hasn't eaten anything at the
+beginning. You can also think of <code>cooldown</code> as the number of turns until a
+<code>HungryAnt</code> can eat another <code>Bee</code>.</p>
+<p>Implement the <code>action</code> method of the <code>HungryAnt</code>: First, check if it is chewing; if
+so, decrement its <code>cooldown</code>. Otherwise, eat a random <code>Bee</code> in its
+<code>Place</code> by reducing the <code>Bee</code>'s health to 0. Make sure to set the <code>cooldown</code>
+when a <code>Bee</code> is eaten!</p>
+<blockquote>
+<p><strong>Hint:</strong>: Other than the <code>action</code> method, make sure you implement the <code>__init__</code>
+method too in order to define any instance variables and make sure that
+<code>HungryAnt</code> starts off with the appropriate amount of <code>health</code>!</p>
+</blockquote>
+<div class="pytest-command" data-command="python3 -m pytest -k q07 --unlock"><pre><code>python3 -m pytest -k q07 --unlock</code></pre></div>
+<details class="unlock-examples">
+<summary>Unlocking Examples</summary>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; from ants import *
+&gt;&gt;&gt; beehive, layout = Hive(AssaultPlan()), dry_layout
+&gt;&gt;&gt; dimensions = (1, 9)
+&gt;&gt;&gt; gamestate = GameState(beehive, ant_types(), layout, dimensions)
+&gt;&gt;&gt; hungry = HungryAnt()
+&gt;&gt;&gt; HungryAnt.food_cost
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; hungry.health
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; hungry.chew_cooldown
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; hungry.cooldown
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; from ants import *
+&gt;&gt;&gt; beehive, layout = Hive(AssaultPlan()), dry_layout
+&gt;&gt;&gt; dimensions = (1, 9)
+&gt;&gt;&gt; gamestate = GameState(beehive, ant_types(), layout, dimensions)
+&gt;&gt;&gt; hungry = HungryAnt()
+&gt;&gt;&gt; super_bee, wimpy_bee = Bee(1000), Bee(1)
+&gt;&gt;&gt; place = gamestate.places[&quot;tunnel_0_0&quot;]
+&gt;&gt;&gt; place.add_insect(hungry)
+&gt;&gt;&gt; place.add_insect(super_bee)
+&gt;&gt;&gt; hungry.action(gamestate)         # super_bee is no match for HungryAnt!
+&gt;&gt;&gt; super_bee.health
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; place.add_insect(wimpy_bee)
+&gt;&gt;&gt; for _ in range(3):
+...     hungry.action(gamestate)     # chewing...not eating
+&gt;&gt;&gt; wimpy_bee.health
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; hungry.action(gamestate)         # back to eating!
+&gt;&gt;&gt; wimpy_bee.health
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+</details>
+<div class="pytest-command" data-command="python3 -m pytest -k q07"><pre><code>python3 -m pytest -k q07</code></pre></div>
+<p>👩🏽‍💻👨🏿‍💻 <a href="/articles/pair-programming">Pair programming?</a></p>
+<p>This would be a good time to switch roles.
+Switching roles makes sure
+that you both benefit from the learning experience of being in each role.</p>
+<h3 id="problem-8-3-pt">Problem 8 (3 pt)</h3>
+<p>Right now, our ants are quite frail. We'd like to provide a way to help them
+last longer against the onslaught of the bees. Enter the <code>ProtectorAnt</code>.</p>
+<table class="ant">
+  <tr>
+    <td><b>Class</b></td>
+    <td><b>Food Cost</b></td>
+    <td><b>Initial Health</b></td>
+  </tr>
+  <tr>
+    <td><img src="assets/ants/Protector.gif" /> <br> <code>ProtectorAnt</code></td>
+    <td>4</td>
+    <td>2</td>
+  </tr>
+</table>
+<p>To more easily implement the <code>ProtectorAnt</code>, we will break up this problem into 3 subparts.
+In each part, we will making changes in either the <code>ContainerAnt</code> class, <code>Ant</code>
+class, or <code>ProtectorAnt</code> class.</p>
+<blockquote>
+<p><strong>Note:</strong>
+We have separated out Question 8 into three different subparts. We recommend going through the unlocking test for each subpart before writing any code for it.
+You will be tested on each subpart, with each subpart worth one point, for a total of three points for the entire question.</p>
+</blockquote>
+<h4 id="problem-8a">Problem 8a</h4>
+<p>First, we will define and work in a <code>ContainerAnt</code> parent class that we will later use for our <code>ProtectorAnt</code>.</p>
+<p>A <code>ProtectorAnt</code> differs from a normal ant because it is a <code>ContainerAnt</code>; it can
+contain another ant and protect it, all in one <code>Place</code>. When a <code>Bee</code> stings the
+ant in a <code>Place</code> where one ant contains another, only the container is
+damaged. The ant inside the container can still perform its original action.
+If the container perishes, the contained ant still remains in the place (and
+can then be damaged).</p>
+<p>Each <code>ContainerAnt</code> has an instance attribute <code>ant_contained</code> that stores the ant it
+contains. This ant, <code>ant_contained</code>, initially starts off as <code>None</code> to indicate that there is no ant being
+stored yet. Implement the <code>store_ant</code> method so that it sets the <code>ContainerAnt</code>'s
+<code>ant_contained</code> instance attribute to the <code>ant</code> argument passed in. Then implement the
+<code>ContainerAnt</code>'s <code>action</code> method. This method will ensure that if our <code>ContainerAnt</code> currently contains an ant, <code>ant_contained</code>'s action is performed.</p>
+<p>In addition, to ensure that a container and its contained ant can both occupy a <code>Place</code> at
+the same time (a maximum of two ants per <code>Place</code>), but only if exactly one is a
+container, we can create an <code>can_contain</code> method.</p>
+<p>There is already an <code>Ant.can_contain</code> method, but it always returns <code>False</code>.
+<strong>Override</strong> the method <code>can_contain</code> in <code>ContainerAnt</code> so that it takes an ant <code>other</code> as an
+argument and returns <code>True</code> if:</p>
+<ul>
+<li>This <code>ContainerAnt</code> does not already contain another ant.</li>
+<li>The other ant is not a container.</li>
+</ul>
+<blockquote>
+<p><strong>Hint:</strong>
+You may find the <code>is_container</code> attribute that each <code>Ant</code> has useful for
+checking if a specific <code>Ant</code> is a container.</p>
+</blockquote>
+<div class="pytest-command" data-command="python3 -m pytest -k q08a --unlock"><pre><code>python3 -m pytest -k q08a --unlock</code></pre></div>
+<details class="unlock-examples">
+<summary>Unlocking Examples</summary>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; from ants import *
+&gt;&gt;&gt; beehive, layout = Hive(AssaultPlan()), dry_layout
+&gt;&gt;&gt; gamestate = GameState(beehive, ant_types(), layout, (1, 9))
+&gt;&gt;&gt; container = ContainerAnt(1)
+&gt;&gt;&gt; container2 = ContainerAnt(2)
+&gt;&gt;&gt; container3 = ContainerAnt(3)
+&gt;&gt;&gt; throw_long = LongThrower(1)
+&gt;&gt;&gt; container.can_contain(container2)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; container3.can_contain(throw_long)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; container = ContainerAnt(2)
+&gt;&gt;&gt; friend = HungryAnt()
+&gt;&gt;&gt; container.ant_contained is None
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; container.store_ant(friend)
+&gt;&gt;&gt; container.ant_contained is friend
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; container = ContainerAnt(2)
+&gt;&gt;&gt; container.ant_contained is not None
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; friend = HungryAnt()
+&gt;&gt;&gt; container.store_ant(friend)
+&gt;&gt;&gt; container.ant_contained is friend
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; place = gamestate.places[&quot;tunnel_0_0&quot;]
+&gt;&gt;&gt; place.add_insect(container)
+&gt;&gt;&gt; friend.place = place
+&gt;&gt;&gt; bee = Bee(3)
+&gt;&gt;&gt; place.add_insect(bee)
+&gt;&gt;&gt; container.action(gamestate)  # Container holds a HungryAnt that loves to eat!
+&gt;&gt;&gt; bee.health
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; container.can_contain(FireAnt()) # Container already holds another ant!
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+</details>
+<div class="pytest-command" data-command="python3 -m pytest -k q08a"><pre><code>python3 -m pytest -k q08a</code></pre></div>
+<h4 id="problem-8b">Problem 8b</h4>
+<p>Next, we will be working in the <code>Ant</code> class.</p>
+<p>Modify <code>Ant.add_to</code> to allow a container and its contained ant
+to occupy the same place according to the following rules:</p>
+<ul>
+<li>If the <code>Ant</code> originally occupying a place <code>can_contain</code> the <code>Ant</code> being added,
+then both <code>Ant</code>s occupy the place and the original <code>Ant</code> contains the <code>Ant</code> being added.</li>
+<li>If the <code>Ant</code> being added <code>can_contain</code> the <code>Ant</code> originally in the space, then both <code>Ant</code>s occupy the place and the <code>Ant</code> being added contains the original <code>Ant</code>.</li>
+<li>If neither <code>Ant</code> <code>can_contain</code> the other, raise the same
+<code>AssertionError</code> as before (the one already present in the starter
+code).</li>
+</ul>
+<blockquote>
+<p><strong>Important:</strong> If there are two <code>Ant</code>s in a specific <code>Place</code>,
+the <code>ant</code> attribute of the <code>Place</code> instance should <strong>refer to the container
+ant</strong>, and the container ant should contain the non-container ant.</p>
+</blockquote>
+<!-- hack for separate blockquotes -->
+<blockquote>
+<p><strong>Hint:</strong>:
+You should also take advantage of the <code>can_contain</code> method you wrote
+and avoid repeating code.</p>
+</blockquote>
+<!-- hack for separate blockquotes -->
+<blockquote>
+<p><strong>Note:</strong>
+If you're getting an &quot;unreachable code&quot; warning for <code>Ant.add_to</code>
+via the VSCode Pylance extension,
+it's fine to ignore this specific warning
+as the code is actually run
+(the warning <em>in this case</em> is inaccurate).</p>
+</blockquote>
+<div class="pytest-command" data-command="python3 -m pytest -k q08b"><pre><code>python3 -m pytest -k q08b</code></pre></div>
+<h4 id="problem-8c">Problem 8c</h4>
+<p>Finally, we can work on implementing our <code>ProtectorAnt</code> class.</p>
+<p>Add a <code>ProtectorAnt.__init__</code> that sets the initial amount of health for the <code>ProtectorAnt</code>.
+We do not need to create an <code>action</code> method here since the <code>ProtectorAnt</code> class inherits it from the <code>ContainerAnt</code> class.
+Also note that the <code>ProtectorAnt</code> does not do any damage.</p>
+<p>Once you've finished implementing the <code>ProtectorAnt</code>,
+give it a class attribute <code>implemented</code> with the value <code>True</code>.</p>
+<div class="pytest-command" data-command="python3 -m pytest -k q08c --unlock"><pre><code>python3 -m pytest -k q08c --unlock</code></pre></div>
+<details class="unlock-examples">
+<summary>Unlocking Examples</summary>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; from ants import *
+&gt;&gt;&gt; protector = ProtectorAnt()
+&gt;&gt;&gt; ProtectorAnt.food_cost
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; protector.health
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+</details>
+<div class="pytest-command" data-command="python3 -m pytest -k q08c"><pre><code>python3 -m pytest -k q08c</code></pre></div>
+<h3 id="problem-9-2-pt">Problem 9 (2 pt)</h3>
+<p>The <code>ProtectorAnt</code> provides great defense, but they say the best defense is a
+good offense. The <code>TankAnt</code> is a <code>ContainerAnt</code> that protects an ant in its place
+and also deals 1 damage to all <code>Bee</code>s in its <code>Place</code> each turn. Like any <code>ContainerAnt</code>, a <code>TankAnt</code> allows the ant that it contains to perform its action each turn.</p>
+<table class="ant">
+  <tr>
+    <td><b>Class</b></td>
+    <td><b>Food Cost</b></td>
+    <td><b>Initial Health</b></td>
+  </tr>
+  <tr>
+    <td><img src="assets/ants/Tank.gif" /> <br> <code>TankAnt</code></td>
+    <td>6</td>
+    <td>2</td>
+  </tr>
+</table>
+<p>We have not provided you with a class header.
+Implement the <code>TankAnt</code> class from scratch. Give it a class attribute <code>name</code>
+with the value <code>'Tank'</code> (so that the graphics work) and a class attribute
+<code>implemented</code> with the value <code>True</code> (so that you can use it in a game).</p>
+<p>You should not need to modify any code outside of the <code>TankAnt</code> class. If you
+find yourself needing to make changes elsewhere, look for a way to write your
+code for the previous question such that it applies not just to <code>ProtectorAnt</code>
+and <code>TankAnt</code> objects, but to <code>ContainerAnt</code>s in general.</p>
+<blockquote>
+<p><strong>Hint:</strong>: The only methods you need to override from <code>TankAnt</code>'s parent class are <code>__init__</code> and <code>action</code>.</p>
+</blockquote>
+<!-- hack for separate blockquotes -->
+<blockquote>
+<p><strong>Hint:</strong>: Like with <code>FireAnt</code>, it is possible that damaging a bee will cause it to be removed from its place.</p>
+</blockquote>
+<div class="pytest-command" data-command="python3 -m pytest -k q09 --unlock"><pre><code>python3 -m pytest -k q09 --unlock</code></pre></div>
+<details class="unlock-examples">
+<summary>Unlocking Examples</summary>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; from ants_plans import *
+&gt;&gt;&gt; from ants import *
+&gt;&gt;&gt; beehive, layout = Hive(make_test_assault_plan()), dry_layout
+&gt;&gt;&gt; dimensions = (1, 9)
+&gt;&gt;&gt; gamestate = GameState(beehive, ant_types(), layout, dimensions)
+&gt;&gt;&gt; TankAnt.food_cost
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; TankAnt.damage
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; tank = TankAnt()
+&gt;&gt;&gt; tank.health
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+</details>
+<div class="pytest-command" data-command="python3 -m pytest -k q09"><pre><code>python3 -m pytest -k q09</code></pre></div>
+<h2 id="checkpoint-2-submission">Checkpoint 2 Submission</h2>
+<p>Check to make sure that you completed all the problems in Phase 1 and Phase 2:</p>
+<div class="pytest-command" data-command="python3 -m pytest --score"><pre><code>python3 -m pytest --score</code></pre></div>
+<p>When you run pytest, you'll still see that some tests are locked
+because you haven't completed the whole project yet. You'll get full credit for
+the checkpoint if you correctly complete all the problems up to this point.</p>
+<p>Once you are satisfied, submit the checkpoint: run <strong>Provenance: Prepare Submission Bundle</strong> from the VS Code command palette and upload the zip it creates to the Ants Checkpoint 2 assignment <strong>on Gradescope.</strong>
+Be sure to submit before the checkpoint deadline of Friday 11/13.
+For a refresher on how to create and submit your zip with Provenance, refer to <a href="../../labs/lab00/#task-c-submit-the-assignment">Lab 00</a>.</p>
+<!-- You can add a partner to your Gradescope submission by clicking on **Group Members** and entering their email address.
+Only one partner needs to submit to Gradescope. -->
+<p>Each partner must submit the version of the project that they typed to Gradescope.</p>
+<p><strong>Congratulations! You have finished Phase 1 and Phase 2 of this project!</strong></p>
+<h2 id="phase-3-water-and-might">Phase 3: Water and Might</h2>
+<p>In the final phase, you're going to add one last kick to the game by
+introducing a new type of place and new ants that are able to occupy this
+place. One of these ants is the most important ant of them all: the queen of
+the colony!</p>
+<!-- ### Phase 4 Hint Videos
+
+        <button id='toggle-7' class='btn btn-outline btn-lg alwaystoggle toggle'>
+        Hint Video<noscript> (enable JavaScript)</noscript>
+        </button>
+        <div class="solution toggle-7">
+
+            <iframe width="560" height="315" src="https://youtube.com/embed/YGIOrgD8I9c"
+                frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" aria-label = "ants-phase4"
+                allowfullscreen></iframe><p><a href='https://youtu.be/YGIOrgD8I9c'> YouTube link </a></p>
+</div> -->
+<h3 id="problem-10-1-pt">Problem 10 (1 pt)</h3>
+<p>Let's add water to the colony! Currently there are only two types of places, the
+<code>Hive</code> and a basic <code>Place</code>. To make things more interesting, we're going to
+create a new type of <code>Place</code> called <code>Water</code>.</p>
+<p>Only an <code>Insect</code> that is waterproof can be placed in <code>Water</code>. In order
+to determine whether an <code>Insect</code> is waterproof, add a new class attribute to the
+<code>Insect</code> class named <code>is_waterproof</code> that is set to <code>False</code>. Since <code>Bee</code>s can fly,
+their <code>is_waterproof</code> attribute is <code>True</code>, overriding the inherited value.</p>
+<p>Now, implement the <code>add_insect</code> method for <code>Water</code>. First, add the <code>Insect</code> to
+the <code>Place</code> regardless of whether it is waterproof. Then, if the <code>Insect</code> is not
+waterproof, reduce the <code>Insect</code>'s <code>health</code> to 0. <em>Do not repeat code from elsewhere
+in the program.</em> Instead, use methods that have already been defined.</p>
+<div class="pytest-command" data-command="python3 -m pytest -k q10 --unlock"><pre><code>python3 -m pytest -k q10 --unlock</code></pre></div>
+<details class="unlock-examples">
+<summary>Unlocking Examples</summary>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; from ants import *
+&gt;&gt;&gt; from ants_plans import *
+&gt;&gt;&gt; beehive, layout = Hive(make_test_assault_plan()), dry_layout
+&gt;&gt;&gt; dimensions = (1, 9)
+&gt;&gt;&gt; gamestate = GameState(beehive, ant_types(), layout, dimensions)
+&gt;&gt;&gt; test_bee = Bee(1000000)
+&gt;&gt;&gt; test_bee.is_waterproof = False    # Make Bee non-waterproof
+&gt;&gt;&gt; test_water = Water(&#x27;Water Test2&#x27;)
+&gt;&gt;&gt; test_water.add_insect(test_bee)
+&gt;&gt;&gt; test_bee.health
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; len(test_water.bees)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; test_bee = Bee(1)
+&gt;&gt;&gt; test_water = Water(&#x27;Water Test3&#x27;)
+&gt;&gt;&gt; test_water.add_insect(test_bee)
+&gt;&gt;&gt; test_bee.health
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; test_bee in test_water.bees
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+</details>
+<div class="pytest-command" data-command="python3 -m pytest -k q10"><pre><code>python3 -m pytest -k q10</code></pre></div>
+<p>Once you've finished this problem, play a game that includes water. To access
+the <code>wet_layout</code>, which includes water, add the <code>--water</code> option (or <code>-w</code> for
+short) when you start the game.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>uv run python gui.py --water
+</code></pre></div></div>
+<p>👩🏽‍💻👨🏿‍💻 <a href="/articles/pair-programming">Pair programming?</a></p>
+<p>Remember to alternate between driver and navigator roles.
+The driver controls the keyboard;
+the navigator watches, asks questions, and suggests ideas.</p>
+<h3 id="problem-11-2-pt">Problem 11 (2 pt)</h3>
+<p>Currently there are no ants that can be placed on <code>Water</code>. Implement the
+<code>ScubaThrower</code>, which is a subclass of <code>ThrowerAnt</code> that is more costly and
+waterproof, <em>but otherwise identical to its base class</em>. A <code>ScubaThrower</code> should
+not lose its health when placed in <code>Water</code>.</p>
+<table class="ant">
+  <tr>
+    <td><b>Class</b></td>
+    <td><b>Food Cost</b></td>
+    <td><b>Initial Health</b></td>
+  </tr>
+  <tr>
+    <td><img src="assets/ants/Scuba.gif" /> <br> <code>ScubaThrower</code></td>
+    <td>6</td>
+    <td>1</td>
+  </tr>
+</table>
+<p>We have not provided you with a class header. Implement the <code>ScubaThrower</code>
+class from scratch. Give it a class attribute <code>name</code> with the value <code>'Scuba'</code>
+(so that the graphics work) and remember to set the class attribute
+<code>implemented</code> with the value <code>True</code> (so that you can use it in a game).</p>
+<div class="pytest-command" data-command="python3 -m pytest -k q11 --unlock"><pre><code>python3 -m pytest -k q11 --unlock</code></pre></div>
+<details class="unlock-examples">
+<summary>Unlocking Examples</summary>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; from ants import *
+&gt;&gt;&gt; scuba = ScubaThrower()
+&gt;&gt;&gt; ScubaThrower.food_cost
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; scuba.health
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; scuba.name
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; scuba.is_waterproof
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; from ants import *
+&gt;&gt;&gt; beehive, layout = Hive(AssaultPlan()), wet_layout
+&gt;&gt;&gt; dimensions = (1, 9)
+&gt;&gt;&gt; gamestate = GameState(beehive, ant_types(), layout, dimensions)
+&gt;&gt;&gt; water = gamestate.places[&quot;water_0_2&quot;]
+&gt;&gt;&gt; ant = ScubaThrower()
+&gt;&gt;&gt; water.add_insect(ant)
+&gt;&gt;&gt; ant.place is water
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; ant.health
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; from ants import *
+&gt;&gt;&gt; beehive, layout = Hive(AssaultPlan()), wet_layout
+&gt;&gt;&gt; dimensions = (1, 9)
+&gt;&gt;&gt; gamestate = GameState(beehive, ant_types(), layout, dimensions)
+&gt;&gt;&gt; water = gamestate.places[&quot;water_0_2&quot;]
+&gt;&gt;&gt; ant = ThrowerAnt()
+&gt;&gt;&gt; ant.is_waterproof
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; water.add_insect(ant)
+&gt;&gt;&gt; ant.place is water
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; ant.health
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+</details>
+<div class="pytest-command" data-command="python3 -m pytest -k q11"><pre><code>python3 -m pytest -k q11</code></pre></div>
+<h3 id="problem-12-2-pt">Problem 12 (2 pt)</h3>
+<p>Finally, implement the <code>QueenAnt</code>. A queen is a <code>ThrowerAnt</code> that inspires her
+fellow ants through her bravery. In addition to the standard <code>ThrowerAnt</code>
+action, a <code>QueenAnt</code> doubles the damage of all the ants behind her in her tunnel each time she
+performs an action. However, once an ant's damage has been doubled, it <em>cannot</em> be
+doubled again. Try to think of a way to keep track of whether an ant's damage has already been doubled (Hint: Use an instance attribute!)</p>
+<blockquote>
+<p><strong>Note:</strong> The <em>reflected damage</em> of a <code>FireAnt</code> should not be doubled, only the
+extra damage it deals when its health is reduced to 0.</p>
+</blockquote>
+<table class="ant">
+  <tr>
+    <td><b>Class</b></td>
+    <td><b>Food Cost</b></td>
+    <td><b>Initial Health</b></td>
+  </tr>
+  <tr>
+    <td><img src="assets/ants/Queen.gif" /> <br> <code>QueenAnt</code></td>
+    <td>7</td>
+    <td>1</td>
+  </tr>
+</table>
+<p>However, with great power comes great responsibility.  If a <code>QueenAnt</code> ever has its
+health reduced to 0, the ants lose. You will need to override
+<code>Insect.reduce_health</code> in <code>QueenAnt</code> and call <code>ants_lose()</code> in that case in
+order to signal to the simulator that the game is over. (The ants also still
+lose if any bee reaches the end of a tunnel.)</p>
+<blockquote>
+<p><strong>Hint:</strong> For doubling the damage of all ants behind her, you may fill out the
+<code>double</code> method defined in the <code>Ant</code> class, then call it from the <code>QueenAnt</code>
+class.</p>
+</blockquote>
+<!-- hack for separate blockquotes -->
+<blockquote>
+<p><strong>Hint:</strong>
+When doubling the ants' damage,
+keep in mind that there can be more than one ant in a <code>Place</code>,
+like in the case of container ants storing another.</p>
+</blockquote>
+<!-- hack for separate blockquotes -->
+<blockquote>
+<p><strong>Hint:</strong>
+Remember that <code>QueenAnt</code>'s <code>reduce_health</code> method adds the additional task
+of calling <code>ants_lose()</code> to the superclass's <code>reduce_health</code> method.
+How can we make sure we still do everything from the superclass's method
+without repeating code?</p>
+</blockquote>
+<!-- hack for separate blockquotes -->
+<blockquote>
+<p><strong>Hint:</strong>
+You can find each <code>Place</code> in a tunnel behind a <code>QueenAnt</code> by starting at
+the queen's <code>place.exit</code> and then repeatedly moving back to the previous <code>Place</code>'s <code>exit</code>.
+The <code>exit</code> of a <code>Place</code> at the end of a tunnel is <code>None</code>.</p>
+</blockquote>
+<!-- hack for separate blockquotes -->
+<div class="pytest-command" data-command="python3 -m pytest -k q12 --unlock"><pre><code>python3 -m pytest -k q12 --unlock</code></pre></div>
+<details class="unlock-examples">
+<summary>Unlocking Examples</summary>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; from ants import *
+&gt;&gt;&gt; beehive = Hive(AssaultPlan())
+&gt;&gt;&gt; dimensions = (2, 9)
+&gt;&gt;&gt; gamestate = GameState(beehive, ant_types(), dry_layout, dimensions, food=100)
+&gt;&gt;&gt; QueenAnt.food_cost
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; queen = QueenAnt()
+&gt;&gt;&gt; queen.health
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+</details>
+<div class="pytest-command" data-command="python3 -m pytest -k q12"><pre><code>python3 -m pytest -k q12</code></pre></div>
+<h2 id="project-submission">Project Submission</h2>
+<p>Run pytest on all problems to make sure all tests are unlocked and pass:</p>
+<div class="pytest-command" data-command="python3 -m pytest"><pre><code>python3 -m pytest</code></pre></div>
+<p>You can also check your score on each part of the project:</p>
+<div class="pytest-command" data-command="python3 -m pytest --score"><pre><code>python3 -m pytest --score</code></pre></div>
+<p>Once you are satisfied, submit this assignment: run <strong>Provenance: Prepare Submission Bundle</strong> from the VS Code command palette and upload the zip it creates <strong>to Gradescope.</strong> For a refresher on how to do this, refer to <a href="../../labs/lab00/#task-c-submit-the-assignment">Lab 00</a>.</p>
+<!-- You can add a partner to your Gradescope submission by clicking on **Group Members** and entering their email address.
+Only one partner needs to submit to Gradescope. -->
+<p>Each partner must submit the version of the project that they typed to Gradescope.</p>
+<p><strong>You are now done with the project!</strong> If you haven't yet, you should try
+playing the game!</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>uv run python gui.py [-h] [-d DIFFICULTY] [-w] [--food FOOD]
+</code></pre></div></div>
+<h2 id="extra-challenges-optional">Extra Challenges (Optional)</h2>
+<blockquote>
+<p><strong>Note</strong>:
+These problems are <strong>optional</strong> and <strong>are not worth any points</strong>.</p>
+</blockquote>
+<!-- line break -->
+<blockquote>
+<p>During Office Hours and Project Parties, the staff will prioritize helping
+students with required questions. We will not be offering help with this
+question unless the <a href="https://oh.cs61a.org">queue</a> is empty.</p>
+</blockquote>
+<p>Implement two final thrower ants that do zero damage, but instead apply a temporary effect
+on the <code>action</code> method of a <code>Bee</code> instance that they <code>throw_at</code>.
+This &quot;status&quot; lasts for a certain number of turns, after which it ceases to take effect.</p>
+<h3 id="problem-ec-1-0-pt">Problem EC 1 (0 pt)</h3>
+<p>We will be implementing a new ant, <code>SlowThrower</code>, which inherits from <code>ThrowerAnt</code>.</p>
+<p><code>SlowThrower</code> throws sticky syrup at a bee, slowing it for 5 turns. When a bee is slowed, it does its regular Bee action when <code>gamestate.time</code> is even, and takes no action (does not move or sting) otherwise. If a bee is hit by syrup while it is already slowed, it is slowed for 5 turns starting from the <em>most recent</em> time it is hit by syrup. That is, if a bee is hit by syrup, takes 2 turns, and is hit by syrup again, it will now be slowed for 5 turns after the <em>second</em> time it is hit by syrup. So it will have been slowed for 7 turns total (not 10!).</p>
+<table class="ant">
+  <tr>
+    <td><b>Class</b></td>
+    <td><b>Food Cost</b></td>
+    <td><b>Initial Health</b></td>
+  </tr>
+  <tr>
+    <td><img src="assets/ants/Slow.gif" /> <br> <code>SlowThrower</code></td>
+    <td>6</td>
+    <td>1</td>
+  </tr>
+</table>
+<p>In order to complete the implementations of this <code>SlowThrower</code>, you will
+need to set its class attributes appropriately and implement the <code>throw_at</code> method in
+<code>SlowThrower</code>.</p>
+<p><strong>Important Restriction:</strong> You may <em>not</em> modify any code outside the <code>SlowThrower</code> class for this problem. That means you may <em>not</em> modify the <code>Bee.action</code> method directly. Our tests will check for this.</p>
+<blockquote>
+<p><strong>Hint</strong>: Take a look at <code>SlowThrower</code>'s parent class, <code>ThrowerAnt</code>. <code>ThrowerAnt</code>'s <code>action</code> method calls <code>throw_at</code>, which is what
+you should be overriding in <code>SlowThrower</code>. What is passed into the <code>target</code> parameter in <code>SlowThrower</code>'s <code>throw_at</code> function and why?
+What is <code>target.action</code> referring to?</p>
+</blockquote>
+<!-- line break -->
+<blockquote>
+<p><strong>Implementation Hint</strong>: Assign <code>target.action</code> to a new function that conditionally calls <code>Bee.action</code>. You can create and use an
+instance attribute to track how many more turns the bee will be slowed. Once the slowing effect is over, <code>Bee.action</code> should be called
+<em>every</em> turn again.</p>
+</blockquote>
+<div class="pytest-command" data-command="python3 -m pytest -k qEC1 --unlock"><pre><code>python3 -m pytest -k qEC1 --unlock</code></pre></div>
+<details class="unlock-examples" open>
+<summary>Unlocking Examples</summary>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; from ants import *
+&gt;&gt;&gt; beehive, layout = Hive(AssaultPlan()), dry_layout
+&gt;&gt;&gt; dimensions = (1, 9)
+&gt;&gt;&gt; gamestate = GameState(beehive, ant_types(), layout, dimensions)
+&gt;&gt;&gt; slow = SlowThrower()
+&gt;&gt;&gt; SlowThrower.food_cost
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; slow.health
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; from ants import *
+&gt;&gt;&gt; beehive, layout = Hive(AssaultPlan()), dry_layout
+&gt;&gt;&gt; dimensions = (1, 9)
+&gt;&gt;&gt; gamestate = GameState(beehive, ant_types(), layout, dimensions)
+&gt;&gt;&gt; slow = SlowThrower()
+&gt;&gt;&gt; bee = Bee(3)
+&gt;&gt;&gt; gamestate.places[&quot;tunnel_0_0&quot;].add_insect(slow)
+&gt;&gt;&gt; gamestate.places[&quot;tunnel_0_5&quot;].add_insect(bee)
+&gt;&gt;&gt; slow.action(gamestate) # slow throws syrup at bee
+&gt;&gt;&gt; gamestate.time = 1
+&gt;&gt;&gt; bee.action(gamestate) # slow causes slowness when gamestate.time is odd. bee should take no action (moving or stinging)
+&gt;&gt;&gt; bee.place.name
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; gamestate.time += 1
+&gt;&gt;&gt; bee.action(gamestate) # bee is not affected when gamestate.time is even. bee should take its regular action
+&gt;&gt;&gt; bee.place.name
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; for _ in range(5):
+...    gamestate.time += 1
+...    bee.action(gamestate)
+&gt;&gt;&gt; bee.place.name # hint: remember that the slow effect wears off after 5 turns. consider how many turns the bee was already affected before the for loop starts.
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; from ants import *
+&gt;&gt;&gt; beehive, layout = Hive(AssaultPlan()), dry_layout
+&gt;&gt;&gt; dimensions = (1, 9)
+&gt;&gt;&gt; gamestate = GameState(beehive, ant_types(), layout, dimensions)
+&gt;&gt;&gt; slow = SlowThrower()
+&gt;&gt;&gt; bee = Bee(3)
+&gt;&gt;&gt; gamestate.places[&quot;tunnel_0_0&quot;].add_insect(slow)
+&gt;&gt;&gt; gamestate.places[&quot;tunnel_0_5&quot;].add_insect(bee)
+&gt;&gt;&gt; slow.action(gamestate) # slow throws syrup at bee
+&gt;&gt;&gt; gamestate.time = 1
+&gt;&gt;&gt; bee.action(gamestate) # slow causes slowness when gamestate.time is odd. bee should take no action (moving or stinging)
+&gt;&gt;&gt; bee.place.name
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; gamestate.time += 1
+&gt;&gt;&gt; bee.action(gamestate) # bee is not affected when gamestate.time is even. bee should take its regular action
+&gt;&gt;&gt; bee.place.name
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; slow.action(gamestate) # slow throws syrup again. slow&#x27;s effects will take place for 5 more turns
+&gt;&gt;&gt; for _ in range(5):
+...    gamestate.time += 1
+...    bee.action(gamestate)
+&gt;&gt;&gt; bee.place.name
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+</details>
+<p>You can run some provided tests, but they are not exhaustive:</p>
+<div class="pytest-command" data-command="python3 -m pytest -k qEC1"><pre><code>python3 -m pytest -k qEC1</code></pre></div>
+<p>Make sure to test your code!  Your code should be able to apply
+multiple statuses on a target; each new status applies to the current
+(possibly previously affected) action method of the bee.</p>
+<h3 id="problem-ec-2-0-pt">Problem EC 2 (0 pt)</h3>
+<blockquote>
+<p>You must implement Problem EC 1 (SlowThrower) correctly in order to pass the tests for this problem.
+We will be implementing a new ant, <code>ScaryThrower</code>, which inherits from <code>ThrowerAnt</code>.</p>
+</blockquote>
+<p><code>ScaryThrower</code> intimidates a nearby bee, causing it to back away instead of advancing.
+Here are some rules to keep in mind:</p>
+<ol>
+<li>If the bee is already right next to the Hive and cannot go back further, it should not move. To check if a bee is next to the Hive, you might find the <code>is_hive</code> instance attribute of <code>Place</code> useful.</li>
+<li>Bees remain scared until they have tried to back away <em>twice</em>. So, the back away effect lasts two turns.</li>
+<li>Bees cannot try to back away if they are <em>slowed</em> and <code>gamestate.time</code> is <em>odd</em>. This would be a turn they're frozen by SlowThrower!</li>
+<li>Once a bee has been scared once, it can't be scared ever again.</li>
+</ol>
+<table class="ant">
+  <tr>
+    <td><b>Class</b></td>
+    <td><b>Food Cost</b></td>
+    <td><b>Initial Health</b></td>
+  </tr>
+  <tr>
+    <td><img src="assets/ants/Scary.gif" /> <br> <code>ScaryThrower</code></td>
+    <td>6</td>
+    <td>1</td>
+  </tr>
+</table>
+<p>In order to complete the implementation of this <code>ScaryThrower</code>, you will
+need to set its class attributes appropriately and implement the <code>scare</code> method in
+<code>Bee</code>, which applies the scared status on a particular bee. You may also have to edit some
+other methods of <code>Bee</code> such as action.</p>
+<div class="pytest-command" data-command="python3 -m pytest -k qEC2 --unlock"><pre><code>python3 -m pytest -k qEC2 --unlock</code></pre></div>
+<details class="unlock-examples">
+<summary>Unlocking Examples</summary>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; from ants import *
+&gt;&gt;&gt; beehive, layout = Hive(AssaultPlan()), dry_layout
+&gt;&gt;&gt; dimensions = (1, 9)
+&gt;&gt;&gt; gamestate = GameState(beehive, ant_types(), layout, dimensions)
+&gt;&gt;&gt; slow = SlowThrower()
+&gt;&gt;&gt; scary = ScaryThrower()
+&gt;&gt;&gt; SlowThrower.food_cost
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; ScaryThrower.food_cost
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; slow.health
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; scary.health
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; from ants import *
+&gt;&gt;&gt; beehive, layout = Hive(AssaultPlan()), dry_layout
+&gt;&gt;&gt; dimensions = (1, 9)
+&gt;&gt;&gt; gamestate = GameState(beehive, ant_types(), layout, dimensions)
+&gt;&gt;&gt; slow = SlowThrower()
+&gt;&gt;&gt; bee = Bee(3)
+&gt;&gt;&gt; gamestate.places[&quot;tunnel_0_0&quot;].add_insect(slow)
+&gt;&gt;&gt; gamestate.places[&quot;tunnel_0_5&quot;].add_insect(bee)
+&gt;&gt;&gt; slow.action(gamestate)
+&gt;&gt;&gt; gamestate.time = 1
+&gt;&gt;&gt; bee.action(gamestate)
+&gt;&gt;&gt; bee.place.name
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; gamestate.time += 1
+&gt;&gt;&gt; bee.action(gamestate)
+&gt;&gt;&gt; bee.place.name
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; for _ in range(3):
+...    gamestate.time += 1
+...    bee.action(gamestate)
+&gt;&gt;&gt; bee.place.name
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; from ants import *
+&gt;&gt;&gt; beehive, layout = Hive(AssaultPlan()), dry_layout
+&gt;&gt;&gt; dimensions = (1, 9)
+&gt;&gt;&gt; gamestate = GameState(beehive, ant_types(), layout, dimensions)
+&gt;&gt;&gt; scary = ScaryThrower()
+&gt;&gt;&gt; bee = Bee(3)
+&gt;&gt;&gt; gamestate.places[&quot;tunnel_0_0&quot;].add_insect(scary)
+&gt;&gt;&gt; gamestate.places[&quot;tunnel_0_4&quot;].add_insect(bee)
+&gt;&gt;&gt; scary.action(gamestate)
+&gt;&gt;&gt; bee.action(gamestate)
+&gt;&gt;&gt; bee.place.name # ScaryThrower should scare for two turns (first turn)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; bee.action(gamestate)
+&gt;&gt;&gt; bee.place.name # ScaryThrower should scare for two turns (second turn)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; bee.action(gamestate)
+&gt;&gt;&gt; bee.place.name # ScaryThrower effects have worn off
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; from ants import *
+&gt;&gt;&gt; beehive, layout = Hive(AssaultPlan()), dry_layout
+&gt;&gt;&gt; dimensions = (1, 9)
+&gt;&gt;&gt; gamestate = GameState(beehive, ant_types(), layout, dimensions)
+&gt;&gt;&gt; scary = ScaryThrower()
+&gt;&gt;&gt; harvester = HarvesterAnt()
+&gt;&gt;&gt; bee = Bee(3)
+&gt;&gt;&gt; gamestate.places[&quot;tunnel_0_0&quot;].add_insect(scary)
+&gt;&gt;&gt; gamestate.places[&quot;tunnel_0_4&quot;].add_insect(bee)
+&gt;&gt;&gt; gamestate.places[&quot;tunnel_0_5&quot;].add_insect(harvester)
+&gt;&gt;&gt; scary.action(gamestate)
+&gt;&gt;&gt; bee.action(gamestate)
+&gt;&gt;&gt; bee.place.name # ScaryThrower should scare for two turns
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; harvester.health
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; bee.action(gamestate)
+&gt;&gt;&gt; harvester.health
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; from ants import *
+&gt;&gt;&gt; beehive, layout = Hive(AssaultPlan()), dry_layout
+&gt;&gt;&gt; dimensions = (1, 9)
+&gt;&gt;&gt; gamestate = GameState(beehive, ant_types(), layout, dimensions)
+&gt;&gt;&gt; ScaryThrower.implemented
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; SlowThrower.implemented
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+</details>
+<div class="pytest-command" data-command="python3 -m pytest -k qEC2"><pre><code>python3 -m pytest -k qEC2</code></pre></div>
+<p>Make sure to test your code!  Your code should be able to apply
+multiple statuses on a target; each new status applies to the current
+(possibly previously affected) action method of the bee.</p>
+<h3 id="problem-ec-3-0-pt">Problem EC 3 (0 pt)</h3>
+<p>Implement the <code>NinjaAnt</code>, which damages all <code>Bee</code>s that pass by, but can never
+be stung.</p>
+<table class="ant">
+  <tr>
+    <td><b>Class</b></td>
+    <td><b>Food Cost</b></td>
+    <td><b>Initial Health</b></td>
+  </tr>
+  <tr>
+    <td><img src="assets/ants/Ninja.gif" /> <br> <code>NinjaAnt</code></td>
+    <td>5</td>
+    <td>1</td>
+  </td>
+</table>
+<p>A <code>NinjaAnt</code> does not block the path of a <code>Bee</code> that flies by. To implement
+this behavior, first modify the <code>Ant</code> class to include a new class attribute
+<code>blocks_path</code> that is set to <code>True</code>, then override the value of <code>blocks_path</code> to
+<code>False</code> in the <code>NinjaAnt</code> class.</p>
+<p>Second, modify the <code>Bee</code>'s method <code>blocked</code> to return <code>False</code> if either
+there is no <code>Ant</code> in the <code>Bee</code>'s <code>place</code> or if there is an <code>Ant</code>, but
+its <code>blocks_path</code> attribute is <code>False</code>. Now <code>Bee</code>s will just fly past
+<code>NinjaAnt</code>s.</p>
+<p>Finally, we want to make the <code>NinjaAnt</code> damage all <code>Bee</code>s that fly past.
+Implement the <code>action</code> method in <code>NinjaAnt</code> to reduce the health of all <code>Bee</code>s
+in the same <code>place</code> as the <code>NinjaAnt</code> by its <code>damage</code> attribute. Similar to
+the <code>FireAnt</code>, you must iterate over a potentially changing list of bees.</p>
+<blockquote>
+<p><strong>Hint</strong>: Having trouble visualizing the test cases? Try drawing them out on paper! See the example in <a href="#game-layout">Game Layout</a> for help.</p>
+</blockquote>
+<div class="pytest-command" data-command="python3 -m pytest -k qEC3 --unlock"><pre><code>python3 -m pytest -k qEC3 --unlock</code></pre></div>
+<details class="unlock-examples">
+<summary>Unlocking Examples</summary>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; from ants import *
+&gt;&gt;&gt; beehive, layout = Hive(AssaultPlan()), dry_layout
+&gt;&gt;&gt; dimensions = (1, 9)
+&gt;&gt;&gt; gamestate = GameState(beehive, ant_types(), layout, dimensions)
+&gt;&gt;&gt; ninja = NinjaAnt()
+&gt;&gt;&gt; ninja.health
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; NinjaAnt.food_cost
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; from ants import *
+&gt;&gt;&gt; beehive, layout = Hive(AssaultPlan()), dry_layout
+&gt;&gt;&gt; dimensions = (1, 9)
+&gt;&gt;&gt; gamestate = GameState(beehive, ant_types(), layout, dimensions)
+&gt;&gt;&gt; NinjaAnt.blocks_path
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; HungryAnt.blocks_path
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; FireAnt.blocks_path
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; from ants import *
+&gt;&gt;&gt; beehive, layout = Hive(AssaultPlan()), dry_layout
+&gt;&gt;&gt; dimensions = (1, 9)
+&gt;&gt;&gt; gamestate = GameState(beehive, ant_types(), layout, dimensions)
+&gt;&gt;&gt; p0 = gamestate.places[&quot;tunnel_0_0&quot;]
+&gt;&gt;&gt; p1 = gamestate.places[&quot;tunnel_0_1&quot;]  # p0 is p1&#x27;s exit
+&gt;&gt;&gt; bee = Bee(2)
+&gt;&gt;&gt; ninja = NinjaAnt()
+&gt;&gt;&gt; thrower = ThrowerAnt()
+&gt;&gt;&gt; p0.add_insect(thrower)            # Add ThrowerAnt to p0
+&gt;&gt;&gt; p1.add_insect(bee)
+&gt;&gt;&gt; p1.add_insect(ninja)              # Add the Bee and NinjaAnt to p1
+&gt;&gt;&gt; bee.action(gamestate)
+&gt;&gt;&gt; bee.place is ninja.place          # Did NinjaAnt block the Bee from moving?
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; bee.place is p0
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; ninja.health
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; bee.action(gamestate)
+&gt;&gt;&gt; bee.place is p0                   # Did ThrowerAnt block the Bee from moving?
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; from ants import *
+&gt;&gt;&gt; beehive, layout = Hive(AssaultPlan()), dry_layout
+&gt;&gt;&gt; dimensions = (1, 9)
+&gt;&gt;&gt; gamestate = GameState(beehive, ant_types(), layout, dimensions)
+&gt;&gt;&gt; p0 = gamestate.places[&quot;tunnel_0_0&quot;]
+&gt;&gt;&gt; p1 = gamestate.places[&quot;tunnel_0_1&quot;]  # p0 is p1&#x27;s exit
+&gt;&gt;&gt; bee = Bee(2)
+&gt;&gt;&gt; ninja_fire = FireAnt(1)
+&gt;&gt;&gt; ninja_fire.blocks_path = False
+&gt;&gt;&gt; thrower = ThrowerAnt()
+&gt;&gt;&gt; p0.add_insect(thrower)            # Add ThrowerAnt to p0
+&gt;&gt;&gt; p1.add_insect(bee)
+&gt;&gt;&gt; p1.add_insect(ninja_fire)              # Add the Bee and FireAnt to p1
+&gt;&gt;&gt; bee.action(gamestate)
+&gt;&gt;&gt; bee.place is ninja_fire.place          # Did the &quot;ninjaish&quot; FireAnt block the Bee from moving?
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; bee.place is p0
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; ninja_fire.health
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; bee.action(gamestate)
+&gt;&gt;&gt; bee.place is p0                   # Did ThrowerAnt block the Bee from moving?
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+</details>
+<div class="pytest-command" data-command="python3 -m pytest -k qEC3"><pre><code>python3 -m pytest -k qEC3</code></pre></div>
+<p>For a challenge, try to win a game using only <code>HarvesterAnt</code>
+and <code>NinjaAnt</code>.</p>
+<h3 id="problem-ec-4-0-pt">Problem EC 4 (0 pt)</h3>
+<p>We've been developing this ant for a long time in secret. It's so dangerous
+that we had to lock it in the super hidden underground vault, but we
+finally think it is ready to test out on the field. In this problem, you'll be
+implementing the final ant -- <code>LaserAnt</code>, a <code>ThrowerAnt</code> with a twist.</p>
+<table class="ant">
+  <tr>
+    <td><b>Class</b></td>
+    <td><b>Food Cost</b></td>
+    <td><b>Initial Health</b></td>
+  </tr>
+  <tr>
+    <td><img src="assets/ants/Laser.gif" /> <br> <code>LaserAnt</code></td>
+    <td>10</td>
+    <td>1</td>
+  </tr>
+</table>
+<p>The <code>LaserAnt</code> shoots out a powerful laser, damaging all that dare
+to stand in its path. Both <code>Bee</code>s and <code>Ant</code>s, of all types, are at
+risk of being damaged by <code>LaserAnt</code>. When a <code>LaserAnt</code> takes its action,
+it will damage all <code>Insect</code>s in its place (excluding itself, but including its
+container if it has one) and the <code>Place</code>s in front of it, excluding the <code>Hive</code>.</p>
+<p>If that were it, <code>LaserAnt</code> would be too powerful for us to contain.
+The <code>LaserAnt</code> has a base damage of <code>2</code>. But, <code>LaserAnt</code>'s laser comes with
+some quirks. The laser is weakened by <code>0.25</code> each place it travels away from
+<code>LaserAnt</code>'s place. Additionally, <code>LaserAnt</code> has limited battery.
+Each time <code>LaserAnt</code> actually damages an <code>Insect</code>, its
+laser's total damage goes down by <code>0.0625</code> (1/16). This reduction is immediate so if there are
+two <code>Bee</code>s in front of <code>LaserAnt</code> and on the same tile, it will do less damage to the second <code>Bee</code>.
+If <code>LaserAnt</code>'s damage becomes negative due to these restrictions,
+it simply does 0 damage instead.</p>
+<blockquote>
+<p>The exact order in which things are damaged within a turn does not matter.</p>
+</blockquote>
+<p>In order to complete the implementation of this ultimate ant, read
+through the <code>LaserAnt</code> class, set the class attributes appropriately,
+and implement the following two functions:</p>
+<ol>
+<li><code>insects_in_front</code> is an instance method, called by the <code>action</code> method,
+that returns a dictionary where each key is an <code>Insect</code> and each
+corresponding value is the distance (in places) that that <code>Insect</code> is away
+from <code>LaserAnt</code>. The dictionary should include all <code>Insects</code> on the same
+place or in front of the <code>LaserAnt</code>, excluding <code>LaserAnt</code> itself.</li>
+<li><code>calculate_damage</code> is an instance method that takes in <code>distance</code>, the
+distance that an insect is away from the <code>LaserAnt</code> instance. It
+returns the damage that the <code>LaserAnt</code> instance should afflict based on:
+<ul>
+<li>The <code>distance</code> away from the <code>LaserAnt</code> instance that an <code>Insect</code> is.</li>
+<li>The number of <code>Insect</code>s that this <code>LaserAnt</code> has already damaged, stored in
+the <code>insects_shot</code> instance attribute.</li>
+</ul>
+</li>
+</ol>
+<p>In addition to implementing the methods above, you may need to modify, add,
+or use class or instance attributes in the <code>LaserAnt</code> class as needed.</p>
+<blockquote>
+<p><strong>Important</strong>: If an insect's health is unaffected, its health should <em>remain as a whole number (integer)</em>, as it was when the insect was initially created.</p>
+</blockquote>
+<blockquote>
+<p><strong>Note</strong>: There are no unlocking tests for this question.</p>
+</blockquote>
+<div class="pytest-command" data-command="python3 -m pytest -k qEC4"><pre><code>python3 -m pytest -k qEC4</code></pre></div>
+<p><strong>Acknowledgments:</strong> Tom Magrino and Eric Tzeng developed this project with John
+DeNero. Many others have contributed to the project as well!</p>
+<p>The artwork was drawn by Alana Tran, Andrew Huang, Emilee Chen, Jessie Salas,
+Jingyi Li, Katherine Xu, Meena Vempaty, Michelle Chang, and Ryan Davis.</p>
+{% endraw %}
