@@ -130,17 +130,17 @@ deadlines:
   title: Ants Vs. SomeBees
   link: /projects/ants/
   what: checkpoint 1
-- when: Fri 11/13
-  day: '2026-11-13'
+- when: Tue 11/17
+  day: '2026-11-17'
   kind: proj
   label: Project 2
   title: Ants Vs. SomeBees
   link: /projects/ants/
   what: checkpoint 2
-- when: Mon 11/16
-  day: '2026-11-16'
+- when: Thu 11/19
+  day: '2026-11-19'
   kind: proj
   label: Project 2
   title: Ants Vs. SomeBees
   link: /projects/ants/
-  note: 1 bonus point for submitting by Sun 11/15
+  note: 1 bonus point for submitting by Wed 11/18
