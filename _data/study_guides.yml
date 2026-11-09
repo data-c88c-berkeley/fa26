@@ -1,0 +1,6 @@
+# Study guides appear in this order at the top of the Resources page.
+# Add another title and URL entry when a new guide is published.
+- title: Midterm 1 Study Guide
+  url: https://cs61a.org/resources/guides/fa26/c88c-mt1-study-guide.pdf
+- title: Midterm 2 Study Guide
+  url: https://cs61a.org/resources/guides/fa26/c88c-mt2-study-guide.pdf
