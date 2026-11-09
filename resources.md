@@ -8,6 +8,12 @@ nav_order: 5
 
 # Resources
 
+## Study Guides
+
+{% for guide in site.data.study_guides %}
+- [{{ guide.title }}]({{ guide.url }})
+{% endfor %}
+
 {: .note }
 Data C88C midterm 2 covers the same material as historical Fall/Spring CS 61A midterm 2 exams, except that this semester we will not cover two topics: Data Abstraction and Generators. All of the content in CS 61A Midterm 1 exams is included in Data C88C midterm 2. For Data C88C Midterm 1 study material, see the section below that provides problems by topic. A list of topics for Midterm 1 will appear on Ed.
 
