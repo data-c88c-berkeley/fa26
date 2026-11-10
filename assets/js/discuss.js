@@ -9,8 +9,10 @@
 //     against the code in the paired editor, plus a running ✅/❌ history of
 //     every press. The doctests come from the editor's published listing
 //     (cmEditor.original), never its current contents, so editing or
-//     deleting them cannot fake a pass. A failed verify cools the button
-//     down for 30 seconds, and a reload does not cut the wait short.
+//     deleting them cannot fake a pass. A failed verify names the first
+//     example that failed ("Example 2: f([2, 3, 4]) == 9", never the value
+//     it got) or the error, and cools the button down for 20 seconds (5
+//     after an error); a reload does not cut the wait short.
 //     A Gleam question's widget (render.gleam_check_box) carries its test
 //     module instead, and Verify compiles the code with the Gleam compiler
 //     (in WebAssembly, from the Gleam playground) and runs those tests.
@@ -324,7 +326,7 @@
   // The checker: run the student's code, then the doctests parsed from the
   // published listing. Everything returns through one JSON string.
   var HARNESS = [
-    'import ast, doctest, io, json, tokenize, traceback',
+    'import ast, doctest, io, json, tokenize',
     '',
     'def _discuss_examples(canonical):',
     '    # The doctests live in docstrings. Parsing the raw file text',
@@ -353,30 +355,74 @@
     '            if isinstance(text, str):',
     '                examples.extend(parser.get_examples(text))',
     '        return examples',
-    '    examples = []',
+    '    # In the order they appear in the listing, so that "Example 2" is',
+    '    # the second >>> a student counts from the top.',
+    '    docstrings = []',
     '    for node in ast.walk(tree):',
     '        if isinstance(node, (ast.Module, ast.ClassDef,',
     '                             ast.FunctionDef, ast.AsyncFunctionDef)):',
     '            docstring = ast.get_docstring(node, clean=False)',
     '            if docstring:',
-    '                examples.extend(parser.get_examples(docstring))',
+    '                docstrings.append((getattr(node, "lineno", 0), docstring))',
+    '    examples = []',
+    '    for _, docstring in sorted(docstrings, key=lambda d: d[0]):',
+    '        examples.extend(parser.get_examples(docstring))',
     '    return examples',
     '',
     'def _discuss_error(e):',
-    '    # The one line Python would print last: the type and its message',
-    '    # (a SyntaxError\'s names the line, since the code was compiled as',
-    '    # "your code").',
-    '    return type(e).__name__ + (": " + str(e) if str(e) else "")',
+    '    # The one line Python would print last, with the line of the',
+    '    # student\'s code it happened on (the code is compiled as "your',
+    '    # code"): "TypeError on line 3: unsupported operand ...".',
+    '    name = type(e).__name__',
+    '    if isinstance(e, SyntaxError) and e.filename == "your code":',
+    '        where, message = e.lineno, e.msg',
+    '    else:',
+    '        where, message = None, str(e)',
+    '        tb = e.__traceback__',
+    '        while tb is not None:',
+    '            if tb.tb_frame.f_code.co_filename == "your code":',
+    '                where = tb.tb_lineno',
+    '            tb = tb.tb_next',
+    '    return (name + (" on line " + str(where) if where else "")',
+    '            + (": " + message if message else ""))',
+    '',
+    'def _discuss_call(i, example):',
+    '    # Which example, and what it runs: "Example 2: f([2, 3, 4])".',
+    '    return "Example " + str(i) + ": " + example.source.strip()',
+    '',
+    'def _discuss_expected(example):',
+    '    # " == 9" for an example whose expected output is one line showing',
+    '    # a value, or "" (the student can read the rest in the doctest).',
+    '    # The output it got instead is never shown: that is the exercise.',
+    '    want = example.want.strip()',
+    '    source = example.source.strip()',
+    '    if not want or "\\n" in want or "\\n" in source or example.exc_msg:',
+    '        return ""',
+    '    try:',
+    '        tree = ast.parse(source, mode="eval").body',
+    '    except SyntaxError:',
+    '        return ""',
+    '    if (isinstance(tree, ast.Call) and isinstance(tree.func, ast.Name)',
+    '            and tree.func.id == "print"):',
+    '        return ""',
+    '    return " == " + want',
     '',
     'class _DiscussRunner(doctest.DocTestRunner):',
-    '    # Remembers the first exception an example raised, in one line.',
-    '    error = None',
+    '    # Notes what went wrong in an example instead of reporting it.',
+    '    problem = None',
+    '    def report_failure(self, out, test, example, got):',
+    '        self.problem = "failed"',
     '    def report_unexpected_exception(self, out, test, example, exc_info):',
-    '        if self.error is None:',
-    '            self.error = (example.source.strip() + " raised "',
-    '                          + _discuss_error(exc_info[1]))',
-    '        doctest.DocTestRunner.report_unexpected_exception(',
-    '            self, out, test, example, exc_info)',
+    '        self.problem = exc_info[1]',
+    '',
+    'def _discuss_progress(label):',
+    '    # Tell the page which example is running, so a run that times out',
+    '    # can say where it got stuck. (Only in the browser\'s worker.)',
+    '    try:',
+    '        from js import postMessage',
+    '    except ImportError:',
+    '        return',
+    '    postMessage(json.dumps({"progress": {"label": label}}))',
     '',
     'def _discuss_check(canonical, student, lib="", deps="[]"):',
     '    examples = _discuss_examples(canonical)',
@@ -403,13 +449,25 @@
     '    if not examples:',
     '        return json.dumps({"ok": False,',
     '            "error": "No doctests found for this question."})',
+    '    # One example at a time, all in the same namespace, stopping at the',
+    '    # first one that fails: it is the one reported.',
+    '    # (A DocTest copies its globals, so one DocTest runs them all.)',
+    '    runner = _DiscussRunner(verbose=False, optionflags=doctest.ELLIPSIS)',
     '    test = doctest.DocTest(examples, env, "question", None, 0, None)',
     '    out = io.StringIO()',
-    '    runner = _DiscussRunner(verbose=False,',
-    '        optionflags=doctest.ELLIPSIS)',
-    '    result = runner.run(test, out=out.write, clear_globs=False)',
-    '    return json.dumps({"ok": result.failed == 0, "error": runner.error,',
-    '        "output": out.getvalue()})',
+    '    for i, example in enumerate(examples, 1):',
+    '        label = _discuss_call(i, example)',
+    '        _discuss_progress(label)',
+    '        test.examples = [example]',
+    '        runner.problem = None',
+    '        runner.run(test, out=out.write, clear_globs=False)',
+    '        if runner.problem == "failed":',
+    '            return json.dumps({"ok": False,',
+    '                "failure": label + _discuss_expected(example)})',
+    '        if runner.problem is not None:',
+    '            return json.dumps({"ok": False,',
+    '                "error": label + " raised " + _discuss_error(runner.problem)})',
+    '    return json.dumps({"ok": True})',
   ].join('\n');
 
   // Pyodide runs in a worker so an infinite loop in student code cannot
@@ -433,7 +491,7 @@
     '    finally { check.destroy(); }',
     '    postMessage(out);',
     '  }).catch(function () {',
-    '    postMessage(JSON.stringify({ok: false, output: "runner error"}));',
+    '    postMessage(JSON.stringify({ok: false, crashed: true}));',
     '  });',
     '};',
   ].join('\n');
@@ -452,6 +510,14 @@
   function gleamWorker(base) {
     var project = null;
     var written = [];        // the modules the last verify wrote
+    var passed = null;       // the line of the running test's last passed assert
+    // Called by the instrumented test module after each assert that holds
+    // (see instrument), so that a test that crashes or runs forever can be
+    // traced to the assert it was on.
+    self.__discussPassed = function (line) {
+      passed = line;
+      postMessage(JSON.stringify({ progress: { passed: line } }));
+    };
     var ready = Promise.all([
       import(base + 'compiler.js'), import(base + 'stdlib.js'),
     ]).then(function (loaded) {
@@ -489,6 +555,41 @@
         btoa(unescape(encodeURIComponent(js)));
     }
 
+    // The compiled test module with a call to __discussPassed(line) after
+    // each assert's check, i.e. after the `if (...) { throw makeError(
+    // "assert", FILEPATH, module, line, ...) }` the compiler emits for it.
+    // Null when the code is not shaped that way (a newer compiler, say):
+    // then a crash or timeout is only traced to its test function.
+    function instrument(js) {
+      var find = /throw makeError\(\s*"assert",\s*FILEPATH,\s*"[^"]*",\s*(\d+),/g;
+      var out = '';
+      var from = 0;
+      var match;
+      while ((match = find.exec(js))) {
+        // Scan to the bracket that closes the enclosing block, skipping
+        // string literals (an assert's message can hold brackets).
+        var depth = 0;
+        var callEnd = -1;
+        var i = match.index;
+        for (; i < js.length; i++) {
+          var c = js[i];
+          if (c === '"') {
+            for (i++; i < js.length && js[i] !== '"'; i++) if (js[i] === '\\') i++;
+          } else if ('([{'.indexOf(c) >= 0) depth++;
+          else if (')]}'.indexOf(c) >= 0) {
+            if (depth === 0) break;
+            if (--depth === 0 && callEnd < 0) callEnd = i;
+          }
+        }
+        // Only a block that holds nothing but the throw.
+        if (js[i] !== '}' || !/^\s*;?\s*$/.test(js.slice(callEnd + 1, i))) return null;
+        out += js.slice(from, i + 1) + '\nself.__discussPassed(' + match[1] + ');';
+        from = i + 1;
+        find.lastIndex = from;
+      }
+      return out + js.slice(from);
+    }
+
     function check(data) {
       // Every module stays in the compiler's file system, so empty the last
       // verify's: a stale one that no longer compiles would fail this one.
@@ -505,29 +606,39 @@
       var local = {};
       local[data.module] = moduleUrl(
         project.readCompiledJavaScript(data.module), local);
-      return import(moduleUrl(project.readCompiledJavaScript(data.testModule),
-                              local)).then(function (tests) {
-        var failed = false;
-        var error = null;
-        data.tests.forEach(function (name) {
+      var testJs = project.readCompiledJavaScript(data.testModule);
+      var marked = instrument(testJs);
+      return import(moduleUrl(marked || testJs, local)).then(function (tests) {
+        // The tests in order, stopping at the first that fails: what went
+        // wrong there is what Verify reports.
+        for (var t = 0; t < data.tests.length; t++) {
+          var name = data.tests[t];
+          passed = null;
+          postMessage(JSON.stringify({ progress:
+            { test: name, passed: null, instrumented: !!marked } }));
           try {
             tests[name]();
           } catch (e) {
-            failed = true;
-            // A test's own failed assert is a wrong answer, not an error.
-            if (e && e.gleam_error === 'assert' && e.module === data.testModule) return;
-            if (!error) {
-              error = {
-                name: (e && e.name) || 'Error',
-                message: String((e && e.message) || e),
-                gleam: (e && e.gleam_error) || null,
-                module: (e && e.module) || null,
-                line: (e && e.line) || null,
-              };
+            // A test's own failed assert is a wrong answer: which assert
+            // (its line, and where its expression is in the test module's
+            // UTF-8 source) and its `as` message.
+            if (e && e.gleam_error === 'assert' && e.module === data.testModule) {
+              return { ok: false, failure: {
+                test: name, line: e.line, message: e.message,
+                start: e.expression_start, end: e.end,
+              } };
             }
+            return { ok: false, error: {
+              name: (e && e.name) || 'Error',
+              message: String((e && e.message) || e),
+              gleam: (e && e.gleam_error) || null,
+              module: (e && e.module) || null,
+              line: (e && e.line) || null,
+              test: name, passed: passed, instrumented: !!marked,
+            } };
           }
-        });
-        return { ok: !failed, error: error };
+        }
+        return { ok: true };
       });
     }
 
@@ -582,10 +693,15 @@
   }
 
   // Post MESSAGE to the LANGUAGE worker and resolve with its parsed result.
+  // Along the way a worker may post {progress: {...}} messages saying what
+  // it is running (Python: the example's label; Gleam: the test and its
+  // last passed assert); a run that times out or crashes the worker
+  // resolves with the latest as its `progress`.
   function runInWorker(language, message) {
     var run = runQueue.then(function () {
       return ensureWorker(language).then(function (w) {
         return new Promise(function (resolve) {
+          var progress = {};
           // Discard the worker; the next verify loads a fresh one. Used for
           // a run that runs too long or crashes the runtime (e.g. exhausts
           // its memory) — either way the page itself is never touched.
@@ -593,6 +709,7 @@
             var entry = workers[language];
             if (entry && entry.worker === w) delete workers[language];
             w.terminate();
+            result.progress = progress;
             resolve(result);
           }
           var timer = setTimeout(function () {
@@ -600,12 +717,20 @@
           }, RUN_TIMEOUT_MS);
           w.onmessage = function (event) {
             if (event.data === 'ready') return;
+            var result = JSON.parse(event.data);
+            if (result.progress) {
+              Object.keys(result.progress).forEach(function (key) {
+                progress[key] = result.progress[key];
+              });
+              return;
+            }
             clearTimeout(timer);
-            resolve(JSON.parse(event.data));
+            if (result.crashed) result.progress = progress;
+            resolve(result);
           };
           w.onerror = function () {
             clearTimeout(timer);
-            scrap({ ok: false, output: 'runner error' });
+            scrap({ ok: false, crashed: true });
           };
           w.postMessage(message);
         });
@@ -615,10 +740,30 @@
     return run;
   }
 
+  // What to show for a run the worker could not finish: it timed out or
+  // crashed the runtime during LABEL (e.g. "Example 3: f(10)"; '' if not
+  // known), as a failure rather than an error.
+  function unfinished(result, label, language) {
+    var what = label || 'Your code';
+    return {
+      ok: false,
+      failure: result.timeout
+        ? what + ' did not finish within ' + RUN_TIMEOUT_MS / 1000 + ' seconds.'
+        : what + ' crashed the ' + language + ' runtime (it may have run out of memory).',
+    };
+  }
+
+  // The harness reports a failed doctest as `failure` and an exception as
+  // `error`, both naming the example ("Example 2: f([2, 3, 4]) == 9").
   function runPython(q) {
     return runInWorker('python', {
       canonical: clampCode(api(q).original), student: clampCode(api(q).getText()),
       lib: libCode(q) || '', deps: usedCode(q) || '[]',
+    }).then(function (result) {
+      if (result.timeout || result.crashed) {
+        return unfinished(result, (result.progress || {}).label, 'Python');
+      }
+      return result;
     });
   }
 
@@ -674,33 +819,186 @@
     return '';
   }
 
-  // A compiler error in one line, like the last line Python prints for a
-  // SyntaxError: the first diagnostic's title, where it is, and its
-  // explanation (or, lacking one, the label under the code), e.g.
-  // "Unknown variable on line 2: The name `y` is not in scope here."
+  // The compiler's first diagnostic, compacted: a headline with its title,
+  // where it is on the editor's own line numbering, and its first point,
+  // then each further point on a line of its own. The code excerpt is left
+  // out, but the label under it is kept, and a heading followed by a
+  // one-line code block is joined onto one line. E.g.
+  //   Type mismatch on line 2: The type of this returned value doesn't
+  //   match the return type annotation of this function.
+  //   Expected type: Int
+  //   Found type: String
+  // or "Syntax error on line 2: This operator has no value on its right
+  // side" + "Hint: Remove it or put a value after it."
   function gleamCompileError(qid, text, data, layout) {
-    var first = text.split(/\n(?=error)/)[0];
-    var title = (first.match(/^error: (.*)/) || [null, 'Compile error'])[1];
+    var lines = text.split(/\n(?=error)/)[0].split('\n');
+    var title = (/^error: (.*)/.exec(lines[0]) || [null, 'Compile error'])[1];
     var where = '';
-    var at = first.match(/\/src\/(\S+)\.gleam:(\d+):\d+/);
+    var at = lines.join('\n').match(/\/src\/(\S+)\.gleam:(\d+):\d+/);
     if (at && at[1] === data.module) where = gleamWhere(qid, layout, +at[2]);
-    var label = (first.match(/│[ \t]*\^+[ \t]*(.*)$/m) || [])[1] || '';
-    var explanation = first.split(/\n[ \t]*\n/).filter(function (part) {
-      return part.trim() && !/[│┌]|^\s*(error|Hint):/.test(part);
-    })[0] || '';
-    var detail = explanation.trim().replace(/\s+/g, ' ') || label.trim();
+    var label = '';
+    var body = [];
+    lines.slice(1).forEach(function (line) {
+      if (!/[│┌╭╰]/.test(line)) body.push(line);
+      else if (/^\s*│/.test(line)) {    // a marker line under the excerpt
+        var mark = /\^[ \t]+(\S.*)$/.exec(line);
+        if (mark) label = mark[1].trim();
+      }
+    });
+    var code = function (part) {     // a code block, indented two spaces
+      return /^( {4}|\t)/.test(part[0]) && part.every(function (line) {
+        return /^( {4}|\t)/.test(line) || !line.trim();
+      });
+    };
+    var indented = function (part) {
+      var margin = Math.min.apply(null, part.map(function (line) {
+        return /^\s*/.exec(line)[0].length;
+      }));
+      return part.map(function (line) { return '  ' + line.slice(margin); }).join('\n');
+    };
+    var points = [];
+    var paragraphs = body.join('\n').split(/\n[ \t]*\n/).map(function (part) {
+      return part.replace(/^([ \t]*\n)+/, '').replace(/(\n[ \t]*)+$/, '');
+    }).filter(function (part) {
+      return part.trim();
+    });
+    for (var i = 0; i < paragraphs.length; i++) {
+      var part = paragraphs[i].split('\n');
+      if (code(part)) {
+        points.push(indented(part));
+        continue;
+      }
+      // Prose, unwrapped, with any "- item" lines run in after it.
+      var prose = part.filter(function (line) { return !/^\s*- /.test(line); });
+      var items = part.filter(function (line) { return /^\s*- /.test(line); });
+      var point = prose.map(function (line) { return line.trim(); }).join(' ') +
+        (items.length ? ' ' + items.map(function (line) {
+          return line.replace(/^\s*- /, '').trim();
+        }).join(', ') : '');
+      var next = paragraphs[i + 1] && paragraphs[i + 1].split('\n');
+      if (/:$/.test(point) && next && code(next)) {
+        point += next.length === 1 ? ' ' + next[0].trim() : '\n' + indented(next);
+        i++;
+      }
+      points.push(point);
+    }
+    // The label usually says what is wrong at that spot; a suggestion
+    // ("Did you mean `x`?") reads better after the explanation.
+    if (label && /^Did you mean/.test(label)) points.splice(1, 0, label);
+    else if (label) points.unshift(label);
     return title + (where ? ' on ' + where : '') +
       (at && at[1] === data.testModule ? ' in the tests' : '') +
-      (detail ? ': ' + detail : '');
+      (points.length ? ': ' + points.join('\n') : '');
   }
 
-  // An error a test run raised (other than a test's failed assert), e.g.
-  // "Line 4: `todo` expression evaluated. This code has not yet been
-  // implemented." or "RangeError: Maximum call stack size exceeded".
+  // A Gleam question's examples: the asserts of its tests, in the order
+  // they run, each {test, line, text, message}, where text is the assert's
+  // expression on one line and message its `as` text (or null). Read from
+  // the test module's source, as `gleam format` lays it out: an assert's
+  // continuation lines are indented deeper than its first.
+  function gleamExamples(q) {
+    var lines = q.gleam.test.split('\n');
+    var byTest = {};
+    var current = null;
+    for (var i = 0; i < lines.length; i++) {
+      var fn = /^(?:pub\s+)?fn\s+(\w+)/.exec(lines[i]);
+      if (fn) {
+        current = byTest[fn[1]] = [];
+        continue;
+      }
+      var assert = /^(\s*)assert\s+(.*)$/.exec(lines[i]);
+      if (!current || !assert) continue;
+      var parts = [assert[2]];
+      for (var j = i + 1; j < lines.length && lines[j].trim() &&
+           /^\s*/.exec(lines[j])[0].length > assert[1].length; j++) {
+        parts.push(lines[j]);
+      }
+      var text = oneLine(parts.map(function (part) {
+        return part.replace(/\s+\/\/[^"]*$/, '');  // a trailing comment
+      }));
+      var message = null;
+      var as = /\s+as\s+("(?:[^"\\]|\\.)*")$/.exec(text);
+      if (as) {
+        text = text.slice(0, as.index);
+        try { message = JSON.parse(as[1]); } catch (e) { message = as[1].slice(1, -1); }
+      }
+      current.push({ line: i + 1, text: text, message: message });
+    }
+    var examples = [];
+    q.gleam.tests.forEach(function (name) {
+      (byTest[name] || []).forEach(function (example) {
+        examples.push({ test: name, line: example.line, text: example.text,
+                        message: example.message });
+      });
+    });
+    return examples;
+  }
+
+  // Lines of Gleam code joined into one, without the spaces a line break
+  // leaves inside brackets: "f(\n  [\n    1,\n  ],\n)" -> "f([1])".
+  function oneLine(lines) {
+    return lines.map(function (line) { return line.trim(); }).reduce(function (out, line) {
+      if (/^[)\]}]/.test(line)) return out.replace(/,$/, '') + line;
+      if (/[(\[{]$/.test(out)) return out + line;
+      return out + ' ' + line;
+    });
+  }
+
+  // The example a test was on when it crashed or ran out of time, as a
+  // label: "Example 3: f(10) == 5", or "One of Examples 3–5" when the
+  // worker could not mark each assert that passed and the test has
+  // several; '' when the test is unknown.
+  function gleamRunning(q, test, passed, instrumented) {
+    var examples = gleamExamples(q);
+    var first = -1;
+    var last = -1;
+    for (var i = 0; i < examples.length; i++) {
+      if (examples[i].test !== test) continue;
+      if (first < 0) first = i;
+      last = i;
+      if (instrumented && (passed === null || examples[i].line > passed)) {
+        return 'Example ' + (i + 1) + ': ' + examples[i].text;
+      }
+    }
+    if (first < 0) return '';
+    if (first === last) return 'Example ' + (first + 1) + ': ' + examples[first].text;
+    return 'One of Examples ' + (first + 1) + '–' + (last + 1);
+  }
+
+  // A test's failed assert: which example, the expression it checked
+  // (exactly, from its place in the test module's source), and its `as`
+  // message, e.g. "Example 2: f([2, 3, 4]) == 9". Not the value it got:
+  // working that out is the exercise.
+  function gleamFailure(q, failure) {
+    var examples = gleamExamples(q);
+    var n = -1;
+    for (var i = 0; i < examples.length; i++) {
+      if (examples[i].test === failure.test && examples[i].line === failure.line) n = i;
+    }
+    var text = n >= 0 ? examples[n].text : '';
+    if (typeof failure.start === 'number' && failure.end > failure.start &&
+        typeof TextEncoder === 'function') {
+      var bytes = new TextEncoder().encode(q.gleam.test);
+      text = oneLine(new TextDecoder().decode(
+        bytes.slice(failure.start, failure.end)).split('\n'));
+    }
+    var message = failure.message && failure.message !== 'Assertion failed.'
+      ? ' — ' + failure.message : '';
+    return (n >= 0 ? 'Example ' + (n + 1) + ': ' : 'A test failed: ') + text + message;
+  }
+
+  // An error a test run raised (other than a test's failed assert), with
+  // the example it was on, e.g. "Example 1: f(0) == 1 crashed on line 4:
+  // `todo` expression evaluated. This code has not yet been implemented."
+  // or "Example 3: f(10) == 5 crashed: RangeError: Maximum call stack size
+  // exceeded".
   function gleamRunError(qid, error, data, layout) {
     var where = error.module === data.module && error.line
       ? gleamWhere(qid, layout, error.line) : '';
     var message = error.gleam ? error.message : error.name + ': ' + error.message;
+    var label = error.test
+      ? gleamRunning(questions[qid], error.test, error.passed, error.instrumented) : '';
+    if (label) return label + ' crashed' + (where ? ' on ' + where : '') + ': ' + message;
     return where ? where.charAt(0).toUpperCase() + where.slice(1) + ': ' + message
       : message;
   }
@@ -739,10 +1037,16 @@
           return { ok: false, detail: result.compileError,
                    error: gleamCompileError(qid, result.compileError, data, built.layout) };
         }
+        if (result.failure) return { ok: false, failure: gleamFailure(q, result.failure) };
         if (result.error) {
           return { ok: false, error: gleamRunError(qid, result.error, data, built.layout) };
         }
         if (result.crash) return { ok: false, error: result.crash };
+        if (result.timeout || result.crashed) {
+          var at = result.progress || {};
+          return unfinished(result, at.test
+            ? gleamRunning(q, at.test, at.passed, at.instrumented) : '', 'Gleam');
+        }
         return result;
       });
     }
@@ -800,17 +1104,18 @@
         marks = marks.slice(0, 4) + marks.slice(4 - MAX_HISTORY);
       }
       setStatus(qid, status);
-      // An exception is named next to the button, to the right of the
-      // marks (its type and one-line message, from the harness: a
-      // SyntaxError or NameError in the code, or the first one an example
-      // raised; for Gleam, a compiler error or one a test raised, with the
-      // compiler's full report on hover). Beyond that only the outcome is
-      // reported (the button color and ❌ mark), not the failing doctests
-      // or tests: working out what went wrong is the exercise.
+      // What went wrong is shown next to the button, to the right of the
+      // marks: an error (a SyntaxError or NameError in the code, or the
+      // exception an example raised, with its line; for Gleam, the
+      // compiler's first error, with its full report on hover, or a test's
+      // crash), or else the first example that failed or did not finish,
+      // e.g. "Example 2: f([2, 3, 4]) == 9". Never the value a failing
+      // example got instead: working that out is the exercise.
       if (q.output) {
-        q.output.textContent = result.error || '';
+        var shown = result.error || result.failure || '';
+        q.output.textContent = shown;
         q.output.title = result.detail || '';
-        q.output.hidden = !result.error;
+        q.output.hidden = !shown;
       }
       record(qid, api(q).getText(), status, marks);
       showMarks(qid);

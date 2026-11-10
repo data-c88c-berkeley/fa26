@@ -602,9 +602,15 @@ pre.wwpd .wwpd-answer {
   letter-spacing: 0.1em;
 }
 
-/* An exception (SyntaxError, NameError, or the first one an example
-   raised) named in one line next to the Verify button, after the marks. */
+/* What went wrong (an error, or the first example that failed) next to the
+   Verify button, after the marks. It can run to several lines (a Gleam
+   compiler error's points), so it is a box of its own that keeps them
+   aligned, and drops below the button when it does not fit beside it. */
 .discuss-check-output {
+  display: inline-block;
+  vertical-align: top;
+  max-width: 100%;
+  box-sizing: border-box;
   margin-left: 0.75em;
   font-size: 0.75rem;
   color: #c62828;
