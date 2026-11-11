@@ -583,6 +583,13 @@
                         </span>
                     </div>
                 {%- endif -%}
+
+                {%- comment -%} --- NO MEDIA NOTE (lectures.yml `no_media: true`; hidden once readings or videos are added) --- {%- endcomment -%}
+                {%- if lec_entry.no_media -%}
+                    {%- unless lec_entry.readings or lec_entry.videos -%}
+                        <div class="syllabus-item" style="margin-bottom: 4px;">(no videos or readings)</div>
+                    {%- endunless -%}
+                {%- endif -%}
             {%- endif -%}
 
             {%- comment -%} --- EXTRA LINKS LOGIC --- {%- endcomment -%}

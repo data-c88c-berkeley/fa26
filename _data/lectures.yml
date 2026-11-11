@@ -11,6 +11,7 @@ lectures:
   # Week 1
   - title: "Welcome"            # Wed 08/26
     slug: welcome
+    no_media: true
   # Week 2
   - title: "Functions"          # Mon 08/31
     slug: functions
@@ -110,8 +111,10 @@ lectures:
       - title: "YouTube"
         link: https://www.youtube.com/watch?v=pTPDmMH9dbs&list=PLCWEE1T0BmmA
   - title: "Midterm 1 Review"   # Wed 10/14
+    no_media: true
   # Week 9 (Midterm 1 in the CBTF)
   - title: "Problem Solving"    # Mon 10/19
+    no_media: true
   - title: "Mutation"           # Wed 10/21
     slug: mutation
     readings:
@@ -141,8 +144,10 @@ lectures:
       - title: "YouTube"
         link: https://www.youtube.com/watch?v=Bqpe1iyq5vE&list=PLH902kY1ixw8
   - title: "Object Examples"    # Wed 11/04
+    no_media: true
   # Week 12
   - title: "Midterm 2 Review"   # Mon 11/09
+    no_media: true
   - title: "Holiday"            # Wed 11/11 (Veterans Day)
     nonumber: true
   # Week 13
@@ -170,3 +175,4 @@ lectures:
       - title: "YouTube"
         link: https://www.youtube.com/watch?v=2ajhv_e_u5Q&list=PL6BsET-8jgYUxr1l88aamM4FhtHG-dS6v
   - title: "Ethics"             # Wed 12/02
+    no_media: true
