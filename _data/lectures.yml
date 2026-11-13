@@ -158,15 +158,15 @@ lectures:
     videos:
       - title: "YouTube"
         link: https://www.youtube.com/watch?v=On-kFyFp8HY&list=PL6BsET-8jgYW7stiut93PHxGP6_QgBzVQ
-  - title: "Tables"             # Wed 11/18
-    videos:
-      - title: "YouTube"
-        link: https://www.youtube.com/watch?v=uQcTiRihNHc&list=PL6BsET-8jgYUYE7waSWnQpeIZwM7naLWk
-  # Week 14
-  - title: "SQL"                # Mon 11/23
+  - title: "SQL"                # Wed 11/18
     videos:
       - title: "YouTube"
         link: https://www.youtube.com/watch?v=lombSNkvRR4&list=PL6BsET-8jgYU8Q2eVF-6Idng9stLUx8-2
+  # Week 14
+  - title: "Tables"             # Mon 11/23
+    videos:
+      - title: "YouTube"
+        link: https://www.youtube.com/watch?v=uQcTiRihNHc&list=PL6BsET-8jgYUYE7waSWnQpeIZwM7naLWk
   - title: "Holiday"            # Wed 11/25 (Non-instructional day)
     nonumber: true
   # Week 15
