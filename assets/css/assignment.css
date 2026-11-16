@@ -63,6 +63,17 @@
   background: rgba(0, 50, 98, 0.08);
 }
 
+.assignment table {
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+
+.assignment table :is(th, td) {
+  border: 1px solid #999;
+  padding: 0.4rem 0.6rem;
+  text-align: left;
+}
+
 /* Python Tutor embeds (topic pages) have no dark mode and paint no
    background of their own, so they get a light one: their dark text is
    unreadable on the dark scheme's ground. */
