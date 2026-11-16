@@ -35,7 +35,8 @@ labs:
 - skip: true
 - skip: true
 - skip: true
-- title: Iterators (due Fri 11/20)
+- slug: lab11
+  title: Iterators (due Fri 11/20)
 - skip: true
 - skip: true
 - skip: true

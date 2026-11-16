@@ -1,0 +1,226 @@
+---
+title: "Lab 11: Iterators"
+layout: assignment
+nav_exclude: true
+excerpt_separator: ""
+due: "Friday 11/20"
+---
+
+{% raw %}
+<header class="assignment-header"><h1>Lab 11: Iterators</h1><ul class="assignment-facts"><li><strong>Due:</strong> Friday 11/20 @ 11:59pm</li><li><strong>Points:</strong> 1</li><li><strong>Download:</strong> <a href="lab11.zip">lab11.zip</a></li></ul></header>
+<h1 id="attendance">Attendance</h1>
+<p>You need to submit the lab problems in addition to attending to get credit for lab. Students in mega lab only need to submit the lab problems. Preceptor interviews are highly recommended but <strong>not required</strong> for lab submissions.</p>
+<p>If you are in regular lab, your TA will come around during lab to check you in. If you didn't attend for a good reason (such as being sick), fill out this form (within 2 weeks of your lab): <a href="https://forms.gle/QsRLAvLnn5xoJgdv9">attendance form</a>.</p>
+<p><strong>Readings:</strong> This lab relies on the following reading from
+<a href="https://composingprograms.com">Composing Programs</a>:</p>
+<ul>
+<li><a href="https://composingprograms.com/3ed/lazy-evaluation/">2.8: Lazy Evaluation</a></li>
+</ul>
+<h1 id="required-questions">Required Questions</h1>
+<h2 id="iterators">Iterators</h2>
+<p>Consult the drop-down if you need a refresher on iterators.</p>
+<details class="hint"><summary>Iterators</summary><div>
+<p>An <strong>iterable</strong> is any value that can be iterated through, or gone through one
+item at a time. One construct that we've used to iterate through an iterable
+is a <code>for</code> statement:</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
+    <span class="c1"># do something</span>
+</code></pre></div></div>
+<p>In general, an <strong>iterable</strong> is an object on which calling the built-in <code>iter</code>
+function returns an <em>iterator</em>. An <strong>iterator</strong> is an object on which calling
+the built-in <code>next</code> function returns the next value.</p>
+<p>For example, a list is an iterable value.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">next</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>       <span class="c1"># s is iterable, but not an iterator</span>
+<span class="ne">TypeError</span><span class="p">:</span> <span class="s1">&#39;list&#39;</span> <span class="nb">object</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">an</span> <span class="n">iterator</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">t</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>   <span class="c1"># Creates an iterator</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">t</span>
+<span class="o">&lt;</span><span class="n">list_iterator</span> <span class="nb">object</span> <span class="o">...&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">next</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>       <span class="c1"># Calling next on an iterator</span>
+<span class="mi">1</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">next</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>       <span class="c1"># Calling next on the same iterator</span>
+<span class="mi">2</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">t</span><span class="p">))</span> <span class="c1"># Calling iter on an iterator returns itself</span>
+<span class="mi">3</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">t2</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">next</span><span class="p">(</span><span class="n">t2</span><span class="p">)</span>      <span class="c1"># Second iterator starts at the beginning of s</span>
+<span class="mi">1</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">next</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>       <span class="c1"># First iterator is unaffected by second iterator</span>
+<span class="mi">4</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">next</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>       <span class="c1"># No items left!</span>
+<span class="ne">StopIteration</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span>             <span class="c1"># Original iterable is unaffected</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+</code></pre></div></div>
+<p>You can also use an iterator in a <code>for</code> statement because all iterators are
+iterable. But note that since iterators keep their state, they're only good to
+iterate through an iterable once:</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="n">t</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">t</span><span class="p">:</span>
+<span class="o">...</span>     <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<span class="mi">4</span>
+<span class="mi">3</span>
+<span class="mi">2</span>
+<span class="mi">1</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">t</span><span class="p">:</span>
+<span class="o">...</span>     <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</code></pre></div></div>
+<p>There are built-in functions that return iterators. These built-in Python
+sequence operations are said to compute results <em>lazily</em>.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="n">m</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">next</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+<span class="mi">9</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">next</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+<span class="mi">16</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">f</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">next</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="mi">4</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">next</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="mi">5</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">z</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">([</span><span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">50</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">next</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">next</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</code></pre></div></div>
+</div></details>
+<h3 id="q1-wwpd-iterators">Q1: WWPD: Iterators</h3>
+<blockquote>
+<p><strong>Important:</strong> Python's built-in functions <code>map</code>, <code>filter</code>, and <code>zip</code> return
+<em>iterators</em>, not lists.</p>
+</blockquote>
+<p>Predict what Python will display when the following lines are entered into an
+interactive session, then unlock the test to check your answers. Type <code>ERROR</code>
+if it errors (including a <code>StopIteration</code> error):</p>
+<div class="pytest-command" data-command="python3 -m pytest -k iterators_wwpd --unlock"><pre><code>python3 -m pytest -k iterators_wwpd --unlock</code></pre></div>
+<details class="unlock-examples" open>
+<summary>Unlocking Examples</summary>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; s = [1, 2, 3, 4]
+&gt;&gt;&gt; t = iter(s)
+&gt;&gt;&gt; next(s)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; next(t)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; next(t)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; next(iter(s))
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; next(iter(s))
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; u = t
+&gt;&gt;&gt; next(u)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; next(t)
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; r = range(6)
+&gt;&gt;&gt; r_iter = iter(r)
+&gt;&gt;&gt; next(r_iter)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; [x + 1 for x in r]
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; [x + 1 for x in r_iter]
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; next(r_iter)
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight wwpd"><code>
+&gt;&gt;&gt; map_iter = map(lambda x : x + 10, range(5))
+&gt;&gt;&gt; next(map_iter)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; next(map_iter)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; list(map_iter)
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; for e in filter(lambda x : x % 4 == 0, range(1000, 1008)):
+...     print(e)
+<span class="wwpd-blank">______</span>
+<span class="wwpd-blank">______</span>
+&gt;&gt;&gt; [x + y for x, y in zip([1, 2, 3], [4, 5, 6])]
+<span class="wwpd-blank">______</span>
+</code></pre></div></div>
+</details>
+<h3 id="q2-count-occurrences">Q2: Count Occurrences</h3>
+<p>Implement <code>count_occurrences</code>, which takes an iterator <code>t</code>, an integer <code>n</code>, and
+a value <code>x</code>. It returns the number of items in the first <code>n</code> items of <code>t</code>
+that are equal to <code>x</code>.</p>
+<p>You can assume that <code>t</code> has at least <code>n</code> items.</p>
+<blockquote>
+<p><strong>Important:</strong> You should call <code>next</code> on <code>t</code> exactly <code>n</code> times. If you need to
+iterate through more than <code>n</code> items, think about how you can optimize your
+solution.</p>
+</blockquote>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterator</span>  <span class="c1"># t: Iterator[int] means t is an iterator that yields integers</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">count_occurrences</span><span class="p">(</span><span class="n">t</span><span class="p">:</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the number of times that x is equal to one of the</span>
+<span class="sd">    first n items of iterator t.</span>
+
+<span class="sd">    &gt;&gt;&gt; s = iter([10, 9, 10, 9, 9, 10, 8, 8, 8, 7])</span>
+<span class="sd">    &gt;&gt;&gt; count_occurrences(s, 10, 9)</span>
+<span class="sd">    3</span>
+<span class="sd">    &gt;&gt;&gt; t = iter([10, 9, 10, 9, 9, 10, 8, 8, 8, 7])</span>
+<span class="sd">    &gt;&gt;&gt; count_occurrences(t, 3, 10)</span>
+<span class="sd">    2</span>
+<span class="sd">    &gt;&gt;&gt; u = iter([3, 2, 2, 2, 1, 2, 1, 4, 4, 5, 5, 5])</span>
+<span class="sd">    &gt;&gt;&gt; count_occurrences(u, 1, 3)  # Only iterate over 3</span>
+<span class="sd">    1</span>
+<span class="sd">    &gt;&gt;&gt; count_occurrences(u, 3, 2)  # Only iterate over 2, 2, 2</span>
+<span class="sd">    3</span>
+<span class="sd">    &gt;&gt;&gt; list(u)                     # Ensure that the iterator has advanced the right amount</span>
+<span class="sd">    [1, 2, 1, 4, 4, 5, 5, 5]</span>
+<span class="sd">    &gt;&gt;&gt; v = iter([4, 1, 6, 6, 7, 7, 6, 6, 2, 2, 2, 5])</span>
+<span class="sd">    &gt;&gt;&gt; count_occurrences(v, 6, 6)</span>
+<span class="sd">    2</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k count_occurrences"><pre><code>python3 -m pytest -k count_occurrences</code></pre></div>
+<h3 id="q3-repeated">Q3: Repeated</h3>
+<p>Implement <code>repeated</code>, which takes in an iterator <code>t</code> and an integer <code>k</code> greater
+than 1. It returns the first value in <code>t</code> that appears <code>k</code> times in a row. You
+may assume that there is an item of <code>t</code> repeated at least <code>k</code> times in a row.</p>
+<blockquote>
+<p><strong>Important:</strong> Call <code>next</code> on <code>t</code> only the minimum number of times required.
+If you are receiving a <code>StopIteration</code> exception, your <code>repeated</code> function is
+calling <code>next</code> too many times.</p>
+</blockquote>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterator</span>  <span class="c1"># t: Iterator[int] means t is an iterator that yields integers</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">repeated</span><span class="p">(</span><span class="n">t</span><span class="p">:</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the first value in iterator t that appears k times in a row,</span>
+<span class="sd">    calling next on t as few times as possible.</span>
+
+<span class="sd">    &gt;&gt;&gt; s = iter([10, 9, 10, 9, 9, 10, 8, 8, 8, 7])</span>
+<span class="sd">    &gt;&gt;&gt; repeated(s, 2)</span>
+<span class="sd">    9</span>
+<span class="sd">    &gt;&gt;&gt; t = iter([10, 9, 10, 9, 9, 10, 8, 8, 8, 7])</span>
+<span class="sd">    &gt;&gt;&gt; repeated(t, 3)</span>
+<span class="sd">    8</span>
+<span class="sd">    &gt;&gt;&gt; u = iter([3, 2, 2, 2, 1, 2, 1, 4, 4, 5, 5, 5])</span>
+<span class="sd">    &gt;&gt;&gt; repeated(u, 3)</span>
+<span class="sd">    2</span>
+<span class="sd">    &gt;&gt;&gt; repeated(u, 3)</span>
+<span class="sd">    5</span>
+<span class="sd">    &gt;&gt;&gt; v = iter([4, 1, 6, 6, 7, 7, 8, 8, 2, 2, 2, 5])</span>
+<span class="sd">    &gt;&gt;&gt; repeated(v, 3)</span>
+<span class="sd">    2</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">k</span> <span class="o">&gt;</span> <span class="mi">1</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre></div></div>
+<div class="pytest-command" data-command="python3 -m pytest -k repeated"><pre><code>python3 -m pytest -k repeated</code></pre></div>
+<h1 id="submit-assignment">Submit Assignment</h1>
+<p>Submit this assignment by running
+<strong>Provenance: Prepare Submission Bundle</strong> from the VS Code command palette and
+uploading the resulting zip <strong>to Gradescope</strong>. The zip already contains the
+files you've edited.
+<a href="../../labs/lab00/#task-c-submit-the-assignment">Lab 00</a> has detailed
+instructions.</p>
+<p>Your responses to WWPD questions are not submitted, and they do not need to
+be. Lab credit is based on the code writing questions.</p>
+{% endraw %}

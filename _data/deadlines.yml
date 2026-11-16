@@ -144,3 +144,9 @@ deadlines:
   title: Ants Vs. SomeBees
   link: /projects/ants/
   note: 1 bonus point for submitting by Wed 11/18
+- when: Fri 11/20
+  day: '2026-11-20'
+  kind: lab
+  label: Lab 11
+  title: Iterators
+  link: /labs/lab11/
