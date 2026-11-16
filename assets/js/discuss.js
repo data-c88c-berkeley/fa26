@@ -16,6 +16,10 @@
 //     A Gleam question's widget (render.gleam_check_box) carries its test
 //     module instead, and Verify compiles the code with the Gleam compiler
 //     (in WebAssembly, from the Gleam playground) and runs those tests.
+//     A SQL question's widget (render.sql_check_box) carries the statements
+//     that create its input tables and the table its solution creates, and
+//     Verify runs the code in SQLite (sql.js, in WebAssembly) and compares
+//     the table the code creates with that one.
 //   * Visualize: a link beside Reset that opens a Python Tutor diagram of
 //     the code (plus the doctests as calls) in a new tab. A discussion can
 //     turn it off with `visualize: false` (data-visualize on each widget).
@@ -56,6 +60,7 @@
   var SERVER = 'https://discuss.cs61a.org';
   var PYODIDE_URL = 'https://cdn.jsdelivr.net/pyodide/v0.28.2/full/pyodide.js';
   var GLEAM_PLAYGROUND = 'https://playground.gleam.run/';
+  var SQLJS_URL = 'https://cdn.jsdelivr.net/npm/sql.js@1.13.0/dist/sql-wasm.js';
   var POLL_MS = 1000;        // group sync cadence
   var SAVE_MS = 2000;        // debounce for saving/sharing edits
   var STALE_AFTER = 3;       // failed polls before the offline notice
@@ -651,11 +656,146 @@
     };
   }
 
+  // ── Verify for SQL (SQLite in WebAssembly, in a Web Worker) ──────────────
+
+  // sql.js is SQLite compiled to WebAssembly. A check runs the question's
+  // setup (the CREATE TABLE and INSERT statements shown on the page) and
+  // then the student's code in a fresh database, and compares the table the
+  // code creates with the one the staff solution creates (render.
+  // sql_expected): the same columns, the same rows, and, where the solution
+  // sorts, the same order (rows that tie may come in any order, so the
+  // expected rows come in groups). A failure names the first difference:
+  // the expected table is on the page already, so a missing row or an extra
+  // one gives nothing away.
+  //
+  // The function below is the worker's source (see ensureWorker), so it must
+  // not use anything else in this file.
+  function sqlWorker(url) {
+    importScripts(url);
+    var ready = initSqlJs({
+      locateFile: function (file) { return url.replace(/[^/]*$/, file); },
+    });
+    ready.then(function () { postMessage('ready'); },
+               function () { postMessage('failed'); });
+
+    function plural(n, word) { return n + ' ' + word + (n === 1 ? '' : 's'); }
+
+    // A row as the sqlite3 shell prints it: values separated by |.
+    function rowText(row) {
+      return row.map(function (v) { return v === null ? '' : String(v); })
+        .join('|');
+    }
+
+    function counts(rows) {
+      var out = {};
+      rows.forEach(function (row) {
+        var key = JSON.stringify(row);
+        out[key] = (out[key] || 0) + 1;
+      });
+      return out;
+    }
+
+    function sameRows(a, b) {
+      var ca = counts(a), cb = counts(b);
+      return Object.keys(ca).length === Object.keys(cb).length &&
+        Object.keys(ca).every(function (k) { return ca[k] === cb[k]; });
+    }
+
+    function check(SQL, data) {
+      var expected = data.expected;
+      var table = expected.table;
+      var db = new SQL.Database();
+      try {
+        try {
+          db.exec(data.setup);
+        } catch (e) {
+          return { ok: false, error: 'Could not create the tables for this ' +
+                   'question: ' + e.message };
+        }
+        try {
+          db.exec(data.student);
+        } catch (e) {
+          return { ok: false, error: 'Error: ' + e.message };
+        }
+        var found = db.exec(
+          "SELECT name FROM sqlite_master WHERE type IN ('table', 'view') " +
+          'AND lower(name) = lower(?)', [table]);
+        if (!found.length) {
+          return { ok: false,
+                   failure: 'Your code does not create a table named ' +
+                            table + '.' };
+        }
+        var stmt = db.prepare('SELECT * FROM "' + found[0].values[0][0] + '"');
+        var columns = stmt.getColumnNames();
+        var rows = [];
+        while (stmt.step()) rows.push(stmt.get());
+        stmt.free();
+
+        var want = expected.columns.map(function (c) { return c.toLowerCase(); });
+        var got = columns.map(function (c) { return c.toLowerCase(); });
+        if (want.join('\n') !== got.join('\n')) {
+          return { ok: false,
+                   failure: 'The ' + table + ' table should have ' +
+                     plural(want.length, 'column') + ' (' +
+                     expected.columns.join(', ') + '), but yours has ' +
+                     plural(got.length, 'column') + ' (' +
+                     columns.join(', ') + ').' };
+        }
+
+        // Values compare as JSON, so 3 and 3.0 match but 3 and "3" do not.
+        rows = rows.map(function (row) {
+          return JSON.parse(JSON.stringify(row));
+        });
+        var all = [].concat.apply([], expected.groups);
+        var left = counts(all);
+        for (var i = 0; i < rows.length; i++) {
+          var key = JSON.stringify(rows[i]);
+          if (!left[key]) {
+            return { ok: false,
+                     failure: 'Your ' + table + ' table has a row that ' +
+                       'should not be there: ' + rowText(rows[i]) };
+          }
+          left[key] -= 1;
+        }
+        var missing = all.filter(function (row) {
+          var key = JSON.stringify(row);
+          if (!left[key]) return false;
+          left[key] -= 1;
+          return true;
+        });
+        if (missing.length) {
+          return { ok: false,
+                   failure: 'Your ' + table + ' table is missing a row: ' +
+                            rowText(missing[0]) };
+        }
+        var at = 0;
+        for (var g = 0; g < expected.groups.length; g++) {
+          var group = expected.groups[g];
+          if (!sameRows(group, rows.slice(at, at + group.length))) {
+            return { ok: false,
+                     failure: 'Your ' + table + ' table has the right rows, ' +
+                       'but row ' + (at + 1) + ' is out of order.' };
+          }
+          at += group.length;
+        }
+        return { ok: true };
+      } finally {
+        db.close();
+      }
+    }
+
+    self.onmessage = function (event) {
+      ready.then(function (SQL) { return check(SQL, event.data); }).then(
+        function (result) { postMessage(JSON.stringify(result)); },
+        function () { postMessage(JSON.stringify({ ok: false, crashed: true })); });
+    };
+  }
+
   // ── Running checks in workers ─────────────────────────────────────────────
 
   // One worker per language, loaded on its first Verify. A worker posts
   // "ready" once loaded (or "failed": the Gleam one cannot load its
-  // compiler), then one JSON result per message.
+  // compiler, the SQL one SQLite), then one JSON result per message.
   var RUNTIMES = {
     python: { src: WORKER_SRC, options: {} },
     gleam: {
@@ -663,6 +803,16 @@
         JSON.stringify(GLEAM_PLAYGROUND) + ');',
       options: { type: 'module' },
     },
+    sql: {
+      src: '(' + sqlWorker.toString() + ')(' + JSON.stringify(SQLJS_URL) + ');',
+      options: {},  // a classic worker, for importScripts
+    },
+  };
+  // What runs each language's checks, for the button and its messages.
+  var RUNTIME_NAMES = {
+    python: { short: 'Python', long: 'Python runtime' },
+    gleam: { short: 'Gleam', long: 'Gleam compiler' },
+    sql: { short: 'SQL', long: 'SQL interpreter' },
   };
   var workers = {};          // language -> {worker, ready: promise}
   var runQueue = Promise.resolve(); // verifies run one at a time
@@ -763,6 +913,18 @@
       if (result.timeout || result.crashed) {
         return unfinished(result, (result.progress || {}).label, 'Python');
       }
+      return result;
+    });
+  }
+
+  // The worker reports SQL that SQLite rejects as `error`, and a table that
+  // differs from the solution's as `failure` (see sqlWorker).
+  function runSql(q) {
+    return runInWorker('sql', {
+      setup: q.sql.setup, student: clampCode(api(q).getText()),
+      expected: q.sql.expected,
+    }).then(function (result) {
+      if (result.timeout || result.crashed) return unfinished(result, '', 'SQL');
       return result;
     });
   }
@@ -1094,10 +1256,10 @@
     var cooldownMs = 0;  // set by a failed run
     q.running = true;
     button.disabled = true;
-    var language = q.gleam ? 'gleam' : 'python';
+    var language = q.gleam ? 'gleam' : q.sql ? 'sql' : 'python';
     button.textContent = loaded(language) ? 'Checking…'
-      : q.gleam ? 'Loading Gleam…' : 'Loading Python…';
-    (q.gleam ? runGleam(qid) : runPython(q)).then(function (result) {
+      : 'Loading ' + RUNTIME_NAMES[language].short + '…';
+    (q.gleam ? runGleam(qid) : q.sql ? runSql(q) : runPython(q)).then(function (result) {
       var status = result.ok ? 'green' : 'red';
       var marks = history(answers[qid]) + (result.ok ? PASS : FAIL);
       if (marks.length > MAX_HISTORY) { // invisible middle marks give way
@@ -1127,7 +1289,7 @@
     }).catch(function () {
       if (q.output) {
         q.output.textContent = 'Could not load the ' +
-          (q.gleam ? 'Gleam compiler' : 'Python runtime') +
+          RUNTIME_NAMES[language].long +
           '; check your connection and try again.';
         q.output.hidden = false;
       }
@@ -1414,6 +1576,10 @@
         testModule: box.dataset.testModule, test: box.dataset.test || '',
         tests: (box.dataset.tests || '').split(/\s+/).filter(Boolean),
       };
+    }
+    if (box.dataset.language === 'sql') {
+      q.sql = { setup: box.dataset.setup || '',
+                expected: JSON.parse(box.dataset.expected || '{}') };
     }
     q.check = button;
     q.marks = marks;
