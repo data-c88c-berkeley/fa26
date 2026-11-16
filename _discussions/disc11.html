@@ -1,0 +1,315 @@
+---
+title: "Discussion 11: Iterators"
+layout: assignment
+nav_exclude: true
+excerpt_separator: ""
+---
+
+{% raw %}
+<header class="assignment-header"><h1>Discussion 11: Iterators<a class="print-button" href="print.html" title="Printable version" aria-label="Printable version">🖨️</a></h1></header>
+<h2 id="attendance">Attendance</h2>
+<p>Your TA will come around during discussion to check you in. You can start on
+the worksheet before being checked in; you don't need to wait for your TA to
+get started.</p>
+<p>If you didn't attend for a good reason (such as being sick), fill out this
+form (within 2 weeks of your discussion):
+<a href="https://forms.gle/QsRLAvLnn5xoJgdv9">attendance form</a></p>
+<h2 id="getting-started">Getting Started</h2>
+<p>Everybody say your name, and then figure out who is planning to travel outside
+of the Bay Area the soonest. Feel free to discuss your travel plans.</p>
+<h2 id="iterators">Iterators</h2>
+<p>An <strong>iterable</strong> is any value that can be iterated through, or gone through one
+item at a time. One construct that we've used to iterate through an iterable
+is a <code>for</code> statement:</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
+    <span class="c1"># do something</span>
+</code></pre></div></div>
+<p>In general, an <strong>iterable</strong> is an object on which calling the built-in <code>iter</code>
+function returns an <em>iterator</em>. An <strong>iterator</strong> is an object on which calling
+the built-in <code>next</code> function returns the next value.</p>
+<p>For example, a list is an iterable value.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">next</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>       <span class="c1"># s is iterable, but not an iterator</span>
+<span class="ne">TypeError</span><span class="p">:</span> <span class="s1">&#39;list&#39;</span> <span class="nb">object</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">an</span> <span class="n">iterator</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">t</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>   <span class="c1"># Creates an iterator</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">t</span>
+<span class="o">&lt;</span><span class="n">list_iterator</span> <span class="nb">object</span> <span class="o">...&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">next</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>       <span class="c1"># Calling next on an iterator</span>
+<span class="mi">1</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">next</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>       <span class="c1"># Calling next on the same iterator</span>
+<span class="mi">2</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">t</span><span class="p">))</span> <span class="c1"># Calling iter on an iterator returns itself</span>
+<span class="mi">3</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">t2</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">next</span><span class="p">(</span><span class="n">t2</span><span class="p">)</span>      <span class="c1"># Second iterator starts at the beginning of s</span>
+<span class="mi">1</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">next</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>       <span class="c1"># First iterator is unaffected by second iterator</span>
+<span class="mi">4</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">next</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>       <span class="c1"># No items left!</span>
+<span class="ne">StopIteration</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span>             <span class="c1"># Original iterable is unaffected</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+</code></pre></div></div>
+<p>You can also use an iterator in a <code>for</code> statement because all iterators are
+iterable. But note that since iterators keep their state, they're only good to
+iterate through an iterable once:</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="n">t</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">t</span><span class="p">:</span>
+<span class="o">...</span>     <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<span class="mi">4</span>
+<span class="mi">3</span>
+<span class="mi">2</span>
+<span class="mi">1</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">t</span><span class="p">:</span>
+<span class="o">...</span>     <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</code></pre></div></div>
+<p>There are built-in functions that return iterators. These built-in Python
+sequence operations are said to compute results <em>lazily</em>.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="n">m</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">next</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+<span class="mi">9</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">next</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+<span class="mi">16</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">f</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">next</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="mi">4</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">next</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="mi">5</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">z</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">([</span><span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">50</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">next</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">next</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</code></pre></div></div>
+<p>Here are the iterator functions we use in this course:</p>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Returns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>iter(iterable)</code></td>
+<td>An iterator over the items of <code>iterable</code></td>
+</tr>
+<tr>
+<td><code>next(iterator)</code></td>
+<td>The next item in <code>iterator</code></td>
+</tr>
+<tr>
+<td><code>map(func, iterable)</code></td>
+<td>An iterator over <code>func(x)</code> for each <code>x</code> in <code>iterable</code></td>
+</tr>
+<tr>
+<td><code>filter(func, iterable)</code></td>
+<td>An iterator over each <code>x</code> in <code>iterable</code> for which <code>func(x)</code> is true</td>
+</tr>
+<tr>
+<td><code>zip(first, second)</code></td>
+<td>An iterator over co-indexed <code>(x, y)</code> pairs from <code>first</code> and <code>second</code></td>
+</tr>
+<tr>
+<td><code>reversed(sequence)</code></td>
+<td>An iterator over the items of <code>sequence</code> in reverse order</td>
+</tr>
+</tbody>
+</table>
+<p>To view the contents of an iterator, place its items into a container with
+<code>list</code>, <code>tuple</code>, or <code>sorted</code>.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]))</span>
+<span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">25</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">reversed</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]))</span>
+<span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">,</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">]))</span>
+<span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+</code></pre></div></div>
+<h2 id="lazy-or-eager">Lazy or Eager?</h2>
+<p>Calling <code>map</code> doesn't call the function it's given. Instead, it returns an
+iterator that calls the function on one item each time <code>next</code> is called. Here's
+a function that prints a line each time it's called, so that you can see when
+that happens (from <a href="https://composingprograms.com/3ed/lazy-evaluation/">Section 2.8</a>
+of Composing Programs):</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="k">def</span><span class="w"> </span><span class="nf">double_and_print</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="o">...</span>     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;***&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="s1">&#39;=&gt;&#39;</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x</span><span class="p">,</span> <span class="s1">&#39;***&#39;</span><span class="p">)</span>
+<span class="o">...</span>     <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">doubled</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">double_and_print</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">evens</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">y</span> <span class="o">%</span> <span class="mi">4</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">doubled</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">next</span><span class="p">(</span><span class="n">evens</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">list</span><span class="p">(</span><span class="n">doubled</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">list</span><span class="p">(</span><span class="n">evens</span><span class="p">)</span>
+</code></pre></div></div>
+<p>As a group, predict what Python displays after each of the last three lines.
+Then, discuss: what would be different if <code>doubled</code> were defined as the list
+<code>[double_and_print(x) for x in s]</code> instead?</p>
+<h2 id="questions">Questions</h2>
+<h3 id="q1-half-evens">Q1: Half Evens</h3>
+<p>Implement <code>half_evens</code>, which takes an iterator <code>t</code> over integers and returns an
+iterator over each <strong>even</strong> item of <code>t</code> divided by 2 (using <code>//</code>). Use <code>map</code> and
+<code>filter</code> so that no items of <code>t</code> are used until items of the result are needed.</p>
+<div class="code-editor" data-language="python" data-question="half_evens">
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">half_evens</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return an iterator over each even item of t divided by 2.</span>
+
+<span class="sd">    &gt;&gt;&gt; list(half_evens(iter([1, 2, 3, 4, 5, 6])))</span>
+<span class="sd">    [1, 2, 3]</span>
+<span class="sd">    &gt;&gt;&gt; list(half_evens(iter([7, 10, 0, -4, 9])))</span>
+<span class="sd">    [5, 0, -2]</span>
+<span class="sd">    &gt;&gt;&gt; t = iter([3, 8, 5, 1, 12, 4])</span>
+<span class="sd">    &gt;&gt;&gt; h = half_evens(t)</span>
+<span class="sd">    &gt;&gt;&gt; next(h)  # Uses 3 and 8 from t</span>
+<span class="sd">    4</span>
+<span class="sd">    &gt;&gt;&gt; next(t)  # 5 is still in t</span>
+<span class="sd">    5</span>
+<span class="sd">    &gt;&gt;&gt; list(h)</span>
+<span class="sd">    [6, 2]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre></div></div>
+</div>
+<div class="discuss-check" data-question="half_evens" data-visualize="false"></div>
+<details class="hint"><summary>Hint: Template</summary><div>
+<p>First <code>filter</code> the even items of <code>t</code>, then <code>map</code> a function over the result
+that divides each one by 2.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">half_evens</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="n">____</span><span class="p">,</span> <span class="nb">filter</span><span class="p">(</span><span class="n">____</span><span class="p">,</span> <span class="n">t</span><span class="p">))</span>
+</code></pre></div></div>
+</div></details>
+<h3 id="q2-print-sums">Q2: Print Sums</h3>
+<p><strong>Definition:</strong> The <code>i</code>th <em>cumulative sum</em> of a sequence <code>s</code> of numbers is the
+sum of the first <code>i</code> items in <code>s</code>, starting with <code>i</code> of 1. For example, the
+cumulative sums of <code>[1, 2, 3, 4]</code> are <code>1</code>, <code>3</code>, <code>6</code>, and <code>10</code>.</p>
+<p>Implement <code>print_sums</code>, which takes an iterator <code>t</code> over integers and a
+positive integer <code>k</code>. It prints the cumulative sums of the first <code>k</code> items of
+<code>t</code>, one per line. If <code>t</code> has fewer than <code>k</code> items, it prints the cumulative
+sums of all of them.</p>
+<blockquote>
+<p><strong>Important:</strong> Take at most <code>k</code> items from <code>t</code>: stop as soon as you've printed
+<code>k</code> cumulative sums. The examples check this by calling <code>next(t)</code> afterward.</p>
+</blockquote>
+<div class="code-editor" data-language="python" data-question="print_sums">
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">print_sums</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Print the cumulative sums of the first k items of t, or of all of its</span>
+<span class="sd">    items if t has fewer than k.</span>
+
+<span class="sd">    &gt;&gt;&gt; t = iter([1, 2, 3, 4, 5])</span>
+<span class="sd">    &gt;&gt;&gt; print_sums(t, 3)  # 1, 1 + 2, 1 + 2 + 3</span>
+<span class="sd">    1</span>
+<span class="sd">    3</span>
+<span class="sd">    6</span>
+<span class="sd">    &gt;&gt;&gt; next(t)           # 3 was the last item taken from t</span>
+<span class="sd">    4</span>
+<span class="sd">    &gt;&gt;&gt; print_sums(t, 1)</span>
+<span class="sd">    5</span>
+<span class="sd">    &gt;&gt;&gt; print_sums(iter([4, 5]), 10)  # t runs out after 2 items</span>
+<span class="sd">    4</span>
+<span class="sd">    9</span>
+<span class="sd">    &gt;&gt;&gt; print_sums(map(lambda x: x * x, range(1, 1000000000)), 4)  # 1, 4, 9, 16</span>
+<span class="sd">    1</span>
+<span class="sd">    5</span>
+<span class="sd">    14</span>
+<span class="sd">    30</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre></div></div>
+</div>
+<div class="discuss-check" data-question="print_sums" data-visualize="false"></div>
+<details class="hint"><summary>Hint: Template</summary><div>
+<p>Use <code>for x in t:</code> to go through the items of <code>t</code>, and keep count of how many
+you've used and the total so far.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">print_sums</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+    <span class="n">total</span><span class="p">,</span> <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">t</span><span class="p">:</span>
+        <span class="n">total</span><span class="p">,</span> <span class="n">count</span> <span class="o">=</span> <span class="n">____</span><span class="p">,</span> <span class="n">____</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">total</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">____</span><span class="p">:</span>
+            <span class="k">return</span>
+</code></pre></div></div>
+</div></details>
+<h3 id="q3-take-while">Q3: Take While</h3>
+<p>Implement <code>take_while</code>, which takes an iterator <code>t</code> and a one-argument function
+<code>f</code>. It returns a list of the items at the front of <code>t</code> for which <code>f</code> returns a
+true value, stopping at the first item for which <code>f</code> returns a false value.
+That item is not included in the list. If <code>t</code> runs out of items first,
+<code>take_while</code> returns all of them.</p>
+<div class="code-editor" data-language="python" data-question="take_while">
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">take_while</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a list of the items at the front of t for which f returns a true</span>
+<span class="sd">    value, stopping at (and consuming) the first item for which it doesn&#39;t.</span>
+
+<span class="sd">    &gt;&gt;&gt; t = iter([2, 4, 6, 7, 8, 9])</span>
+<span class="sd">    &gt;&gt;&gt; take_while(t, lambda x: x % 2 == 0)</span>
+<span class="sd">    [2, 4, 6]</span>
+<span class="sd">    &gt;&gt;&gt; next(t)  # 7 was consumed by take_while</span>
+<span class="sd">    8</span>
+<span class="sd">    &gt;&gt;&gt; take_while(t, lambda x: x &gt; 10)  # 9 is consumed</span>
+<span class="sd">    []</span>
+<span class="sd">    &gt;&gt;&gt; list(t)</span>
+<span class="sd">    []</span>
+<span class="sd">    &gt;&gt;&gt; take_while(iter([1, 2, 3]), lambda x: x &lt; 10)  # t runs out</span>
+<span class="sd">    [1, 2, 3]</span>
+<span class="sd">    &gt;&gt;&gt; squares = map(lambda x: x * x, range(1, 1000000000))</span>
+<span class="sd">    &gt;&gt;&gt; take_while(squares, lambda x: x &lt; 50)</span>
+<span class="sd">    [1, 4, 9, 16, 25, 36, 49]</span>
+<span class="sd">    &gt;&gt;&gt; next(squares)</span>
+<span class="sd">    81</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;*** YOUR CODE HERE ***&quot;</span>
+</code></pre></div></div>
+</div>
+<div class="discuss-check" data-question="take_while" data-visualize="false"></div>
+<details class="hint"><summary>Hint: Template</summary><div>
+<p>A <code>for</code> statement calls <code>next</code> repeatedly and stops when the iterator runs out
+of items. You can <code>return</code> from inside a <code>for</code> statement as soon as you find the
+item that stops the list.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">take_while</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">t</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">____</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">result</span>
+        <span class="n">____</span>
+    <span class="k">return</span> <span class="n">result</span>
+</code></pre></div></div>
+</div></details>
+<h3 id="q4-only-up">Q4: Only Up</h3>
+<p>This is adapted from Question 2(b) on the <a href="https://cs61a.org/resources/sp24/final/61a-sp24-final.pdf">Spring 2024 61A Final</a>.</p>
+<p><strong>Definition:</strong> The <em>increasing sublist</em> of a sequence of numbers <code>s</code> is a list
+containing each element of <code>s</code> that is larger than all previous elements. For
+example, the increasing sublist of <code>[3, 1, 2, 5, 4, 5, 7, 6, 12, 11]</code> is <code>[3, 5, 7, 12]</code>.</p>
+<p>Implement <code>upiter</code>, which takes a finite <strong>iterator</strong> over numbers <code>t</code> and
+returns its increasing sublist.</p>
+<p>The <code>for</code> statement in the skeleton never gets past its first item, since the body of the <code>for</code> statement returns.</p>
+<p><strong>Discuss</strong>: what does <code>for x in t:</code> do if <code>t</code> has no items left? Why is that useful?</p>
+<div class="code-editor" data-language="python" data-question="only_up">
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">upiter</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the increasing sublist of iterator t.</span>
+
+<span class="sd">    &gt;&gt;&gt; upiter(iter([3, 1, 2, 5, 4, 5, 7, 6, 12, 11]))</span>
+<span class="sd">    [3, 5, 7, 12]</span>
+<span class="sd">    &gt;&gt;&gt; upiter(iter([5, 4, 3]))</span>
+<span class="sd">    [5]</span>
+<span class="sd">    &gt;&gt;&gt; upiter(iter([]))</span>
+<span class="sd">    []</span>
+<span class="sd">    &gt;&gt;&gt; upiter(map(abs, [-1, 2, -3, 3, -4]))</span>
+<span class="sd">    [1, 2, 3, 4]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">t</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">____</span> <span class="o">+</span> <span class="n">____</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="n">____</span><span class="p">,</span> <span class="n">t</span><span class="p">))</span>
+    <span class="n">____</span>
+</code></pre></div></div>
+</div>
+<div class="discuss-check" data-question="only_up" data-visualize="false"></div>
+<details class="hint"><summary>Hint: Template</summary><div>
+<p>The first item <code>x</code> of <code>t</code> is always in the increasing sublist. The rest of the
+increasing sublist is the increasing sublist of the remaining items of <code>t</code> that
+are larger than <code>x</code>. Calling <code>filter</code> on <code>t</code> returns an iterator over just those
+items without computing any of them yet.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span><span class="w"> </span><span class="nf">upiter</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">t</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">_____</span><span class="p">]</span> <span class="o">+</span> <span class="n">upiter</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">_____</span><span class="p">,</span> <span class="n">t</span><span class="p">))</span>
+    <span class="k">return</span> <span class="p">[]</span>
+</code></pre></div></div>
+</div></details>
+{% endraw %}

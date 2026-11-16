@@ -83,6 +83,50 @@ sequence operations are said to compute results <em>lazily</em>.</p>
 <span class="o">&gt;&gt;&gt;</span> <span class="nb">next</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
 <span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
 </code></pre></div></div>
+<p>Here are the iterator functions we use in this course:</p>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Returns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>iter(iterable)</code></td>
+<td>An iterator over the items of <code>iterable</code></td>
+</tr>
+<tr>
+<td><code>next(iterator)</code></td>
+<td>The next item in <code>iterator</code></td>
+</tr>
+<tr>
+<td><code>map(func, iterable)</code></td>
+<td>An iterator over <code>func(x)</code> for each <code>x</code> in <code>iterable</code></td>
+</tr>
+<tr>
+<td><code>filter(func, iterable)</code></td>
+<td>An iterator over each <code>x</code> in <code>iterable</code> for which <code>func(x)</code> is true</td>
+</tr>
+<tr>
+<td><code>zip(first, second)</code></td>
+<td>An iterator over co-indexed <code>(x, y)</code> pairs from <code>first</code> and <code>second</code></td>
+</tr>
+<tr>
+<td><code>reversed(sequence)</code></td>
+<td>An iterator over the items of <code>sequence</code> in reverse order</td>
+</tr>
+</tbody>
+</table>
+<p>To view the contents of an iterator, place its items into a container with
+<code>list</code>, <code>tuple</code>, or <code>sorted</code>.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]))</span>
+<span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">25</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">reversed</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]))</span>
+<span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">,</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">]))</span>
+<span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+</code></pre></div></div>
 </div></details>
 <h3 id="q1-wwpd-iterators">Q1: WWPD: Iterators</h3>
 <blockquote>
