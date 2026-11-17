@@ -396,20 +396,20 @@ The sample diagram provided in <a href="#game-layout">Game Layout</a> shows the 
 <h3 id="playing-the-game">Playing the game</h3>
 <p>After implementing <code>nearest_bee</code>, a <code>ThrowerAnt</code> should be able to <code>throw_at</code> a
 <code>Bee</code> in front of it that is not still in the <code>Hive</code>.</p>
-<p>Now you're ready to try what you've built. To start a graphical game, run:</p>
+<p>The graphical game runs with <a href="https://docs.astral.sh/uv/">uv</a>, a tool that
+installs the GUI's dependencies for you. To check whether you already have it,
+run <code>uv</code>. If that command isn't found, install <code>uv</code> with <code>pip</code>, Python's package installer:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python3 -m pip install uv
+</code></pre></div></div>
+<p><strong>Important</strong>: If a VS Code dialog pops up about creating a virtual environment, just close that.</p>
+<p>You can also install uv using a standalone installers on the
+<a href="https://docs.astral.sh/uv/getting-started/installation/">uv installation page</a>.</p>
+<p>To start a graphical game, run:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>uv run python gui.py
 </code></pre></div></div>
-<p>The first time you run this, <code>uv</code> will automatically download and install the
-GUI's dependencies (Flask); later runs start immediately. After you start the
-graphical version, the game is (usually) available at http://127.0.0.1:31415/.</p>
-<p>The game has several options that you will use throughout the project,
-which you can view with <code>uv run python gui.py --help</code>.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>usage: gui.py [-h] [-d DIFFICULTY] [-w] [--food FOOD]
-
-Play Ants vs. SomeBees
-
-optional arguments:
-  -h, --help     show this help message and exit
+<p>The game should now be available in your web browser at http://127.0.0.1:31415/.</p>
+<p>The game has several options that you will use throughout the project.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  -h, --help     show this help message and exit
   -d DIFFICULTY  sets difficulty of game (test/easy/normal/hard/extra-hard)
   -w, --water    loads a full layout with water
   --food FOOD    number of food to start with when testing
