@@ -32,7 +32,8 @@ homework:
 - skip: true
 - skip: true
 - skip: true
-- title: Iterators (due Mon 11/30)
+- slug: hw08
+  title: Iterators (due Mon 11/30)
 - skip: true
 - skip: true
 - title: SQL (due Fri 12/4)

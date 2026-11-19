@@ -150,3 +150,9 @@ deadlines:
   label: Lab 11
   title: Iterators
   link: /labs/lab11/
+- when: Mon 11/30
+  day: '2026-11-30'
+  kind: hw
+  label: Homework 8
+  title: Iterators
+  link: /hw/hw08/
