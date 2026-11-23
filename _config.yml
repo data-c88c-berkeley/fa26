@@ -84,6 +84,10 @@ collections:
   projects:
     output: true
     permalink: /:collection/:path/
+  # Examples linked from lectures (publish-61a examples/), not on the schedule.
+  examples:
+    output: true
+    permalink: /:collection/:path/
   discussions:
     output: true
     permalink: /:collection/:path/
